@@ -7,25 +7,33 @@
   <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;700&display=swap" rel="stylesheet">
 
   <style>
-    body {
+    html, body {
       margin: 0;
-      height: 100vh;
+      padding: 0;
+      height: 100%;
+      min-height: -webkit-fill-available; /* iOS Safari fallback */
+      min-height: 100dvh; /* modern dynamic viewport height */
+      overflow: hidden;
+      overscroll-behavior: contain; /* prevents bounce/zoom issues */
+    }
+
+    body {
       font-family: system-ui, -apple-system, sans-serif;
       background: linear-gradient(135deg, #ffe6f2, #fff0f5, #ffe6f2);
       background-size: 300% 300%;
       animation: breatheBg 15s ease infinite;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      overflow: hidden;
       color: #d63384;
       touch-action: manipulation;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding-bottom: env(safe-area-inset-bottom); /* respect iPhone home indicator */
       position: relative;
     }
 
     @keyframes breatheBg {
-      0% { background-position: 0% 50%; }
-      50% { background-position: 100% 50%; }
+      0%   { background-position: 0% 50%; }
+      50%  { background-position: 100% 50%; }
       100% { background-position: 0% 50%; }
     }
 
@@ -40,14 +48,14 @@
 
     h1 {
       font-size: clamp(2.2rem, 7vw, 3.8rem);
-      margin: 0 0 30px;
+      margin: 0 0 20px;
       line-height: 1.1;
       animation: pulse 2.5s infinite ease-in-out;
     }
 
     .subtitle {
       font-size: clamp(1.4rem, 5vw, 1.8rem);
-      margin-bottom: 50px;
+      margin-bottom: 40px;
       color: #e91e63;
     }
 
@@ -56,9 +64,14 @@
       50%      { transform: scale(1.06); }
     }
 
-    .buttons {
+    .buttons-container {
       position: relative;
-      min-height: 420px; /* increased to ensure vertical space */
+      min-height: 380px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 80px; /* reliable vertical spacing */
     }
 
     button {
@@ -67,24 +80,22 @@
       border-radius: 999px;
       border: none;
       cursor: pointer;
-      position: absolute;
       box-shadow: 0 8px 25px rgba(0,0,0,0.22);
       user-select: none;
       transition: transform 0.3s ease, box-shadow 0.4s ease;
+      position: relative;
     }
 
     #yesBtn {
       background: linear-gradient(135deg, #ff4d94, #ff80ab);
       color: white;
-      left: 50%;
-      top: 35%;                /* higher starting point */
-      transform: translateX(-50%);
       animation: gentleBounce 3s infinite ease-in-out, yesGlow 4s infinite ease-in-out;
+      z-index: 2;
     }
 
     @keyframes gentleBounce {
-      0%,100% { transform: translateX(-50%) scale(1); }
-      50%     { transform: translateX(-50%) scale(1.08); }
+      0%,100% { transform: scale(1); }
+      50%     { transform: scale(1.08); }
     }
 
     @keyframes yesGlow {
@@ -95,9 +106,7 @@
     #noBtn {
       background: #6c757d;
       color: white;
-      left: 50%;
-      top: 55%;                /* starts clearly below Yes */
-      transform: translateX(-50%);
+      z-index: 1;
     }
 
     #noBtn.surrender {
@@ -114,34 +123,136 @@
     }
 
     @keyframes wobble {
-      0%,100% { transform: translateX(-50%) rotate(0deg); }
-      25%     { transform: translateX(-50%) rotate(-8deg); }
-      50%     { transform: translateX(-50%) rotate(8deg); }
-      75%     { transform: translateX(-50%) rotate(-4deg); }
+      0%,100% { transform: rotate(0deg); }
+      25%     { transform: rotate(-8deg); }
+      50%     { transform: rotate(8deg); }
+      75%     { transform: rotate(-4deg); }
     }
 
-    /* ... rest of your styles (flower, heart, trail-heart, handwritten, etc.) unchanged ... */
+    .flower-decor {
+      position: absolute;
+      top: 5%;
+      left: 5%;
+      width: clamp(70px, 18vw, 120px); /* responsive, never too big */
+      max-height: 25vh; /* prevents screen takeover */
+      height: auto;
+      object-fit: contain;
+      cursor: pointer;
+      user-select: none;
+      transition: filter 0.3s, transform 0.3s;
+      z-index: 5;
+    }
+
+    .flower-decor.glow {
+      filter: drop-shadow(0 0 20px #ff4d94) brightness(1.5);
+      transform: scale(1.15);
+      animation: flowerPulse 1.5s ease-in-out;
+    }
+
+    @keyframes flowerPulse {
+      0%,100% { filter: drop-shadow(0 0 20px #ff4d94) brightness(1.5); }
+      50%     { filter: drop-shadow(0 0 40px #ff4d94) brightness(2); }
+    }
+
+    .heart {
+      position: absolute;
+      font-size: clamp(1.2rem, 3vw, 2.5rem);
+      animation: floatUp 12s linear forwards;
+      opacity: 0;
+      pointer-events: none;
+      animation-delay: calc(var(--delay) * 1s);
+    }
+
+    @keyframes floatUp {
+      0% { opacity: 0; transform: translateY(120vh) translateX(0) rotate(0deg); }
+      10% { opacity: 1; }
+      100% { opacity: 0; transform: translateY(-40vh) translateX(var(--sway)) rotate(720deg); }
+    }
+
+    .trail-heart {
+      position: absolute;
+      font-size: 1.4rem;
+      pointer-events: none;
+      animation: fadeHeart 2.2s forwards;
+      opacity: 0.9;
+      color: #ff4d94;
+    }
+
+    @keyframes fadeHeart {
+      0% { opacity: 1; transform: scale(0.8) translateY(0); }
+      100% { opacity: 0; transform: scale(1.6) translateY(-80px); }
+    }
+
+    .handwritten {
+      font-family: 'Caveat', cursive;
+      font-size: clamp(1.8rem, 6vw, 2.6rem);
+      color: white;
+      line-height: 1.6;
+      margin: 30px auto 20px;
+      max-width: 85%;
+      text-shadow: 0 2px 8px rgba(0,0,0,0.3);
+    }
+
+    .ps {
+      font-size: 1.3rem;
+      color: #fff9;
+      margin-top: 40px;
+      font-style: italic;
+    }
+
+    .memory-photo {
+      max-width: 85%;
+      border-radius: 24px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+      border: 4px solid rgba(255, 255, 255, 0.3);
+      margin: 30px auto;
+      display: block;
+      animation: photoFade 2s ease-out;
+    }
+
+    @keyframes photoFade {
+      0% { opacity: 0; transform: scale(0.95); }
+      100% { opacity: 1; transform: scale(1); }
+    }
+
+    .photo-caption {
+      font-size: 1.2rem;
+      color: #fff;
+      margin-top: 10px;
+      font-style: italic;
+    }
+
+    .spark {
+      position: absolute;
+      font-size: 1.8rem;
+      animation: explode 1.4s ease-out forwards;
+      pointer-events: none;
+      transform: rotate(var(--rot));
+    }
+
+    @keyframes explode {
+      from { transform: scale(1) rotate(var(--rot)); opacity: 1; }
+      to   { transform: translate(var(--x), var(--y)) scale(0.2) rotate(calc(var(--rot) + 360deg)); opacity: 0; }
+    }
   </style>
 </head>
 <body>
 
-<!-- Only top-left flower -->
+<!-- Only top-left flower, constrained size -->
 <img src="https://image.similarpng.com/file/similarpng/original-picture/2022/02/Romantic-pink-rose-bouquet-isolated-on-transparent-background-PNG.png" 
      class="flower-decor" 
-     style="top:5%; left:5%;" 
      alt="Rose bouquet">
 
 <div class="wrapper" id="app">
   <h1>To My Melanie (蔡聿囷) 💕</h1>
   <p class="subtitle">Melanie, will you make my heart skip forever and be my Valentine? 🌸💖</p>
 
-  <div class="buttons">
+  <div class="buttons-container">
     <button id="yesBtn">YESSS!! 💕🥰</button>
     <button id="noBtn">No 🙄🥺</button>
   </div>
 </div>
 
-<!-- Audio elements unchanged -->
 <audio id="pop" preload="auto" src="https://assets.mixkit.co/sfx/preview/mixkit-fast-small-sweep-transition-166.mp3"></audio>
 <audio id="sparkle" preload="auto" src="https://assets.mixkit.co/sfx/preview/mixkit-magic-sweep-game-trophy-257.mp3"></audio>
 
@@ -168,10 +279,10 @@ document.addEventListener('touchstart', () => {
 // Yes growth
 const yesGrow = setInterval(() => {
   yesScale = Math.min(2.8, yesScale + 0.028);
-  yesBtn.style.transform = `translateX(-50%) scale(${yesScale})`;
+  yesBtn.style.transform = `scale(${yesScale})`;
 }, 1300);
 
-// No dodge – force position BELOW Yes
+// No dodge – always below Yes
 function dodgeNo(e) {
   if (e.type === 'touchstart') e.preventDefault();
 
@@ -185,16 +296,13 @@ function dodgeNo(e) {
     noBtn.textContent = ["NOOO 😱","STOP 😭","WHY 😵","PLS 😿","不好😰"][Math.floor(Math.random()*5)];
   }
 
-  // Get current Yes position & bottom edge
   const yesRect = yesBtn.getBoundingClientRect();
   const yesBottom = yesRect.bottom + window.scrollY;
 
-  // Always place No BELOW Yes
-  let newY = yesBottom + 80 + Math.random() * 100;  // 80–180px below current Yes bottom
+  let newY = yesBottom + 80 + Math.random() * 100;
   let newX = yesRect.left + yesRect.width / 2 - (noBtn.offsetWidth || 180) / 2;
-  newX += Math.random() * 160 - 80;  // small horizontal shift
+  newX += Math.random() * 160 - 80;
 
-  // Hard clamp – never off-screen
   const margin = 100;
   newX = Math.max(margin, Math.min(window.innerWidth - (noBtn.offsetWidth || 180) - margin, newX));
   newY = Math.max(yesBottom + 60, Math.min(window.innerHeight - (noBtn.offsetHeight || 60) - margin, newY));
@@ -217,7 +325,7 @@ function dodgeNo(e) {
   noBtn.addEventListener(evt, dodgeNo, { passive: false })
 );
 
-// Resize → re-position No below Yes
+// Resize – keep No below Yes
 window.addEventListener('resize', () => {
   const yesRect = yesBtn.getBoundingClientRect();
   const yesBottom = yesRect.bottom + window.scrollY;
@@ -233,7 +341,99 @@ window.addEventListener('resize', () => {
   noBtn.style.top  = `${newY}px`;
 });
 
-// ... rest of your code (flower interaction, heart trail, finalYes, createHeart, createFirework, etc.) unchanged ...
+// Flower glow + vibrate
+document.querySelectorAll('.flower-decor').forEach(flower => {
+  flower.addEventListener('click', () => {
+    flower.classList.add('glow');
+    if ('vibrate' in navigator) navigator.vibrate([50, 30, 50]);
+    setTimeout(() => flower.classList.remove('glow'), 1500);
+  });
+  flower.addEventListener('touchstart', e => {
+    e.preventDefault();
+    flower.classList.add('glow');
+    if ('vibrate' in navigator) navigator.vibrate([50, 30, 50]);
+    setTimeout(() => flower.classList.remove('glow'), 1500);
+  }, { passive: false });
+});
+
+// Heart trail
+document.addEventListener('mousemove', e => {
+  if (Math.random() < 0.12) createTrailHeart(e.clientX, e.clientY);
+});
+
+document.addEventListener('touchmove', e => {
+  if (Math.random() < 0.18) createTrailHeart(e.touches[0].clientX, e.touches[0].clientY);
+}, {passive: true});
+
+function createTrailHeart(x, y) {
+  const h = document.createElement("div");
+  h.className = "trail-heart";
+  h.textContent = ["💞","💖","🩷","💕"][Math.floor(Math.random()*4)];
+  h.style.left = (x - 10) + "px";
+  h.style.top = (y - 10) + "px";
+  document.body.appendChild(h);
+  setTimeout(() => h.remove(), 2200);
+}
+
+// Yes → direct celebration
+yesBtn.addEventListener("click", () => {
+  clearInterval(yesGrow);
+  finalYes();
+});
+
+function finalYes() {
+  if (interacted) sparkle.play().catch(() => {});
+
+  app.innerHTML = `
+    <h1 style="font-size: clamp(3.5rem, 12vw, 5.5rem); color: white; margin: 20px 0; text-shadow: 0 4px 12px rgba(0,0,0,0.4);">
+      YAYYY!!! 🎉💖
+    </h1>
+    <p class="handwritten">
+      Melanie (蔡聿囷), my heart has chosen you every single day... <br>
+      Thank you for saying yes — I can't wait to hold your hand through every adventure, laugh, and quiet moment ahead. You are my forever. 💘
+    </p>
+    <p class="ps">P.S. You're still the most beautiful thing I've ever seen, inside and out. 🌹</p>
+    
+    <img src="YOUR_ACTUAL_PHOTO_URL_HERE" alt="Us together 💕" class="memory-photo">
+    <p class="photo-caption">Our favorite moment 💕</p>
+  `;
+
+  document.body.style.background = "linear-gradient(135deg, #ff9a9e, #fad0c4, #ff9a9e)";
+  document.body.style.animation = "breatheBg 12s ease infinite";
+
+  setInterval(createHeart, 300);
+  setInterval(createFirework, 700);
+}
+
+function createHeart() {
+  const heart = document.createElement("div");
+  heart.className = "heart";
+  heart.textContent = ["💖","💕","💘","💝","💞","❤️","🩷","💗"][Math.random()*8 | 0];
+  heart.style.left = Math.random() * 100 + "vw";
+  heart.style.setProperty('--sway', (Math.random() * 60 - 30) + "vw");
+  heart.style.setProperty('--delay', Math.random() * 3);
+  heart.style.fontSize = (1.2 + Math.random() * 2) + "rem";
+  document.body.appendChild(heart);
+  setTimeout(() => heart.remove(), 14000);
+}
+
+function createFirework() {
+  const x = Math.random() * window.innerWidth;
+  const y = Math.random() * window.innerHeight * 0.65;
+
+  for (let i = 0; i < 12; i++) {
+    const spark = document.createElement("div");
+    spark.className = "spark";
+    spark.textContent = ["💖","✨","💫","🩷","🌟","💝"][Math.floor(Math.random()*6)];
+    spark.style.left = x + "px";
+    spark.style.top = y + "px";
+    spark.style.setProperty("--x", `${Math.random()*300 - 150}px`);
+    spark.style.setProperty("--y", `${Math.random()*300 - 150}px`);
+    spark.style.setProperty("--rot", `${Math.random()*720 - 360}deg`);
+    document.body.appendChild(spark);
+    setTimeout(() => spark.remove(), 1500);
+  }
+}
 </script>
 
 <noscript>
