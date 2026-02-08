@@ -1,478 +1,268 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>To My Melanie (蔡聿囷) 💕</title>
-  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;700&display=swap" rel="stylesheet">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>To My Melanie (蔡聿囷) 💕</title>
 
-  <style>
-    html, body {
-      margin: 0;
-      padding: 0;
-      height: 100%;
-      min-height: -webkit-fill-available;
-      min-height: 100dvh;
-      overflow: hidden;
-      overscroll-behavior: contain;
-    }
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;700&display=swap" rel="stylesheet">
 
-    body {
-      font-family: system-ui, -apple-system, sans-serif;
-      background: linear-gradient(135deg, #ffe6f2, #fff0f5, #ffe6f2);
-      background-size: 300% 300%;
-      animation: breatheBg 15s ease infinite;
-      color: #d63384;
-      touch-action: manipulation;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      padding-bottom: env(safe-area-inset-bottom);
-      position: relative;
-    }
+<style>
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  overflow: hidden;
+}
 
-    @keyframes breatheBg {
-      0%   { background-position: 0% 50%; }
-      50%  { background-position: 100% 50%; }
-      100% { background-position: 0% 50%; }
-    }
+body {
+  font-family: system-ui, -apple-system, sans-serif;
+  background: linear-gradient(135deg, #ffe6f2, #fff0f5, #ffe6f2);
+  background-size: 300% 300%;
+  animation: breatheBg 15s ease infinite;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #d63384;
+}
 
-    .wrapper {
-      text-align: center;
-      width: 100%;
-      max-width: 600px;
-      padding: 20px;
-      box-sizing: border-box;
-      z-index: 10;
-      pointer-events: auto;
-    }
+@keyframes breatheBg {
+  0%,100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
 
-    h1 {
-      font-size: clamp(2.2rem, 7vw, 3.8rem);
-      margin: 0 0 20px;
-      line-height: 1.1;
-      animation: pulse 2.5s infinite ease-in-out;
-    }
+.wrapper {
+  text-align: center;
+  max-width: 600px;
+  padding: 20px;
+}
 
-    .subtitle {
-      font-size: clamp(1.4rem, 5vw, 1.8rem);
-      margin-bottom: 40px;
-      color: #e91e63;
-    }
+h1 {
+  font-size: clamp(2.2rem, 7vw, 3.8rem);
+  animation: pulse 2.5s infinite;
+}
 
-    @keyframes pulse {
-      0%, 100% { transform: scale(1); }
-      50% { transform: scale(1.06); }
-    }
+@keyframes pulse {
+  0%,100% { transform: scale(1); }
+  50% { transform: scale(1.06); }
+}
 
-    .buttons-container {
-      position: relative;
-      min-height: 380px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 80px;
-    }
+.subtitle {
+  font-size: clamp(1.4rem, 5vw, 1.8rem);
+  margin-bottom: 40px;
+  color: #e91e63;
+}
 
-    button {
-      font-size: clamp(1.3rem, 5vw, 1.7rem);
-      padding: 16px 48px;
-      border-radius: 999px;
-      border: none;
-      cursor: pointer;
-      box-shadow: 0 8px 25px rgba(0,0,0,0.22);
-      user-select: none;
-      transition: transform 0.3s ease, box-shadow 0.4s ease, opacity 0.4s ease;
-      position: relative;
-    }
+.buttons-container {
+  position: relative;
+  height: 260px;
+  display: flex;
+  flex-direction: column;
+  gap: 90px;
+  align-items: center;
+}
 
-    #yesBtn {
-      background: linear-gradient(135deg, #ff4d94, #ff80ab);
-      color: white;
-      animation: gentleBounce 3s infinite ease-in-out, yesGlow 4s infinite ease-in-out;
-      z-index: 2;
-    }
+button {
+  font-size: clamp(1.3rem, 5vw, 1.7rem);
+  padding: 16px 48px;
+  border-radius: 999px;
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 8px 25px rgba(0,0,0,0.22);
+  transition: transform 0.6s cubic-bezier(.2,.9,.2,1), opacity 0.4s ease;
+  position: relative;
+}
 
-    #yesBtn.not-ready,
-    #yesBtn:disabled {
-      opacity: 0.5;
-      cursor: not-allowed;
-      animation: none;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-      pointer-events: none;
-    }
+#yesBtn {
+  background: linear-gradient(135deg, #ff4d94, #ff80ab);
+  color: white;
+  opacity: 0.5;
+  pointer-events: none;
+}
 
-    @keyframes gentleBounce {
-      0%,100% { transform: scale(1); }
-      50% { transform: scale(1.08); }
-    }
+#yesBtn.active {
+  opacity: 1;
+  pointer-events: auto;
+}
 
-    @keyframes yesGlow {
-      0%,100% { box-shadow: 0 0 20px rgba(255,77,148,0.6); }
-      50% { box-shadow: 0 0 40px rgba(255,77,148,1); }
-    }
+#noBtn {
+  background: #6c757d;
+  color: white;
+}
 
-    #noBtn {
-      background: #6c757d;
-      color: white;
-      z-index: 1;
-    }
+#noBtn.surrender {
+  background: linear-gradient(135deg, #ff4d94, #ff80ab);
+  font-weight: bold;
+}
 
-    #noBtn.surrender {
-      font-size: clamp(1.6rem, 6vw, 2.2rem) !important;
-      background: linear-gradient(135deg, #ff4d94, #ff80ab);
-      box-shadow: 0 0 30px rgba(255,77,148,0.8);
-      padding: 20px 60px;
-      color: white;
-      font-weight: bold;
-    }
+/* 🚀 COLLISION MOTION */
+.merge-left {
+  position: absolute;
+  top: 50%;
+  transform: translate(-220px, -50%) scale(1.15);
+}
 
-    .flower-decor {
-      position: absolute;
-      top: 5%;
-      left: 5%;
-      width: clamp(70px, 18vw, 120px);
-      max-height: 25vh;
-      height: auto;
-      object-fit: contain;
-      cursor: pointer;
-      user-select: none;
-      transition: filter 0.3s, transform 0.3s;
-      z-index: 5;
-    }
+.merge-right {
+  position: absolute;
+  top: 50%;
+  transform: translate(220px, -50%) scale(1.15);
+}
 
-    .flower-decor.glow {
-      filter: drop-shadow(0 0 20px #ff4d94) brightness(1.5);
-      transform: scale(1.15);
-      animation: flowerPulse 1.5s ease-in-out;
-    }
+/* 💥 HEART EXPLOSION */
+.explode-heart {
+  position: absolute;
+  font-size: 2rem;
+  pointer-events: none;
+  animation: heartBurst 1.2s ease-out forwards;
+}
 
-    @keyframes flowerPulse {
-      0%,100% { filter: drop-shadow(0 0 20px #ff4d94) brightness(1.5); }
-      50% { filter: drop-shadow(0 0 40px #ff4d94) brightness(2); }
-    }
+@keyframes heartBurst {
+  from {
+    transform: translate(0,0) scale(1);
+    opacity: 1;
+  }
+  to {
+    transform: translate(var(--x), var(--y)) scale(0.3);
+    opacity: 0;
+  }
+}
 
-    .handwritten {
-      font-family: 'Caveat', cursive;
-      font-size: clamp(1.8rem, 6vw, 2.6rem);
-      color: white;
-      line-height: 1.6;
-      margin: 30px auto 20px;
-      max-width: 85%;
-      text-shadow: 0 2px 8px rgba(0,0,0,0.3);
-    }
+/* 💖 MERGED BUTTON */
+.merged-btn {
+  position: absolute;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  background: linear-gradient(135deg, #ff4d94, #ff80ab);
+  color: white;
+  font-size: clamp(1.6rem, 6vw, 2.2rem);
+  padding: 22px 70px;
+  border-radius: 999px;
+  box-shadow: 0 0 45px rgba(255,77,148,0.9);
+  animation: mergedPulse 1.2s ease-in-out infinite;
+}
 
-    .ps {
-      font-size: 1.3rem;
-      color: #fff9;
-      margin-top: 40px;
-      font-style: italic;
-    }
+@keyframes mergedPulse {
+  0%,100% { transform: translate(-50%, -50%) scale(1); }
+  50% { transform: translate(-50%, -50%) scale(1.12); }
+}
 
-    .memory-photo {
-      max-width: 85%;
-      border-radius: 24px;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.4);
-      border: 4px solid rgba(255, 255, 255, 0.3);
-      margin: 30px auto;
-      display: block;
-      animation: photoFade 2s ease-out;
-    }
+.handwritten {
+  font-family: 'Caveat', cursive;
+  font-size: clamp(2rem, 6vw, 2.8rem);
+  color: white;
+}
 
-    @keyframes photoFade {
-      0% { opacity: 0; transform: scale(0.95); }
-      100% { opacity: 1; transform: scale(1); }
-    }
-
-    .heart {
-      position: absolute;
-      font-size: clamp(1.2rem,3vw,2.5rem);
-      animation: floatUp 12s linear forwards;
-      opacity: 0;
-      pointer-events: none;
-      animation-delay: calc(var(--delay) * 1s);
-    }
-
-    @keyframes floatUp {
-      0% { opacity: 0; transform: translateY(120vh) translateX(0) rotate(0deg); }
-      10% { opacity: 1; }
-      100% { opacity: 0; transform: translateY(-40vh) translateX(var(--sway)) rotate(720deg); }
-    }
-
-    .trail-heart {
-      position: absolute;
-      font-size: clamp(1.1rem, 2.8vw, 2.2rem);
-      pointer-events: none;
-      user-select: none;
-      animation: fadeHeart 2.4s forwards;
-      opacity: 0.92;
-      color: #ff4d94;
-      z-index: 8;
-      will-change: transform, opacity;
-    }
-
-    @keyframes fadeHeart {
-      0%   { opacity: 0.92; transform: scale(0.7) translateY(0) rotate(0deg); }
-      30%  { opacity: 1;    transform: scale(1.15) translateY(-12px) rotate(15deg); }
-      100% { opacity: 0;    transform: scale(1.7) translateY(-120px) rotate(45deg); }
-    }
-
-    .spark {
-      position: absolute;
-      font-size: 1.8rem;
-      animation: explode 1.4s ease-out forwards;
-      pointer-events: none;
-      transform: rotate(var(--rot));
-    }
-
-    @keyframes explode {
-      from { transform: scale(1) rotate(var(--rot)); opacity: 1; }
-      to   { transform: translate(var(--x), var(--y)) scale(0.2) rotate(calc(var(--rot) + 360deg)); opacity: 0; }
-    }
-
-    @keyframes yesShakeBounce {
-      0%,100% { transform: scale(1.4) translateY(0) rotate(0deg); }
-      25% { transform: scale(1.45) translateY(-5px) rotate(-8deg); }
-      50% { transform: scale(1.5) translateY(-10px) rotate(8deg); }
-      75% { transform: scale(1.45) translateY(-5px) rotate(-4deg); }
-    }
-
-    #yesBtn.surrenderYes {
-      animation: yesShakeBounce 0.6s ease-in-out infinite, yesGlow 0.6s alternate infinite;
-      pointer-events: auto;
-    }
-
-    .buttons-container,
-    button,
-    .flower-decor,
-    .wrapper {
-      touch-action: manipulation;
-      pointer-events: auto;
-    }
-  </style>
+.memory-photo {
+  max-width: 85%;
+  border-radius: 24px;
+  margin-top: 30px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+}
+</style>
 </head>
-<body>
 
-<img src="https://image.similarpng.com/file/similarpng/original-picture/2022/02/Romantic-pink-rose-bouquet-isolated-on-transparent-background-PNG.png" 
-     class="flower-decor" 
-     alt="Rose bouquet">
+<body>
 
 <div class="wrapper" id="app">
   <h1>To My Melanie (蔡聿囷) 💕</h1>
-  <p class="subtitle">Melanie, will you make my heart skip forever and be my Valentine? 🌸💖</p>
+  <p class="subtitle">Melanie, will you be my Valentine? 🌸💖</p>
 
-  <div class="buttons-container">
-    <button id="yesBtn" class="not-ready" disabled>YESSS!! 💕🥰</button>
+  <div class="buttons-container" id="btnWrap">
+    <button id="yesBtn">YESSS!! 💕🥰</button>
     <button id="noBtn">No 🙄🥺</button>
   </div>
 </div>
 
-<audio id="pop" preload="auto" src="https://assets.mixkit.co/sfx/preview/mixkit-fast-small-sweep-transition-166.mp3"></audio>
-<audio id="sparkle" preload="auto" src="https://assets.mixkit.co/sfx/preview/mixkit-magic-sweep-game-trophy-257.mp3"></audio>
+<audio id="sparkle" src="https://assets.mixkit.co/sfx/preview/mixkit-magic-sweep-game-trophy-257.mp3"></audio>
 
 <script>
-const noBtn = document.getElementById("noBtn");
 const yesBtn = document.getElementById("yesBtn");
+const noBtn = document.getElementById("noBtn");
+const btnWrap = document.getElementById("btnWrap");
 const app = document.getElementById("app");
-const pop = document.getElementById("pop");
 const sparkle = document.getElementById("sparkle");
 
-let noClickCount = 0;
-let yesGrowing = false;
-let yesScale = 1;
+let noCount = 0;
+let yesUnlocked = false;
+let finaleLocked = false;
 
-const noOptions = ["NOOO 😱", "STOP 😭", "WHY 😵", "PLS 😿", "不好😰"];
+const noOptions = ["NOOO 😱","STOP 😭","WHY 😵","PLS 😿","不好😰"];
+const hearts = ["💖","💕","💘","💗","🩷","💞"];
 
-document.addEventListener('touchstart', () => {
-  pop.volume = 0.6;
-  sparkle.volume = 0.7;
-}, { once: true });
+/* ❌ NO BUTTON */
+noBtn.addEventListener("click", () => {
+  noCount++;
 
-const heartChars = ["💖","💕","💘","🩷","💗","💝","❤️","💞"];
-let isDrawingHearts = false;
-let lastX = 0, lastY = 0;
-let throttleTimer = null;
-
-function createTrailHeart(x, y) {
-  const heart = document.createElement("div");
-  heart.className = "trail-heart";
-  heart.textContent = heartChars[Math.floor(Math.random() * heartChars.length)];
-  
-  const offsetX = (Math.random() - 0.5) * 30;
-  const offsetY = (Math.random() - 0.5) * 30;
-  
-  heart.style.left = (x + offsetX) + "px";
-  heart.style.top  = (y + offsetY) + "px";
-  
-  heart.style.transform = `rotate(${(Math.random()-0.5)*40}deg) scale(${0.8 + Math.random()*0.5})`;
-  
-  document.body.appendChild(heart);
-  
-  setTimeout(() => heart.remove(), 2600);
-}
-
-function onPointerDown(e) {
-  isDrawingHearts = true;
-  document.body.style.touchAction = 'none';
-  const x = e.clientX || (e.touches && e.touches[0].clientX);
-  const y = e.clientY || (e.touches && e.touches[0].clientY);
-  
-  createTrailHeart(x, y);
-  lastX = x;
-  lastY = y;
-}
-
-function onPointerMove(e) {
-  if (!isDrawingHearts) return;
-  
-  const x = e.clientX || (e.touches && e.touches[0].clientX);
-  const y = e.clientY || (e.touches && e.touches[0].clientY);
-  
-  if (!throttleTimer) {
-    throttleTimer = setTimeout(() => { throttleTimer = null; }, 100);
-    
-    const dist = Math.hypot(x - lastX, y - lastY);
-    if (dist > 18) {
-      createTrailHeart(x, y);
-      lastX = x;
-      lastY = y;
-    }
-  }
-}
-
-function onPointerUp() {
-  isDrawingHearts = false;
-  document.body.style.touchAction = 'manipulation';
-}
-
-document.addEventListener("pointerdown", onPointerDown, { passive: false });
-document.addEventListener("pointermove", onPointerMove, { passive: false });
-document.addEventListener("pointerup",   onPointerUp);
-document.addEventListener("pointercancel", onPointerUp);
-
-document.addEventListener("mousedown", e => onPointerDown(e));
-document.addEventListener("mousemove", e => onPointerMove(e));
-document.addEventListener("mouseup",   onPointerUp);
-
-noBtn.addEventListener('click', () => {
-  noClickCount++;
-  
-  if (noClickCount >= 5 && !yesGrowing) {
-    yesGrowing = true;
-    yesBtn.classList.add('surrenderYes');
-    yesBtn.disabled = false;
-    yesBtn.classList.remove('not-ready');
-
-    const growInterval = setInterval(() => {
-      yesScale = Math.min(2.5, yesScale + 0.03);
-      yesBtn.style.transform = `scale(${yesScale})`;
-      if (yesScale >= 2.5) clearInterval(growInterval);
-    }, 100);
-
+  if (noCount >= 5 && !yesUnlocked) {
+    yesUnlocked = true;
+    yesBtn.classList.add("active");
     noBtn.textContent = "Okay fine… Yes I will be! 😏💕";
-    noBtn.classList.add('surrender');
-    noBtn.onclick = () => finalYes();
+    noBtn.classList.add("surrender");
+    noBtn.onclick = mergeButtons;
   } else {
-    const index = noClickCount - 1;
-    noBtn.textContent = noOptions[index];
-  }
-
-  if (pop) {
-    pop.currentTime = 0;
-    pop.play().catch(() => {});
+    noBtn.textContent = noOptions[Math.min(noCount-1, noOptions.length-1)];
   }
 });
 
-document.querySelectorAll('.flower-decor').forEach(flower => {
-  flower.addEventListener('click', (e) => {
-    flower.classList.add('glow');
-    if ('vibrate' in navigator) navigator.vibrate([50, 30, 50]);
-
-    let msg = document.createElement('div');
-    msg.textContent = "I love you! 💕";
-    msg.style.position = 'absolute';
-    msg.style.left = (flower.offsetLeft + flower.offsetWidth + 10) + 'px';
-    msg.style.top = (flower.offsetTop + flower.offsetHeight / 2 - 15) + 'px';
-    msg.style.background = 'rgba(255,255,255,0.85)';
-    msg.style.color = '#ff4d94';
-    msg.style.padding = '6px 12px';
-    msg.style.borderRadius = '12px';
-    msg.style.fontWeight = 'bold';
-    msg.style.fontSize = 'clamp(1rem,3vw,1.2rem)';
-    msg.style.boxShadow = '0 4px 12px rgba(0,0,0,0.2)';
-    document.body.appendChild(msg);
-
-    setTimeout(() => {
-      msg.remove();
-      flower.classList.remove('glow');
-    }, 2000);
-  });
+/* ✅ YES BUTTON */
+yesBtn.addEventListener("click", () => {
+  if (yesUnlocked) mergeButtons();
 });
 
+/* 💥 MERGE + HEART EXPLOSION */
+function mergeButtons() {
+  if (finaleLocked) return;
+  finaleLocked = true;
+
+  sparkle.play().catch(()=>{});
+
+  yesBtn.classList.add("merge-left");
+  noBtn.classList.add("merge-right");
+
+  setTimeout(() => {
+    explodeHearts();
+    yesBtn.style.opacity = 0;
+    noBtn.style.opacity = 0;
+  }, 450);
+
+  setTimeout(() => {
+    const merged = document.createElement("button");
+    merged.className = "merged-btn";
+    merged.textContent = "FOREVER 💖";
+    btnWrap.appendChild(merged);
+  }, 700);
+
+  setTimeout(finalYes, 1600);
+}
+
+/* 💖 HEART BURST */
+function explodeHearts() {
+  for (let i = 0; i < 18; i++) {
+    const h = document.createElement("div");
+    h.className = "explode-heart";
+    h.textContent = hearts[Math.random()*hearts.length|0];
+    h.style.left = "50%";
+    h.style.top = "50%";
+    h.style.setProperty("--x", `${Math.random()*400 - 200}px`);
+    h.style.setProperty("--y", `${Math.random()*400 - 200}px`);
+    btnWrap.appendChild(h);
+    setTimeout(() => h.remove(), 1200);
+  }
+}
+
+/* 💖 FINAL PAGE */
 function finalYes() {
-  if (sparkle) sparkle.play().catch(() => {});
-
   app.innerHTML = `
-    <div style="overflow-y: auto; max-height: 90dvh; width: 100%; padding: 20px; box-sizing: border-box; -webkit-overflow-scrolling: touch;">
-      <h1 style="font-size: clamp(3.5rem, 12vw, 5.5rem); color: white; margin: 20px 0; text-shadow: 0 4px 12px rgba(0,0,0,0.4);">
-        YAYYY!!! 🎉💖
-      </h1>
-      <p class="handwritten">
-        Melanie (蔡聿囷), my heart has chosen you every single day... <br>
-        Thank you for saying yes — I can't wait to hold your hand through every adventure, laugh, and quiet moment ahead. You are my forever. 💘
-      </p>
-      <p class="ps">P.S. You're still the most beautiful thing I've ever seen, inside and out. 🌹</p>
-      
-      <img src="https://i.postimg.cc/yYR21mkP/8b0f9164-ce1a-4748-9f48-386ba1f45bef.jpg" alt="Us together 💕" class="memory-photo">
-      <p class="photo-caption" style="text-align:center; color:white; font-style:italic; margin-top: 15px;">Our favorite moment 💕</p>
-    </div>
+    <h1 style="color:white;">YAYYYY!!! 🎉💖</h1>
+    <p class="handwritten">
+      Melanie (蔡聿囷), two paths became one.<br>
+      My heart chose you — always. 💘
+    </p>
+    <img src="https://i.postimg.cc/yYR21mkP/8b0f9164-ce1a-4748-9f48-386ba1f45bef.jpg"
+         class="memory-photo">
   `;
-
-  document.body.style.background = "linear-gradient(135deg, #ff9a9e, #fad0c4, #ff9a9e)";
-  document.body.style.animation = "breatheBg 12s ease infinite";
-
-  setInterval(createHeart, 300);
-  setInterval(createFirework, 700);
-}
-
-function createHeart() {
-  const heart = document.createElement("div");
-  heart.className = "heart";
-  heart.textContent = ["💖","💕","💘","💝","💞","❤️","🩷","💗"][Math.random()*8 | 0];
-  heart.style.left = Math.random() * 100 + "vw";
-  heart.style.setProperty('--sway', (Math.random() * 60 - 30) + "vw");
-  heart.style.setProperty('--delay', Math.random() * 3);
-  heart.style.fontSize = (1.2 + Math.random() * 2) + "rem";
-  document.body.appendChild(heart);
-  setTimeout(() => heart.remove(), 14000);
-}
-
-function createFirework() {
-  const x = Math.random() * window.innerWidth;
-  const y = Math.random() * window.innerHeight * 0.65;
-
-  for (let i = 0; i < 12; i++) {
-    const spark = document.createElement("div");
-    spark.className = "spark";
-    spark.textContent = ["💖","✨","💫","🩷","🌟","💝"][Math.floor(Math.random()*6)];
-    spark.style.left = x + "px";
-    spark.style.top = y + "px";
-    spark.style.setProperty("--x", `${Math.random()*300 - 150}px`);
-    spark.style.setProperty("--y", `${Math.random()*300 - 150}px`);
-    spark.style.setProperty("--rot", `${Math.random()*720 - 360}deg`);
-    document.body.appendChild(spark);
-    setTimeout(() => spark.remove(), 1500);
-  }
 }
 </script>
-
-<noscript>
-  <div style="text-align:center; font-size:1.5rem; color:#d63384; padding:40px;">
-    <h1>To My Melanie 💕</h1>
-    <p>(JavaScript is needed for the full romantic experience 😊)</p>
-  </div>
-</noscript>
 
 </body>
 </html>
