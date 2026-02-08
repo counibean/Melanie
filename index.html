@@ -243,7 +243,7 @@ function dodgeNo(e) {
     noBtn.textContent = "Okay fine… Yes I will be! 😏💕";
     noBtn.style.pointerEvents = "none"; // Can't catch it anymore
   } else {
-    noBtn.textContent = ["NOOO 😱","STOP 😭","WHY 😵","PLS 😿","HELP 😰"][Math.floor(Math.random()*5)];
+    noBtn.textContent = ["NOOO 😱","STOP 😭","WHY 😵","PLS 😿","不好 😰"][Math.floor(Math.random()*5)];
   }
 
   const btnW = noBtn.offsetWidth || 180;
@@ -317,7 +317,7 @@ function createTrailHeart(x, y) {
 // Yes flow
 yesBtn.addEventListener("click", () => {
   clearInterval(yesGrow);
-  yesBtn.textContent = "Really sure? 🤭💕";
+  yesBtn.textContent = "Really,are you sure? 🤭💕";
   yesBtn.onclick = finalYes;
 });
 
