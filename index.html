@@ -235,8 +235,8 @@
   <p class="subtitle">Melanie, will you make my heart skip forever and be my Valentine? 🌸💖</p>
 
   <div class="buttons">
-    <button id="yesBtn">Yes!! 🥰</button>
-    <button id="noBtn">No 😿</button>
+    <button id="yesBtn">YESSS!!💕🥰</button>
+    <button id="noBtn">No🙄🥺</button>
   </div>
 </div>
 
@@ -280,7 +280,7 @@ function dodgeNo(e) {
     noBtn.classList.add('surrender');
     noBtn.onclick = () => finalYes(); // Click redirects to Yes success
   } else {
-    noBtn.textContent = ["NOOO 😱","STOP 😭","WHY 😵","PLS 😿","HELP 😰"][Math.floor(Math.random()*5)];
+    noBtn.textContent = ["NOOO 😱","STOP 😭","WHY 😵","PLS 😿","不好😰"][Math.floor(Math.random()*5)];
   }
 
   const btnW = noBtn.offsetWidth || 180;
@@ -370,7 +370,7 @@ function createTrailHeart(x, y) {
 // Yes flow
 yesBtn.addEventListener("click", () => {
   clearInterval(yesGrow);
-  yesBtn.textContent = "Really sure? 🤭💕";
+  yesBtn.textContent = "Really? are you sure!? 🤭💕";
   yesBtn.onclick = finalYes;
 });
 
