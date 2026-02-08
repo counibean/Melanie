@@ -11,10 +11,10 @@
       margin: 0;
       padding: 0;
       height: 100%;
-      min-height: -webkit-fill-available; /* iOS Safari fallback */
-      min-height: 100dvh; /* modern dynamic viewport height */
+      min-height: -webkit-fill-available;
+      min-height: 100dvh;
       overflow: hidden;
-      overscroll-behavior: contain; /* prevents bounce/zoom issues */
+      overscroll-behavior: contain;
     }
 
     body {
@@ -27,7 +27,7 @@
       display: flex;
       flex-direction: column;
       justify-content: center;
-      padding-bottom: env(safe-area-inset-bottom); /* respect iPhone home indicator */
+      padding-bottom: env(safe-area-inset-bottom);
       position: relative;
     }
 
@@ -61,7 +61,7 @@
 
     @keyframes pulse {
       0%, 100% { transform: scale(1); }
-      50%      { transform: scale(1.06); }
+      50% { transform: scale(1.06); }
     }
 
     .buttons-container {
@@ -71,7 +71,7 @@
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      gap: 80px; /* reliable vertical spacing */
+      gap: 80px;
     }
 
     button {
@@ -95,12 +95,12 @@
 
     @keyframes gentleBounce {
       0%,100% { transform: scale(1); }
-      50%     { transform: scale(1.08); }
+      50% { transform: scale(1.08); }
     }
 
     @keyframes yesGlow {
       0%,100% { box-shadow: 0 0 20px rgba(255,77,148,0.6); }
-      50%     { box-shadow: 0 0 40px rgba(255,77,148,1); }
+      50% { box-shadow: 0 0 40px rgba(255,77,148,1); }
     }
 
     #noBtn {
@@ -118,23 +118,12 @@
       font-weight: bold;
     }
 
-    #noBtn.wobble {
-      animation: wobble 0.6s ease-in-out;
-    }
-
-    @keyframes wobble {
-      0%,100% { transform: rotate(0deg); }
-      25%     { transform: rotate(-8deg); }
-      50%     { transform: rotate(8deg); }
-      75%     { transform: rotate(-4deg); }
-    }
-
     .flower-decor {
       position: absolute;
       top: 5%;
       left: 5%;
-      width: clamp(70px, 18vw, 120px); /* responsive, never too big */
-      max-height: 25vh; /* prevents screen takeover */
+      width: clamp(70px, 18vw, 120px);
+      max-height: 25vh;
       height: auto;
       object-fit: contain;
       cursor: pointer;
@@ -151,36 +140,7 @@
 
     @keyframes flowerPulse {
       0%,100% { filter: drop-shadow(0 0 20px #ff4d94) brightness(1.5); }
-      50%     { filter: drop-shadow(0 0 40px #ff4d94) brightness(2); }
-    }
-
-    .heart {
-      position: absolute;
-      font-size: clamp(1.2rem, 3vw, 2.5rem);
-      animation: floatUp 12s linear forwards;
-      opacity: 0;
-      pointer-events: none;
-      animation-delay: calc(var(--delay) * 1s);
-    }
-
-    @keyframes floatUp {
-      0% { opacity: 0; transform: translateY(120vh) translateX(0) rotate(0deg); }
-      10% { opacity: 1; }
-      100% { opacity: 0; transform: translateY(-40vh) translateX(var(--sway)) rotate(720deg); }
-    }
-
-    .trail-heart {
-      position: absolute;
-      font-size: 1.4rem;
-      pointer-events: none;
-      animation: fadeHeart 2.2s forwards;
-      opacity: 0.9;
-      color: #ff4d94;
-    }
-
-    @keyframes fadeHeart {
-      0% { opacity: 1; transform: scale(0.8) translateY(0); }
-      100% { opacity: 0; transform: scale(1.6) translateY(-80px); }
+      50% { filter: drop-shadow(0 0 40px #ff4d94) brightness(2); }
     }
 
     .handwritten {
@@ -215,11 +175,33 @@
       100% { opacity: 1; transform: scale(1); }
     }
 
-    .photo-caption {
-      font-size: 1.2rem;
-      color: #fff;
-      margin-top: 10px;
-      font-style: italic;
+    .heart {
+      position: absolute;
+      font-size: clamp(1.2rem,3vw,2.5rem);
+      animation: floatUp 12s linear forwards;
+      opacity: 0;
+      pointer-events: none;
+      animation-delay: calc(var(--delay) * 1s);
+    }
+
+    @keyframes floatUp {
+      0% { opacity: 0; transform: translateY(120vh) translateX(0) rotate(0deg); }
+      10% { opacity: 1; }
+      100% { opacity: 0; transform: translateY(-40vh) translateX(var(--sway)) rotate(720deg); }
+    }
+
+    .trail-heart {
+      position: absolute;
+      font-size: 1.4rem;
+      pointer-events: none;
+      animation: fadeHeart 2.2s forwards;
+      opacity: 0.9;
+      color: #ff4d94;
+    }
+
+    @keyframes fadeHeart {
+      0% { opacity: 1; transform: scale(0.8) translateY(0); }
+      100% { opacity: 0; transform: scale(1.6) translateY(-80px); }
     }
 
     .spark {
@@ -234,11 +216,22 @@
       from { transform: scale(1) rotate(var(--rot)); opacity: 1; }
       to   { transform: translate(var(--x), var(--y)) scale(0.2) rotate(calc(var(--rot) + 360deg)); opacity: 0; }
     }
+
+    /* Shake + bounce for Yes after No surrender */
+    @keyframes yesShakeBounce {
+      0%,100% { transform: scale(1.4) translateY(0) rotate(0deg); }
+      25% { transform: scale(1.45) translateY(-5px) rotate(-8deg); }
+      50% { transform: scale(1.5) translateY(-10px) rotate(8deg); }
+      75% { transform: scale(1.45) translateY(-5px) rotate(-4deg); }
+    }
+
+    #yesBtn.surrenderYes {
+      animation: yesShakeBounce 0.6s ease-in-out infinite, yesGlow 0.6s alternate infinite;
+    }
   </style>
 </head>
 <body>
 
-<!-- Only top-left flower, constrained size -->
 <img src="https://image.similarpng.com/file/similarpng/original-picture/2022/02/Romantic-pink-rose-bouquet-isolated-on-transparent-background-PNG.png" 
      class="flower-decor" 
      alt="Rose bouquet">
@@ -263,126 +256,77 @@ const app = document.getElementById("app");
 const pop = document.getElementById("pop");
 const sparkle = document.getElementById("sparkle");
 
-let noScale = 1;
+let noClickCount = 0;
+let yesGrowing = false;
 let yesScale = 1;
-let interacted = false;
+
+// 5 playful No options
+const noOptions = ["NOOO 😱", "STOP 😭", "WHY 😵", "PLS 😿", "不好😰"];
 
 // Audio unlock
 document.addEventListener('touchstart', () => {
-  if (!interacted) {
-    interacted = true;
-    pop.volume = 0.6;
-    sparkle.volume = 0.7;
-  }
+  pop.volume = 0.6;
+  sparkle.volume = 0.7;
 }, { once: true });
 
-// Yes growth
-const yesGrow = setInterval(() => {
-  yesScale = Math.min(2.8, yesScale + 0.028);
-  yesBtn.style.transform = `scale(${yesScale})`;
-}, 1300);
+// No button – stays in place
+noBtn.addEventListener('click', () => {
+  noClickCount++;
+  
+  if (noClickCount >= 5 && !yesGrowing) {
+    yesGrowing = true;
+    yesBtn.classList.add('surrenderYes');
+    
+    // Gradual growth interval
+    const growInterval = setInterval(() => {
+      yesScale = Math.min(2.5, yesScale + 0.03);
+      yesBtn.style.transform = `scale(${yesScale})`;
+      if (yesScale >= 2.5) clearInterval(growInterval);
+    }, 100);
 
-// No dodge – always below Yes
-function dodgeNo(e) {
-  if (e.type === 'touchstart') e.preventDefault();
-
-  noScale = Math.max(0.38, noScale - 0.065);
-
-  if (noScale < 0.55) {
     noBtn.textContent = "Okay fine… Yes I will be! 😏💕";
     noBtn.classList.add('surrender');
     noBtn.onclick = () => finalYes();
   } else {
-    noBtn.textContent = ["NOOO 😱","STOP 😭","WHY 😵","PLS 😿","不好😰"][Math.floor(Math.random()*5)];
+    noBtn.textContent = noOptions[Math.floor(Math.random() * noOptions.length)];
   }
 
-  const yesRect = yesBtn.getBoundingClientRect();
-  const yesBottom = yesRect.bottom + window.scrollY;
-
-  let newY = yesBottom + 80 + Math.random() * 100;
-  let newX = yesRect.left + yesRect.width / 2 - (noBtn.offsetWidth || 180) / 2;
-  newX += Math.random() * 160 - 80;
-
-  const margin = 100;
-  newX = Math.max(margin, Math.min(window.innerWidth - (noBtn.offsetWidth || 180) - margin, newX));
-  newY = Math.max(yesBottom + 60, Math.min(window.innerHeight - (noBtn.offsetHeight || 60) - margin, newY));
-
-  noBtn.style.left = `${newX}px`;
-  noBtn.style.top  = `${newY}px`;
-
-  noBtn.classList.add('wobble');
-  setTimeout(() => noBtn.classList.remove('wobble'), 600);
-
-  noBtn.style.transform = `scale(${noScale}) rotate(${Math.random() * 300 - 150}deg)`;
-
-  if (interacted) {
+  if (pop) {
     pop.currentTime = 0;
     pop.play().catch(() => {});
   }
-}
-
-["pointerenter", "touchstart"].forEach(evt => 
-  noBtn.addEventListener(evt, dodgeNo, { passive: false })
-);
-
-// Resize – keep No below Yes
-window.addEventListener('resize', () => {
-  const yesRect = yesBtn.getBoundingClientRect();
-  const yesBottom = yesRect.bottom + window.scrollY;
-
-  let newY = yesBottom + 100;
-  let newX = yesRect.left + yesRect.width / 2 - (noBtn.offsetWidth || 180) / 2;
-
-  const margin = 100;
-  newX = Math.max(margin, Math.min(window.innerWidth - (noBtn.offsetWidth || 180) - margin, newX));
-  newY = Math.max(margin, Math.min(window.innerHeight - (noBtn.offsetHeight || 60) - margin, newY));
-
-  noBtn.style.left = `${newX}px`;
-  noBtn.style.top  = `${newY}px`;
 });
 
-// Flower glow + vibrate
+// Flower click → show "I love you! 💕"
 document.querySelectorAll('.flower-decor').forEach(flower => {
-  flower.addEventListener('click', () => {
+  flower.addEventListener('click', (e) => {
     flower.classList.add('glow');
     if ('vibrate' in navigator) navigator.vibrate([50, 30, 50]);
-    setTimeout(() => flower.classList.remove('glow'), 1500);
+
+    let msg = document.createElement('div');
+    msg.textContent = "I love you! 💕";
+    msg.style.position = 'absolute';
+    msg.style.left = (flower.offsetLeft + flower.offsetWidth + 10) + 'px';
+    msg.style.top = (flower.offsetTop + flower.offsetHeight / 2 - 15) + 'px';
+    msg.style.background = 'rgba(255,255,255,0.85)';
+    msg.style.color = '#ff4d94';
+    msg.style.padding = '6px 12px';
+    msg.style.borderRadius = '12px';
+    msg.style.fontWeight = 'bold';
+    msg.style.fontSize = 'clamp(1rem,3vw,1.2rem)';
+    msg.style.boxShadow = '0 4px 12px rgba(0,0,0,0.2)';
+    document.body.appendChild(msg);
+
+    setTimeout(() => {
+      msg.remove();
+      flower.classList.remove('glow');
+    }, 2000);
   });
-  flower.addEventListener('touchstart', e => {
-    e.preventDefault();
-    flower.classList.add('glow');
-    if ('vibrate' in navigator) navigator.vibrate([50, 30, 50]);
-    setTimeout(() => flower.classList.remove('glow'), 1500);
-  }, { passive: false });
 });
 
-// Heart trail
-document.addEventListener('mousemove', e => {
-  if (Math.random() < 0.12) createTrailHeart(e.clientX, e.clientY);
-});
-
-document.addEventListener('touchmove', e => {
-  if (Math.random() < 0.18) createTrailHeart(e.touches[0].clientX, e.touches[0].clientY);
-}, {passive: true});
-
-function createTrailHeart(x, y) {
-  const h = document.createElement("div");
-  h.className = "trail-heart";
-  h.textContent = ["💞","💖","🩷","💕"][Math.floor(Math.random()*4)];
-  h.style.left = (x - 10) + "px";
-  h.style.top = (y - 10) + "px";
-  document.body.appendChild(h);
-  setTimeout(() => h.remove(), 2200);
-}
-
-// Yes → direct celebration
-yesBtn.addEventListener("click", () => {
-  clearInterval(yesGrow);
-  finalYes();
-});
-
+// Final Yes → celebration
 function finalYes() {
-  if (interacted) sparkle.play().catch(() => {});
+  if (sparkle) sparkle.play().catch(() => {});
 
   app.innerHTML = `
     <h1 style="font-size: clamp(3.5rem, 12vw, 5.5rem); color: white; margin: 20px 0; text-shadow: 0 4px 12px rgba(0,0,0,0.4);">
