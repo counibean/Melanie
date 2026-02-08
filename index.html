@@ -23,7 +23,7 @@
       background-size: 300% 300%;
       animation: breatheBg 15s ease infinite;
       color: #d63384;
-      touch-action: none;
+      touch-action: manipulation;
       display: flex;
       flex-direction: column;
       justify-content: center;
@@ -83,7 +83,7 @@
       cursor: pointer;
       box-shadow: 0 8px 25px rgba(0,0,0,0.22);
       user-select: none;
-      transition: transform 0.3s ease, box-shadow 0.4s ease;
+      transition: transform 0.3s ease, box-shadow 0.4s ease, opacity 0.4s ease;
       position: relative;
     }
 
@@ -92,6 +92,15 @@
       color: white;
       animation: gentleBounce 3s infinite ease-in-out, yesGlow 4s infinite ease-in-out;
       z-index: 2;
+    }
+
+    #yesBtn.not-ready,
+    #yesBtn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      animation: none;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      pointer-events: none;
     }
 
     @keyframes gentleBounce {
@@ -231,6 +240,15 @@
 
     #yesBtn.surrenderYes {
       animation: yesShakeBounce 0.6s ease-in-out infinite, yesGlow 0.6s alternate infinite;
+      pointer-events: auto;
+    }
+
+    .buttons-container,
+    button,
+    .flower-decor,
+    .wrapper {
+      touch-action: manipulation;
+      pointer-events: auto;
     }
   </style>
 </head>
@@ -245,7 +263,7 @@
   <p class="subtitle">Melanie, will you make my heart skip forever and be my Valentine? 🌸💖</p>
 
   <div class="buttons-container">
-    <button id="yesBtn">YESSS!! 💕🥰</button>
+    <button id="yesBtn" class="not-ready" disabled>YESSS!! 💕🥰</button>
     <button id="noBtn">No 🙄🥺</button>
   </div>
 </div>
@@ -296,6 +314,7 @@ function createTrailHeart(x, y) {
 
 function onPointerDown(e) {
   isDrawingHearts = true;
+  document.body.style.touchAction = 'none';
   const x = e.clientX || (e.touches && e.touches[0].clientX);
   const y = e.clientY || (e.touches && e.touches[0].clientY);
   
@@ -324,6 +343,7 @@ function onPointerMove(e) {
 
 function onPointerUp() {
   isDrawingHearts = false;
+  document.body.style.touchAction = 'manipulation';
 }
 
 document.addEventListener("pointerdown", onPointerDown, { passive: false });
@@ -341,7 +361,9 @@ noBtn.addEventListener('click', () => {
   if (noClickCount >= 5 && !yesGrowing) {
     yesGrowing = true;
     yesBtn.classList.add('surrenderYes');
-    
+    yesBtn.disabled = false;
+    yesBtn.classList.remove('not-ready');
+
     const growInterval = setInterval(() => {
       yesScale = Math.min(2.5, yesScale + 0.03);
       yesBtn.style.transform = `scale(${yesScale})`;
@@ -352,7 +374,8 @@ noBtn.addEventListener('click', () => {
     noBtn.classList.add('surrender');
     noBtn.onclick = () => finalYes();
   } else {
-    noBtn.textContent = noOptions[Math.floor(Math.random() * noOptions.length)];
+    const index = noClickCount - 1;
+    noBtn.textContent = noOptions[index];
   }
 
   if (pop) {
