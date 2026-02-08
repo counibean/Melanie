@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Valentine for Melanie 💕</title>
+
+  <style>
+    body {
+      margin: 0;
+      height: 100vh;
+      font-family: system-ui, -apple-system, sans-serif;
+      background: linear-gradient(135deg, #ffe6f2, #fff0f5);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      overflow: hidden;
+      color: #d63384;
+      touch-action: manipulation; /* better mobile feel */
+    }
+
+    .wrapper {
+      text-align: center;
+      width: 100%;
+      max-width: 600px;
+      padding: 20px;
+      box-sizing: border-box;
+    }
+
+    h1 {
+      font-size: clamp(2.2rem, 7vw, 3.8rem);
+      margin: 0 0 40px;
+      line-height: 1.1;
+      animation: pulse 2.5s infinite ease-in-out;
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50%      { transform: scale(1.06); }
+    }
+
+    .buttons {
+      position: relative;
+      min-height: 280px;
+    }
+
+    button {
+      font-size: clamp(1.3rem, 5vw, 1.7rem);
+      padding: 16px 48px;
+      border-radius: 999px;
+      border: none;
+      cursor: pointer;
+      position: absolute;
+      box-shadow: 0 8px 25px rgba(0,0,0,0.22);
+      user-select: none;
+      transition: transform 0.3s ease;
+    }
+
+    #yesBtn {
+      background: #ff4d94;
+      color: white;
+      left: 50%;
+      transform: translateX(-50%);
+      animation: gentleBounce 3s infinite ease-in-out;
+    }
+
+    @keyframes gentleBounce {
+      0%,100% { transform: translateX(-50%) scale(1); }
+      50%     { transform: translateX(-50%) scale(1.08); }
+    }
+
+    #noBtn {
+      background: #6c757d;
+      color: white;
+      left: 50%;
+      top: 140px;
+      transform: translateX(-50%);
+    }
+
+    .heart {
+      position: absolute;
+      font-size: 2.2rem;
+      animation: floatUp 10s linear forwards;
+      opacity: 0.9;
+      pointer-events: none;
+    }
+
+    @keyframes floatUp {
+      from { transform: translateY(120vh) rotate(0deg); }
+      to   { transform: translateY(-30vh) rotate(360deg); }
+    }
+
+    .spark {
+      position: absolute;
+      font-size: 1.8rem;
+      animation: explode 1.3s ease-out forwards;
+      pointer-events: none;
+    }
+
+    @keyframes explode {
+      from { transform: scale(1); opacity: 1; }
+      to   {
+        transform: translate(var(--x), var(--y)) scale(0.1);
+        opacity: 0;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<div class="wrapper" id="app">
+  <h1>Will you be my Valentine, Melanie (蔡聿囷)? 💖</h1>
+
+  <div class="buttons">
+    <button id="yesBtn">Yes!! 🥰</button>
+    <button id="noBtn">No 😿</button>
+  </div>
+</div>
+
+<audio id="pop" preload="auto" src="https://assets.mixkit.co/sfx/preview/mixkit-fast-small-sweep-transition-166.mp3"></audio>
+<audio id="sparkle" preload="auto" src="https://assets.mixkit.co/sfx/preview/mixkit-magic-sweep-game-trophy-257.mp3"></audio>
+
+<script>
+const noBtn = document.getElementById("noBtn");
+const yesBtn = document.getElementById("yesBtn");
+const app = document.getElementById("app");
+const pop = document.getElementById("pop");
+const sparkle = document.getElementById("sparkle");
+
+let noScale = 1;
+let yesScale = 1;
+let interacted = false; // for audio unlock
+
+// Unlock audio on first interaction (mobile fix)
+document.addEventListener('touchstart', () => {
+  if (!interacted) {
+    interacted = true;
+    pop.volume = 0.6;
+    sparkle.volume = 0.7;
+  }
+}, { once: true });
+
+// Yes button growth (capped)
+const yesGrow = setInterval(() => {
+  yesScale = Math.min(2.8, yesScale + 0.028);
+  yesBtn.style.transform = `translateX(-50%) scale(${yesScale})`;
+}, 1300);
+
+// No button dodge
+function dodgeNo(e) {
+  if (e.type === 'touchstart') e.preventDefault();
+
+  noScale = Math.max(0.38, noScale - 0.065);
+  noBtn.textContent = ["NOOO 😱","STOP 😭","WHY 😵","PLS 😿","HELP 😰"][Math.floor(Math.random()*5)];
+
+  // Keep within safe bounds
+  const btnW = noBtn.offsetWidth;
+  const btnH = noBtn.offsetHeight;
+  const maxX = window.innerWidth - btnW - 40;
+  const maxY = window.innerHeight - btnH - 120;
+
+  const newX = 20 + Math.random() * maxX;
+  const newY = 80 + Math.random() * (maxY - 80);
+
+  noBtn.style.left = newX + "px";
+  noBtn.style.top  = newY + "px";
+  noBtn.style.transform = `scale(${noScale}) rotate(${Math.random()*400 - 200}deg)`;
+
+  if (noScale < 0.55) {
+    noBtn.textContent = "Too late... 😏";
+    noBtn.style.pointerEvents = "none";
+  }
+
+  if (interacted) {
+    pop.currentTime = 0;
+    pop.play().catch(() => {});
+  }
+}
+
+["pointerenter", "touchstart"].forEach(evt => 
+  noBtn.addEventListener(evt, dodgeNo, { passive: false })
+);
+
+// Yes flow
+yesBtn.addEventListener("click", () => {
+  clearInterval(yesGrow);
+  yesBtn.textContent = "Really sure? 🤭💕";
+  yesBtn.onclick = finalYes;
+});
+
+function finalYes() {
+  if (interacted) sparkle.play().catch(() => {});
+
+  app.innerHTML = `
+    <h1 style="font-size: clamp(3.5rem, 12vw, 5.5rem); color: white; margin: 20px 0; text-shadow: 0 4px 12px rgba(0,0,0,0.4);">
+      YAYYY!!! 🎉💖
+    </h1>
+    <p style="font-size: clamp(1.6rem, 5vw, 2.4rem); color: white; max-width: 90%; margin: 0 auto 30px; line-height: 1.4;">
+      Melanie (蔡聿囷), you're the most adorable, sweetest valentine I could ever ask for 🥰💘<br>
+      Thank you for saying yes — can't wait to make so many memories with you! 🌸
+    </p>
+  `;
+
+  document.body.style.background = "linear-gradient(135deg, #ff9a9e, #fad0c4, #ff9a9e)";
+
+  setInterval(createHeart, 380);
+  setInterval(createFirework, 900);
+}
+
+// Hearts
+function createHeart() {
+  const heart = document.createElement("div");
+  heart.className = "heart";
+  heart.textContent = ["💖","💕","💘","💝","💞","❤️","🩷"][Math.floor(Math.random()*7)];
+  heart.style.left = Math.random() * 100 + "vw";
+  heart.style.animationDuration = (7 + Math.random() * 6) + "s";
+  document.body.appendChild(heart);
+  setTimeout(() => heart.remove(), 13000);
+}
+
+// Fireworks
+function createFirework() {
+  const x = Math.random() * window.innerWidth;
+  const y = Math.random() * window.innerHeight * 0.65;
+
+  for (let i = 0; i < 10; i++) {
+    const spark = document.createElement("div");
+    spark.className = "spark";
+    spark.textContent = ["💖","✨","💫","🩷"][Math.floor(Math.random()*4)];
+    spark.style.left = x + "px";
+    spark.style.top = y + "px";
+    spark.style.setProperty("--x", `${Math.random()*280 - 140}px`);
+    spark.style.setProperty("--y", `${Math.random()*280 - 140}px`);
+    document.body.appendChild(spark);
+    setTimeout(() => spark.remove(), 1400);
+  }
+}
+</script>
+
+<noscript>
+  <div style="text-align:center; font-size:1.5rem; color:#d63384; padding:40px;">
+    <h1>Will you be my Valentine, Melanie? 💕</h1>
+    <p>(JavaScript is needed for the full cute experience 😊)</p>
+  </div>
+</noscript>
+
+</body>
+</html>
