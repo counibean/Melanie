@@ -23,7 +23,7 @@
       background-size: 300% 300%;
       animation: breatheBg 15s ease infinite;
       color: #d63384;
-      touch-action: manipulation;
+      touch-action: none;
       display: flex;
       flex-direction: column;
       justify-content: center;
@@ -44,6 +44,7 @@
       padding: 20px;
       box-sizing: border-box;
       z-index: 10;
+      pointer-events: auto;
     }
 
     h1 {
@@ -192,16 +193,20 @@
 
     .trail-heart {
       position: absolute;
-      font-size: 1.4rem;
+      font-size: clamp(1.1rem, 2.8vw, 2.2rem);
       pointer-events: none;
-      animation: fadeHeart 2.2s forwards;
-      opacity: 0.9;
+      user-select: none;
+      animation: fadeHeart 2.4s forwards;
+      opacity: 0.92;
       color: #ff4d94;
+      z-index: 8;
+      will-change: transform, opacity;
     }
 
     @keyframes fadeHeart {
-      0% { opacity: 1; transform: scale(0.8) translateY(0); }
-      100% { opacity: 0; transform: scale(1.6) translateY(-80px); }
+      0%   { opacity: 0.92; transform: scale(0.7) translateY(0) rotate(0deg); }
+      30%  { opacity: 1;    transform: scale(1.15) translateY(-12px) rotate(15deg); }
+      100% { opacity: 0;    transform: scale(1.7) translateY(-120px) rotate(45deg); }
     }
 
     .spark {
@@ -217,7 +222,6 @@
       to   { transform: translate(var(--x), var(--y)) scale(0.2) rotate(calc(var(--rot) + 360deg)); opacity: 0; }
     }
 
-    /* Shake + bounce for Yes after No surrender */
     @keyframes yesShakeBounce {
       0%,100% { transform: scale(1.4) translateY(0) rotate(0deg); }
       25% { transform: scale(1.45) translateY(-5px) rotate(-8deg); }
@@ -260,16 +264,77 @@ let noClickCount = 0;
 let yesGrowing = false;
 let yesScale = 1;
 
-// 5 playful No options
 const noOptions = ["NOOO 😱", "STOP 😭", "WHY 😵", "PLS 😿", "不好😰"];
 
-// Audio unlock
 document.addEventListener('touchstart', () => {
   pop.volume = 0.6;
   sparkle.volume = 0.7;
 }, { once: true });
 
-// No button – stays in place
+const heartChars = ["💖","💕","💘","🩷","💗","💝","❤️","💞"];
+let isDrawingHearts = false;
+let lastX = 0, lastY = 0;
+let throttleTimer = null;
+
+function createTrailHeart(x, y) {
+  const heart = document.createElement("div");
+  heart.className = "trail-heart";
+  heart.textContent = heartChars[Math.floor(Math.random() * heartChars.length)];
+  
+  const offsetX = (Math.random() - 0.5) * 30;
+  const offsetY = (Math.random() - 0.5) * 30;
+  
+  heart.style.left = (x + offsetX) + "px";
+  heart.style.top  = (y + offsetY) + "px";
+  
+  heart.style.transform = `rotate(${(Math.random()-0.5)*40}deg) scale(${0.8 + Math.random()*0.5})`;
+  
+  document.body.appendChild(heart);
+  
+  setTimeout(() => heart.remove(), 2600);
+}
+
+function onPointerDown(e) {
+  isDrawingHearts = true;
+  const x = e.clientX || (e.touches && e.touches[0].clientX);
+  const y = e.clientY || (e.touches && e.touches[0].clientY);
+  
+  createTrailHeart(x, y);
+  lastX = x;
+  lastY = y;
+}
+
+function onPointerMove(e) {
+  if (!isDrawingHearts) return;
+  
+  const x = e.clientX || (e.touches && e.touches[0].clientX);
+  const y = e.clientY || (e.touches && e.touches[0].clientY);
+  
+  if (!throttleTimer) {
+    throttleTimer = setTimeout(() => { throttleTimer = null; }, 100);
+    
+    const dist = Math.hypot(x - lastX, y - lastY);
+    if (dist > 18) {
+      createTrailHeart(x, y);
+      lastX = x;
+      lastY = y;
+    }
+  }
+}
+
+function onPointerUp() {
+  isDrawingHearts = false;
+}
+
+document.addEventListener("pointerdown", onPointerDown, { passive: false });
+document.addEventListener("pointermove", onPointerMove, { passive: false });
+document.addEventListener("pointerup",   onPointerUp);
+document.addEventListener("pointercancel", onPointerUp);
+
+document.addEventListener("mousedown", e => onPointerDown(e));
+document.addEventListener("mousemove", e => onPointerMove(e));
+document.addEventListener("mouseup",   onPointerUp);
+
 noBtn.addEventListener('click', () => {
   noClickCount++;
   
@@ -277,7 +342,6 @@ noBtn.addEventListener('click', () => {
     yesGrowing = true;
     yesBtn.classList.add('surrenderYes');
     
-    // Gradual growth interval
     const growInterval = setInterval(() => {
       yesScale = Math.min(2.5, yesScale + 0.03);
       yesBtn.style.transform = `scale(${yesScale})`;
@@ -297,7 +361,6 @@ noBtn.addEventListener('click', () => {
   }
 });
 
-// Flower click → show "I love you! 💕"
 document.querySelectorAll('.flower-decor').forEach(flower => {
   flower.addEventListener('click', (e) => {
     flower.classList.add('glow');
@@ -324,7 +387,6 @@ document.querySelectorAll('.flower-decor').forEach(flower => {
   });
 });
 
-// Final Yes → celebration
 function finalYes() {
   if (sparkle) sparkle.play().catch(() => {});
 
