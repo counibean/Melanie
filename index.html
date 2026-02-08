@@ -20,6 +20,7 @@
       overflow: hidden;
       color: #d63384;
       touch-action: manipulation;
+      position: relative;
     }
 
     @keyframes breatheBg {
@@ -98,6 +99,15 @@
       transform: translate(-50%, -50%);
     }
 
+    #noBtn.surrender {
+      font-size: clamp(1.6rem, 6vw, 2.2rem) !important;
+      background: linear-gradient(135deg, #ff4d94, #ff80ab);
+      box-shadow: 0 0 30px rgba(255,77,148,0.8);
+      padding: 20px 60px;
+      color: white;
+      font-weight: bold;
+    }
+
     #noBtn.wobble {
       animation: wobble 0.6s ease-in-out;
     }
@@ -107,6 +117,27 @@
       25% { transform: translate(-50%, -50%) rotate(-8deg); }
       50% { transform: translate(-50%, -50%) rotate(8deg); }
       75% { transform: translate(-50%, -50%) rotate(-4deg); }
+    }
+
+    .flower-decor {
+      position: absolute;
+      width: 120px;
+      height: auto;
+      cursor: pointer;
+      user-select: none;
+      transition: filter 0.3s, transform 0.3s;
+      z-index: 5;
+    }
+
+    .flower-decor.glow {
+      filter: drop-shadow(0 0 20px #ff4d94) brightness(1.5);
+      transform: scale(1.15);
+      animation: flowerPulse 1.5s ease-in-out;
+    }
+
+    @keyframes flowerPulse {
+      0%,100% { filter: drop-shadow(0 0 20px #ff4d94) brightness(1.5); }
+      50%     { filter: drop-shadow(0 0 40px #ff4d94) brightness(2); }
     }
 
     .heart {
@@ -193,13 +224,19 @@
 </head>
 <body>
 
+<!-- Static romantic flowers -->
+<img src="https://image.similarpng.com/file/similarpng/original-picture/2022/02/Romantic-pink-rose-bouquet-isolated-on-transparent-background-PNG.png" class="flower-decor" style="top:10%; left:5%;" alt="Rose bouquet">
+<img src="https://thumbs.dreamstime.com/b/png-image-single-red-rose-green-leaves-isolated-transparent-background-concept-romantic-floral-element-natural-beauty-434252941.jpg" class="flower-decor" style="bottom:15%; right:8%; width:100px;" alt="Red rose">
+<img src="https://thumbs.dreamstime.com/b/pink-peony-flower-isolated-transparent-background-image-features-single-vibrant-delicate-petals-lush-green-stem-428039755.jpg" class="flower-decor" style="top:20%; right:10%;" alt="Pink peony">
+<img src="https://thumbs.dreamstime.com/b/beautiful-pink-peony-flower-ideal-floral-designs-botanical-element-representing-spring-blossom-nature-s-beauty-png-370679002.jpg" class="flower-decor" style="bottom:20%; left:10%; width:110px;" alt="Peony">
+
 <div class="wrapper" id="app">
   <h1>To My Melanie (蔡聿囷) 💕</h1>
   <p class="subtitle">Melanie, will you make my heart skip forever and be my Valentine? 🌸💖</p>
 
   <div class="buttons">
-    <button id="yesBtn">Yes!!🥰</button>
-    <button id="noBtn">No🙄😿</button>
+    <button id="yesBtn">Yes!! 🥰</button>
+    <button id="noBtn">No 😿</button>
   </div>
 </div>
 
@@ -217,7 +254,7 @@ let noScale = 1;
 let yesScale = 1;
 let interacted = false;
 
-// Audio unlock
+// Audio unlock + vibration permission (needs interaction)
 document.addEventListener('touchstart', () => {
   if (!interacted) {
     interacted = true;
@@ -232,31 +269,28 @@ const yesGrow = setInterval(() => {
   yesBtn.style.transform = `translateX(-50%) scale(${yesScale})`;
 }, 1300);
 
-// No dodge – tighter central zone, never too close to edges
+// No dodge – tighter central zone
 function dodgeNo(e) {
   if (e.type === 'touchstart') e.preventDefault();
 
   noScale = Math.max(0.38, noScale - 0.065);
   
-  // Change text based on size – last one is playful surrender
   if (noScale < 0.55) {
     noBtn.textContent = "Okay fine… Yes I will be! 😏💕";
-    noBtn.style.pointerEvents = "none"; // Can't catch it anymore
+    noBtn.classList.add('surrender');
+    noBtn.onclick = () => finalYes(); // Click redirects to Yes success
   } else {
-    noBtn.textContent = ["NOOO 😱","STOP 😭","WHY 😵","PLS 😿","不好 😰"][Math.floor(Math.random()*5)];
+    noBtn.textContent = ["NOOO 😱","STOP 😭","WHY 😵","PLS 😿","HELP 😰"][Math.floor(Math.random()*5)];
   }
 
   const btnW = noBtn.offsetWidth || 180;
   const btnH = noBtn.offsetHeight || 60;
 
-  // Larger margins → keeps it well inside screen
-  const margin = 120; // increased from 80px
+  const margin = 120;
   const maxX = window.innerWidth - btnW - (margin * 2);
-  const maxY = window.innerHeight - btnH - (margin * 2) - 140; // extra top/bottom buffer
-
-  // Force even more central placement
-  const minX = margin + (window.innerWidth * 0.20);   // at least 20% from left
-  const minY = margin + 140;                          // avoid top area/notch
+  const maxY = window.innerHeight - btnH - (margin * 2) - 140;
+  const minX = margin + (window.innerWidth * 0.20);
+  const minY = margin + 140;
 
   const newX = minX + Math.random() * Math.max(0, maxX - minX);
   const newY = minY + Math.random() * Math.max(0, maxY - minY);
@@ -295,7 +329,26 @@ window.addEventListener('resize', () => {
   }
 });
 
-// Heart trail on mouse/finger
+// Flower glow + vibrate
+document.querySelectorAll('.flower-decor').forEach(flower => {
+  flower.addEventListener('click', () => {
+    flower.classList.add('glow');
+    if ('vibrate' in navigator) {
+      navigator.vibrate([50, 30, 50]); // short buzz pattern
+    }
+    setTimeout(() => flower.classList.remove('glow'), 1500);
+  });
+  flower.addEventListener('touchstart', (e) => {
+    e.preventDefault(); // prevent any scroll/zoom
+    flower.classList.add('glow');
+    if ('vibrate' in navigator) {
+      navigator.vibrate([50, 30, 50]);
+    }
+    setTimeout(() => flower.classList.remove('glow'), 1500);
+  }, {passive: false});
+});
+
+// Heart trail
 document.addEventListener('mousemove', e => {
   if (Math.random() < 0.12) createTrailHeart(e.clientX, e.clientY);
 });
@@ -317,7 +370,7 @@ function createTrailHeart(x, y) {
 // Yes flow
 yesBtn.addEventListener("click", () => {
   clearInterval(yesGrow);
-  yesBtn.textContent = "Really,are you sure? 🤭💕";
+  yesBtn.textContent = "Really sure? 🤭💕";
   yesBtn.onclick = finalYes;
 });
 
@@ -345,7 +398,7 @@ function finalYes() {
   setInterval(createFirework, 700);
 }
 
-// Hearts
+// Hearts & Fireworks (unchanged from previous)
 function createHeart() {
   const heart = document.createElement("div");
   heart.className = "heart";
@@ -358,7 +411,6 @@ function createHeart() {
   setTimeout(() => heart.remove(), 14000);
 }
 
-// Fireworks
 function createFirework() {
   const x = Math.random() * window.innerWidth;
   const y = Math.random() * window.innerHeight * 0.65;
