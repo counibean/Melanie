@@ -3,7 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Valentine for Melanie 💕</title>
+  <title>To My Melanie (蔡聿囷) 💕</title>
+  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;700&display=swap" rel="stylesheet">
 
   <style>
     body {
@@ -38,9 +39,15 @@
 
     h1 {
       font-size: clamp(2.2rem, 7vw, 3.8rem);
-      margin: 0 0 40px;
+      margin: 0 0 20px;
       line-height: 1.1;
       animation: pulse 2.5s infinite ease-in-out;
+    }
+
+    .subtitle {
+      font-size: clamp(1.4rem, 5vw, 1.8rem);
+      margin-bottom: 40px;
+      color: #e91e63;
     }
 
     @keyframes pulse {
@@ -117,6 +124,59 @@
       100% { opacity: 0; transform: translateY(-40vh) translateX(var(--sway)) rotate(720deg); }
     }
 
+    .trail-heart {
+      position: absolute;
+      font-size: 1.4rem;
+      pointer-events: none;
+      animation: fadeHeart 2.2s forwards;
+      opacity: 0.9;
+      color: #ff4d94;
+    }
+
+    @keyframes fadeHeart {
+      0% { opacity: 1; transform: scale(0.8) translateY(0); }
+      100% { opacity: 0; transform: scale(1.6) translateY(-80px); }
+    }
+
+    .handwritten {
+      font-family: 'Caveat', cursive;
+      font-size: clamp(1.8rem, 6vw, 2.6rem);
+      color: white;
+      line-height: 1.6;
+      margin: 30px auto 20px;
+      max-width: 85%;
+      text-shadow: 0 2px 8px rgba(0,0,0,0.3);
+    }
+
+    .ps {
+      font-size: 1.3rem;
+      color: #fff9;
+      margin-top: 40px;
+      font-style: italic;
+    }
+
+    .memory-photo {
+      max-width: 85%;
+      border-radius: 24px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+      border: 4px solid rgba(255, 255, 255, 0.3);
+      margin: 30px auto;
+      display: block;
+      animation: photoFade 2s ease-out;
+    }
+
+    @keyframes photoFade {
+      0% { opacity: 0; transform: scale(0.95); }
+      100% { opacity: 1; transform: scale(1); }
+    }
+
+    .photo-caption {
+      font-size: 1.2rem;
+      color: #fff;
+      margin-top: 10px;
+      font-style: italic;
+    }
+
     .spark {
       position: absolute;
       font-size: 1.8rem;
@@ -129,25 +189,13 @@
       from { transform: scale(1) rotate(var(--rot)); opacity: 1; }
       to   { transform: translate(var(--x), var(--y)) scale(0.2) rotate(calc(var(--rot) + 360deg)); opacity: 0; }
     }
-
-    .confetti {
-      position: absolute;
-      font-size: 2rem;
-      pointer-events: none;
-      animation: fallConfetti 6s linear infinite;
-      opacity: 0.9;
-    }
-
-    @keyframes fallConfetti {
-      0% { transform: translateY(-10vh) rotate(0deg); opacity: 1; }
-      100% { transform: translateY(110vh) rotate(720deg); opacity: 0; }
-    }
   </style>
 </head>
 <body>
 
 <div class="wrapper" id="app">
-  <h1>Will you be my Valentine, Melanie (蔡聿囷)? 💖</h1>
+  <h1>To My Melanie (蔡聿囷) 💕</h1>
+  <p class="subtitle">Melanie, will you make my heart skip forever and be my Valentine? 🌸💖</p>
 
   <div class="buttons">
     <button id="yesBtn">Yes!! 🥰</button>
@@ -184,20 +232,31 @@ const yesGrow = setInterval(() => {
   yesBtn.style.transform = `translateX(-50%) scale(${yesScale})`;
 }, 1300);
 
-// No dodge with wobble
+// No dodge – tighter central zone, never too close to edges
 function dodgeNo(e) {
   if (e.type === 'touchstart') e.preventDefault();
 
   noScale = Math.max(0.38, noScale - 0.065);
-  noBtn.textContent = ["NOOO 😱","STOP 😭","WHY 😵","PLS 😿","HELP 😰"][Math.floor(Math.random()*5)];
+  
+  // Change text based on size – last one is playful surrender
+  if (noScale < 0.55) {
+    noBtn.textContent = "Okay fine… Yes I will be! 😏💕";
+    noBtn.style.pointerEvents = "none"; // Can't catch it anymore
+  } else {
+    noBtn.textContent = ["NOOO 😱","STOP 😭","WHY 😵","PLS 😿","HELP 😰"][Math.floor(Math.random()*5)];
+  }
 
   const btnW = noBtn.offsetWidth || 180;
   const btnH = noBtn.offsetHeight || 60;
-  const margin = 80;
+
+  // Larger margins → keeps it well inside screen
+  const margin = 120; // increased from 80px
   const maxX = window.innerWidth - btnW - (margin * 2);
-  const maxY = window.innerHeight - btnH - (margin * 2) - 120;
-  const minX = margin + (window.innerWidth * 0.15);
-  const minY = margin + 120;
+  const maxY = window.innerHeight - btnH - (margin * 2) - 140; // extra top/bottom buffer
+
+  // Force even more central placement
+  const minX = margin + (window.innerWidth * 0.20);   // at least 20% from left
+  const minY = margin + 140;                          // avoid top area/notch
 
   const newX = minX + Math.random() * Math.max(0, maxX - minX);
   const newY = minY + Math.random() * Math.max(0, maxY - minY);
@@ -205,16 +264,10 @@ function dodgeNo(e) {
   noBtn.style.left = `${newX}px`;
   noBtn.style.top  = `${newY}px`;
 
-  // Add wobble class briefly
   noBtn.classList.add('wobble');
   setTimeout(() => noBtn.classList.remove('wobble'), 600);
 
   noBtn.style.transform = `scale(${noScale}) rotate(${Math.random() * 300 - 150}deg)`;
-
-  if (noScale < 0.55) {
-    noBtn.textContent = "Too late... 😏";
-    noBtn.style.pointerEvents = "none";
-  }
 
   if (interacted) {
     pop.currentTime = 0;
@@ -233,14 +286,33 @@ window.addEventListener('resize', () => {
   const btnW = noBtn.offsetWidth || 180;
   const btnH = noBtn.offsetHeight || 60;
 
-  if (btnLeft + btnW > window.innerWidth - 40 ||
-      btnTop + btnH > window.innerHeight - 40 ||
-      btnLeft < 20 || btnTop < 20) {
+  if (btnLeft + btnW > window.innerWidth - 80 ||
+      btnTop + btnH > window.innerHeight - 80 ||
+      btnLeft < 80 || btnTop < 80) {
     noBtn.style.left = '50%';
     noBtn.style.top = '50%';
     noBtn.style.transform = `translate(-50%, -50%) scale(${noScale})`;
   }
 });
+
+// Heart trail on mouse/finger
+document.addEventListener('mousemove', e => {
+  if (Math.random() < 0.12) createTrailHeart(e.clientX, e.clientY);
+});
+
+document.addEventListener('touchmove', e => {
+  if (Math.random() < 0.18) createTrailHeart(e.touches[0].clientX, e.touches[0].clientY);
+}, {passive: true});
+
+function createTrailHeart(x, y) {
+  const h = document.createElement("div");
+  h.className = "trail-heart";
+  h.textContent = ["💞","💖","🩷","💕"][Math.floor(Math.random()*4)];
+  h.style.left = (x - 10) + "px";
+  h.style.top = (y - 10) + "px";
+  document.body.appendChild(h);
+  setTimeout(() => h.remove(), 2200);
+}
 
 // Yes flow
 yesBtn.addEventListener("click", () => {
@@ -256,22 +328,24 @@ function finalYes() {
     <h1 style="font-size: clamp(3.5rem, 12vw, 5.5rem); color: white; margin: 20px 0; text-shadow: 0 4px 12px rgba(0,0,0,0.4);">
       YAYYY!!! 🎉💖
     </h1>
-    <p style="font-size: clamp(1.6rem, 5vw, 2.4rem); color: white; max-width: 90%; margin: 0 auto 30px; line-height: 1.4;">
-      Melanie (蔡聿囷), you're the most adorable, sweetest valentine I could ever ask for 🥰💘<br>
-      Thank you for saying yes — can't wait to make so many memories with you! 🌸
+    <p class="handwritten">
+      Melanie (蔡聿囷), my heart has chosen you every single day... <br>
+      Thank you for saying yes — I can't wait to hold your hand through every adventure, laugh, and quiet moment ahead. You are my forever. 💘
     </p>
+    <p class="ps">P.S. You're still the most beautiful thing I've ever seen, inside and out. 🌹</p>
+    
+    <img src="YOUR_ACTUAL_PHOTO_URL_HERE" alt="Us together 💕" class="memory-photo">
+    <p class="photo-caption">Our favorite moment 💕</p>
   `;
 
   document.body.style.background = "linear-gradient(135deg, #ff9a9e, #fad0c4, #ff9a9e)";
   document.body.style.animation = "breatheBg 12s ease infinite";
 
-  // More hearts + confetti rain
   setInterval(createHeart, 300);
   setInterval(createFirework, 700);
-  setInterval(createConfetti, 400);
 }
 
-// Enhanced hearts with sway & random delay/size
+// Hearts
 function createHeart() {
   const heart = document.createElement("div");
   heart.className = "heart";
@@ -284,7 +358,7 @@ function createHeart() {
   setTimeout(() => heart.remove(), 14000);
 }
 
-// Upgraded fireworks with rotation
+// Fireworks
 function createFirework() {
   const x = Math.random() * window.innerWidth;
   const y = Math.random() * window.innerHeight * 0.65;
@@ -302,24 +376,12 @@ function createFirework() {
     setTimeout(() => spark.remove(), 1500);
   }
 }
-
-// Gentle falling confetti on success
-function createConfetti() {
-  const conf = document.createElement("div");
-  conf.className = "confetti";
-  conf.textContent = ["💖","✨","🩷","🎉","💫","❤️"][Math.floor(Math.random()*6)];
-  conf.style.left = Math.random() * 100 + "vw";
-  conf.style.animationDuration = (4 + Math.random() * 4) + "s";
-  conf.style.animationDelay = Math.random() * 2 + "s";
-  document.body.appendChild(conf);
-  setTimeout(() => conf.remove(), 8000);
-}
 </script>
 
 <noscript>
   <div style="text-align:center; font-size:1.5rem; color:#d63384; padding:40px;">
-    <h1>Will you be my Valentine, Melanie? 💕</h1>
-    <p>(JavaScript is needed for the full cute experience 😊)</p>
+    <h1>To My Melanie 💕</h1>
+    <p>(JavaScript is needed for the full romantic experience 😊)</p>
   </div>
 </noscript>
 
