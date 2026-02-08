@@ -58,7 +58,7 @@
 
     .buttons {
       position: relative;
-      min-height: 280px;
+      min-height: 320px;
     }
 
     button {
@@ -77,13 +77,14 @@
       background: linear-gradient(135deg, #ff4d94, #ff80ab);
       color: white;
       left: 50%;
-      transform: translateX(-50%);
+      top: 50%;
+      transform: translate(-50%, -50%);
       animation: gentleBounce 3s infinite ease-in-out, yesGlow 4s infinite ease-in-out;
     }
 
     @keyframes gentleBounce {
-      0%,100% { transform: translateX(-50%) scale(1); }
-      50%     { transform: translateX(-50%) scale(1.08); }
+      0%,100% { transform: translate(-50%, -50%) scale(1); }
+      50%     { transform: translate(-50%, -50%) scale(1.08); }
     }
 
     @keyframes yesGlow {
@@ -95,8 +96,8 @@
       background: #6c757d;
       color: white;
       left: 50%;
-      top: 50%;
-      transform: translate(-50%, -50%);
+      transform: translateX(-50%);
+      font-size: clamp(1.3rem, 5vw, 1.7rem);
     }
 
     #noBtn.surrender {
@@ -113,10 +114,10 @@
     }
 
     @keyframes wobble {
-      0%,100% { transform: translate(-50%, -50%) rotate(0deg); }
-      25% { transform: translate(-50%, -50%) rotate(-8deg); }
-      50% { transform: translate(-50%, -50%) rotate(8deg); }
-      75% { transform: translate(-50%, -50%) rotate(-4deg); }
+      0%,100% { transform: translateX(-50%) rotate(0deg); }
+      25%     { transform: translateX(-50%) rotate(-8deg); }
+      50%     { transform: translateX(-50%) rotate(8deg); }
+      75%     { transform: translateX(-50%) rotate(-4deg); }
     }
 
     .flower-decor {
@@ -224,19 +225,19 @@
 </head>
 <body>
 
-<!-- Static romantic flowers -->
-<img src="https://image.similarpng.com/file/similarpng/original-picture/2022/02/Romantic-pink-rose-bouquet-isolated-on-transparent-background-PNG.png" class="flower-decor" style="top:10%; left:5%;" alt="Rose bouquet">
-<img src="https://thumbs.dreamstime.com/b/png-image-single-red-rose-green-leaves-isolated-transparent-background-concept-romantic-floral-element-natural-beauty-434252941.jpg" class="flower-decor" style="bottom:15%; right:8%; width:100px;" alt="Red rose">
-<img src="https://thumbs.dreamstime.com/b/pink-peony-flower-isolated-transparent-background-image-features-single-vibrant-delicate-petals-lush-green-stem-428039755.jpg" class="flower-decor" style="top:20%; right:10%;" alt="Pink peony">
-<img src="https://thumbs.dreamstime.com/b/beautiful-pink-peony-flower-ideal-floral-designs-botanical-element-representing-spring-blossom-nature-s-beauty-png-370679002.jpg" class="flower-decor" style="bottom:20%; left:10%; width:110px;" alt="Peony">
+<!-- Only top-left flower remains -->
+<img src="https://image.similarpng.com/file/similarpng/original-picture/2022/02/Romantic-pink-rose-bouquet-isolated-on-transparent-background-PNG.png" 
+     class="flower-decor" 
+     style="top:5%; left:5%;" 
+     alt="Rose bouquet">
 
 <div class="wrapper" id="app">
   <h1>To My Melanie (蔡聿囷) 💕</h1>
   <p class="subtitle">Melanie, will you make my heart skip forever and be my Valentine? 🌸💖</p>
 
   <div class="buttons">
-    <button id="yesBtn">YESSS!!💕🥰</button>
-    <button id="noBtn">No🙄🥺</button>
+    <button id="yesBtn">YESSS!! 💕🥰</button>
+    <button id="noBtn">No 🙄🥺</button>
   </div>
 </div>
 
@@ -254,7 +255,7 @@ let noScale = 1;
 let yesScale = 1;
 let interacted = false;
 
-// Audio unlock + vibration permission (needs interaction)
+// Audio unlock
 document.addEventListener('touchstart', () => {
   if (!interacted) {
     interacted = true;
@@ -263,22 +264,22 @@ document.addEventListener('touchstart', () => {
   }
 }, { once: true });
 
-// Yes growth
+// Yes button growth (capped)
 const yesGrow = setInterval(() => {
   yesScale = Math.min(2.8, yesScale + 0.028);
-  yesBtn.style.transform = `translateX(-50%) scale(${yesScale})`;
+  yesBtn.style.transform = `translate(-50%, -50%) scale(${yesScale})`;
 }, 1300);
 
-// No dodge – tighter central zone
+// No button dodge – always below Yes button
 function dodgeNo(e) {
   if (e.type === 'touchstart') e.preventDefault();
 
   noScale = Math.max(0.38, noScale - 0.065);
-  
+
   if (noScale < 0.55) {
     noBtn.textContent = "Okay fine… Yes I will be! 😏💕";
     noBtn.classList.add('surrender');
-    noBtn.onclick = () => finalYes(); // Click redirects to Yes success
+    noBtn.onclick = () => finalYes(); // Clicking it goes to success
   } else {
     noBtn.textContent = ["NOOO 😱","STOP 😭","WHY 😵","PLS 😿","不好😰"][Math.floor(Math.random()*5)];
   }
@@ -286,14 +287,19 @@ function dodgeNo(e) {
   const btnW = noBtn.offsetWidth || 180;
   const btnH = noBtn.offsetHeight || 60;
 
-  const margin = 120;
-  const maxX = window.innerWidth - btnW - (margin * 2);
-  const maxY = window.innerHeight - btnH - (margin * 2) - 140;
-  const minX = margin + (window.innerWidth * 0.20);
-  const minY = margin + 140;
+  // Get current Yes button position and size
+  const yesRect = yesBtn.getBoundingClientRect();
+  const yesBottom = yesRect.bottom + window.scrollY;
+  const yesCenterX = yesRect.left + yesRect.width / 2 + window.scrollX;
 
-  const newX = minX + Math.random() * Math.max(0, maxX - minX);
-  const newY = minY + Math.random() * Math.max(0, maxY - minY);
+  // Place No button below Yes with offset
+  let newY = yesBottom + 40 + Math.random() * 80; // 40–120px below
+  let newX = yesCenterX - btnW / 2 + (Math.random() * 200 - 100); // ±100px horizontal wiggle
+
+  // Clamp to safe central area (never too close to edges)
+  const margin = 120;
+  newX = Math.max(margin, Math.min(window.innerWidth - btnW - margin, newX));
+  newY = Math.max(margin, Math.min(window.innerHeight - btnH - margin, newY));
 
   noBtn.style.left = `${newX}px`;
   noBtn.style.top  = `${newY}px`;
@@ -313,49 +319,46 @@ function dodgeNo(e) {
   noBtn.addEventListener(evt, dodgeNo, { passive: false })
 );
 
-// Resize snap-back
+// Resize snap-back (keep No under Yes)
 window.addEventListener('resize', () => {
-  const btnLeft = parseFloat(noBtn.style.left) || 0;
-  const btnTop = parseFloat(noBtn.style.top) || 0;
-  const btnW = noBtn.offsetWidth || 180;
-  const btnH = noBtn.offsetHeight || 60;
+  const yesRect = yesBtn.getBoundingClientRect();
+  const yesBottom = yesRect.bottom + window.scrollY;
+  const yesCenterX = yesRect.left + yesRect.width / 2 + window.scrollX;
 
-  if (btnLeft + btnW > window.innerWidth - 80 ||
-      btnTop + btnH > window.innerHeight - 80 ||
-      btnLeft < 80 || btnTop < 80) {
-    noBtn.style.left = '50%';
-    noBtn.style.top = '50%';
-    noBtn.style.transform = `translate(-50%, -50%) scale(${noScale})`;
-  }
+  let newY = yesBottom + 60;
+  let newX = yesCenterX - (noBtn.offsetWidth || 180) / 2;
+
+  const margin = 120;
+  newX = Math.max(margin, Math.min(window.innerWidth - (noBtn.offsetWidth || 180) - margin, newX));
+  newY = Math.max(margin, Math.min(window.innerHeight - (noBtn.offsetHeight || 60) - margin, newY));
+
+  noBtn.style.left = `${newX}px`;
+  noBtn.style.top  = `${newY}px`;
 });
 
-// Flower glow + vibrate
+// Flower glow + vibrate (only one flower left)
 document.querySelectorAll('.flower-decor').forEach(flower => {
   flower.addEventListener('click', () => {
     flower.classList.add('glow');
-    if ('vibrate' in navigator) {
-      navigator.vibrate([50, 30, 50]); // short buzz pattern
-    }
+    if ('vibrate' in navigator) navigator.vibrate([50, 30, 50]);
     setTimeout(() => flower.classList.remove('glow'), 1500);
   });
-  flower.addEventListener('touchstart', (e) => {
-    e.preventDefault(); // prevent any scroll/zoom
+  flower.addEventListener('touchstart', e => {
+    e.preventDefault();
     flower.classList.add('glow');
-    if ('vibrate' in navigator) {
-      navigator.vibrate([50, 30, 50]);
-    }
+    if ('vibrate' in navigator) navigator.vibrate([50, 30, 50]);
     setTimeout(() => flower.classList.remove('glow'), 1500);
-  }, {passive: false});
+  }, { passive: false });
 });
 
-// Heart trail
+// Heart trail (unchanged)
 document.addEventListener('mousemove', e => {
   if (Math.random() < 0.12) createTrailHeart(e.clientX, e.clientY);
 });
 
 document.addEventListener('touchmove', e => {
   if (Math.random() < 0.18) createTrailHeart(e.touches[0].clientX, e.touches[0].clientY);
-}, {passive: true});
+}, { passive: true });
 
 function createTrailHeart(x, y) {
   const h = document.createElement("div");
@@ -367,11 +370,10 @@ function createTrailHeart(x, y) {
   setTimeout(() => h.remove(), 2200);
 }
 
-// Yes flow
+// Yes flow – direct to celebration
 yesBtn.addEventListener("click", () => {
   clearInterval(yesGrow);
-  yesBtn.textContent = "Really? are you sure!? 🤭💕";
-  yesBtn.onclick = finalYes;
+  finalYes();
 });
 
 function finalYes() {
@@ -398,7 +400,7 @@ function finalYes() {
   setInterval(createFirework, 700);
 }
 
-// Hearts & Fireworks (unchanged from previous)
+// Hearts & Fireworks (unchanged)
 function createHeart() {
   const heart = document.createElement("div");
   heart.className = "heart";
