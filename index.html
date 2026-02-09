@@ -249,6 +249,11 @@
       touch-action: manipulation;
       pointer-events: auto;
     }
+
+    /* Added rule: hide bouquet only on celebration page */
+    body.celebration .flower-decor {
+      display: none !important;
+    }
   </style>
 </head>
 <body>
@@ -412,6 +417,9 @@ document.querySelectorAll('.flower-decor').forEach(flower => {
 
 function finalYes() {
   if (sparkle) sparkle.play().catch(() => {});
+
+  // Hide the bouquet flower only on this final page
+  document.body.classList.add('celebration');
 
   app.innerHTML = `
     <div style="overflow-y: auto; max-height: 90dvh; width: 100%; padding: 20px; box-sizing: border-box; -webkit-overflow-scrolling: touch;">
