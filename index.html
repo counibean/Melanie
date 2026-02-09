@@ -140,7 +140,14 @@
       cursor: pointer;
       user-select: none;
     }
-
+    
+    #capybara {
+  width: clamp(70px, 18vw, 110px);
+  cursor: pointer;
+  user-select: none;
+  image-rendering: crisp-edges;   /* optional: sharper edges */
+  background: transparent !important;  /* force no bg fallback */
+}
     #capybara.wiggle {
       animation: capyWiggle 0.6s ease-in-out;
     }
