@@ -241,6 +241,14 @@
     #yesBtn.surrenderYes {
       animation: yesShakeBounce 0.6s ease-in-out infinite, yesGlow 0.6s alternate infinite;
     }
+
+    .buttons-container,
+    button,
+    .flower-decor,
+    .wrapper {
+      touch-action: manipulation;
+      pointer-events: auto;
+    }
   </style>
 </head>
 <body>
@@ -259,20 +267,212 @@
   </div>
 </div>
 
-<script>
-function finalYes() {
-  const flower = document.querySelector('.flower-decor');
-  if (flower) flower.remove();
+<audio id="pop" preload="auto" src="https://assets.mixkit.co/sfx/preview/mixkit-fast-small-sweep-transition-166.mp3"></audio>
+<audio id="sparkle" preload="auto" src="https://assets.mixkit.co/sfx/preview/mixkit-magic-sweep-game-trophy-257.mp3"></audio>
 
-  document.getElementById("app").innerHTML = `
-    <h1 style="font-size: 4rem; color: white;">YAYYY!!! 🎉💖</h1>
-    <p class="handwritten">
-      Melanie (蔡聿囷), my heart has chosen you every single day...<br>
-      You are my forever. 💘
-    </p>
+<script>
+const noBtn = document.getElementById("noBtn");
+const yesBtn = document.getElementById("yesBtn");
+const app = document.getElementById("app");
+const pop = document.getElementById("pop");
+const sparkle = document.getElementById("sparkle");
+
+let noClickCount = 0;
+let yesGrowing = false;
+let yesScale = 1;
+
+const noOptions = ["Nooo? Really?!?😱", "STOP!!😢寶寶為什麼?😭", "No? Are you serious baby?!? 😩😵", "寶寶 please! PLEASE PLEASE! 🥺😿", "不好😰"];
+
+document.addEventListener('touchstart', () => {
+  pop.volume = 0.6;
+  sparkle.volume = 0.7;
+}, { once: true });
+
+const heartChars = ["💖","💕","💘","🩷","💗","💝","❤️","💞"];
+let isDrawingHearts = false;
+let lastX = 0, lastY = 0;
+let throttleTimer = null;
+
+function createTrailHeart(x, y) {
+  const heart = document.createElement("div");
+  heart.className = "trail-heart";
+  heart.textContent = heartChars[Math.floor(Math.random() * heartChars.length)];
+  
+  const offsetX = (Math.random() - 0.5) * 30;
+  const offsetY = (Math.random() - 0.5) * 30;
+  
+  heart.style.left = (x + offsetX) + "px";
+  heart.style.top  = (y + offsetY) + "px";
+  
+  heart.style.transform = `rotate(${(Math.random()-0.5)*40}deg) scale(${0.8 + Math.random()*0.5})`;
+  
+  document.body.appendChild(heart);
+  
+  setTimeout(() => heart.remove(), 2600);
+}
+
+function onPointerDown(e) {
+  isDrawingHearts = true;
+  document.body.style.touchAction = 'none';
+  const x = e.clientX || (e.touches && e.touches[0].clientX);
+  const y = e.clientY || (e.touches && e.touches[0].clientY);
+  
+  createTrailHeart(x, y);
+  lastX = x;
+  lastY = y;
+}
+
+function onPointerMove(e) {
+  if (!isDrawingHearts) return;
+  
+  const x = e.clientX || (e.touches && e.touches[0].clientX);
+  const y = e.clientY || (e.touches && e.touches[0].clientY);
+  
+  if (!throttleTimer) {
+    throttleTimer = setTimeout(() => { throttleTimer = null; }, 100);
+    
+    const dist = Math.hypot(x - lastX, y - lastY);
+    if (dist > 18) {
+      createTrailHeart(x, y);
+      lastX = x;
+      lastY = y;
+    }
+  }
+}
+
+function onPointerUp() {
+  isDrawingHearts = false;
+  document.body.style.touchAction = 'manipulation';
+}
+
+document.addEventListener("pointerdown", onPointerDown, { passive: false });
+document.addEventListener("pointermove", onPointerMove, { passive: false });
+document.addEventListener("pointerup",   onPointerUp);
+document.addEventListener("pointercancel", onPointerUp);
+
+document.addEventListener("mousedown", e => onPointerDown(e));
+document.addEventListener("mousemove", e => onPointerMove(e));
+document.addEventListener("mouseup",   onPointerUp);
+
+noBtn.addEventListener('click', () => {
+  noClickCount++;
+  
+  if (noClickCount >= 6 && !yesGrowing) {
+    yesGrowing = true;
+    yesBtn.classList.add('surrenderYes');
+    yesBtn.disabled = false;
+    yesBtn.classList.remove('disabled');
+    yesBtn.onclick = () => finalYes();
+
+    const growInterval = setInterval(() => {
+      yesScale = Math.min(2.5, yesScale + 0.03);
+      yesBtn.style.transform = `scale(${yesScale})`;
+      if (yesScale >= 2.5) clearInterval(growInterval);
+    }, 100);
+
+    noBtn.textContent = "ugh okayyy... YES YES YES! Of course! Only for YOU😏💕";
+    noBtn.classList.add('surrender');
+    noBtn.onclick = () => finalYes();
+  } else {
+    const index = noClickCount - 1;
+    noBtn.textContent = noOptions[index];
+  }
+
+  if (pop) {
+    pop.currentTime = 0;
+    pop.play().catch(() => {});
+  }
+});
+
+document.querySelectorAll('.flower-decor').forEach(flower => {
+  flower.addEventListener('click', (e) => {
+    flower.classList.add('glow');
+    if ('vibrate' in navigator) navigator.vibrate([50, 30, 50]);
+
+    let msg = document.createElement('div');
+    msg.textContent = "I love you! 💕";
+    msg.style.position = 'absolute';
+    msg.style.left = (flower.offsetLeft + flower.offsetWidth + 10) + 'px';
+    msg.style.top = (flower.offsetTop + flower.offsetHeight / 2 - 15) + 'px';
+    msg.style.background = 'rgba(255,255,255,0.85)';
+    msg.style.color = '#ff4d94';
+    msg.style.padding = '6px 12px';
+    msg.style.borderRadius = '12px';
+    msg.style.fontWeight = 'bold';
+    msg.style.fontSize = 'clamp(1rem,3vw,1.2rem)';
+    msg.style.boxShadow = '0 4px 12px rgba(0,0,0,0.2)';
+    document.body.appendChild(msg);
+
+    setTimeout(() => {
+      msg.remove();
+      flower.classList.remove('glow');
+    }, 2000);
+  });
+});
+
+function finalYes() {
+  if (sparkle) sparkle.play().catch(() => {});
+
+  app.innerHTML = `
+    <div style="overflow-y: auto; max-height: 90dvh; width: 100%; padding: 20px; box-sizing: border-box; -webkit-overflow-scrolling: touch;">
+      <h1 style="font-size: clamp(3.5rem, 12vw, 5.5rem); color: white; margin: 20px 0; text-shadow: 0 4px 12px rgba(0,0,0,0.4);">
+        YAYYY!!! 🎉💖
+      </h1>
+      <p class="handwritten">
+        Melanie (蔡聿囷), my heart has chosen you every single day... <br>
+        Thank you for saying yes — I can't wait to hold your hand through every adventure, laugh, and quiet moment ahead. You are my forever. 💘
+      </p>
+      <p class="ps">P.S. You're still the most beautiful thing I've ever seen, inside and out. 🌹</p>
+      
+      <img src="https://i.postimg.cc/yYR21mkP/8b0f9164-ce1a-4748-9f48-386ba1f45bef.jpg" alt="Us together 💕" class="memory-photo">
+      <p class="photo-caption" style="text-align:center; color:white; font-style:italic; margin-top: 15px;">Our favorite moment 💕</p>
+    </div>
   `;
+
+  document.body.style.background = "linear-gradient(135deg, #ff9a9e, #fad0c4, #ff9a9e)";
+  document.body.style.animation = "breatheBg 12s ease infinite";
+
+  setInterval(createHeart, 300);
+  setInterval(createFirework, 700);
+}
+
+function createHeart() {
+  const heart = document.createElement("div");
+  heart.className = "heart";
+  heart.textContent = ["💖","💕","💘","💝","💞","❤️","🩷","💗"][Math.random()*8 | 0];
+  heart.style.left = Math.random() * 100 + "vw";
+  heart.style.setProperty('--sway', (Math.random() * 60 - 30) + "vw");
+  heart.style.setProperty('--delay', Math.random() * 3);
+  heart.style.fontSize = (1.2 + Math.random() * 2) + "rem";
+  document.body.appendChild(heart);
+  setTimeout(() => heart.remove(), 14000);
+}
+
+function createFirework() {
+  const x = Math.random() * window.innerWidth;
+  const y = Math.random() * window.innerHeight * 0.65;
+
+  for (let i = 0; i < 12; i++) {
+    const spark = document.createElement("div");
+    spark.className = "spark";
+    spark.textContent = ["💖","✨","💫","🩷","🌟","💝"][Math.floor(Math.random()*6)];
+    spark.style.left = x + "px";
+    spark.style.top = y + "px";
+    spark.style.setProperty("--x", `${Math.random()*300 - 150}px`);
+    spark.style.setProperty("--y", `${Math.random()*300 - 150}px`);
+    spark.style.setProperty("--rot", `${Math.random()*720 - 360}deg`);
+    document.body.appendChild(spark);
+    setTimeout(() => spark.remove(), 1500);
+  }
 }
 </script>
+
+<noscript>
+  <div style="text-align:center; font-size:1.5rem; color:#d63384; padding:40px;">
+    <h1>To My Melanie 💕</h1>
+    <p>(JavaScript is needed for the full romantic experience 😊)</p>
+  </div>
+</noscript>
 
 </body>
 </html>
