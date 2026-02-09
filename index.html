@@ -36,45 +36,7 @@
       50%  { background-position: 100% 50%; }
       100% { background-position: 0% 50%; }
     }
-    
-    #capybara-container {
-  margin-top: 30px;
-  display: flex;
-  justify-content: center;
-}
 
-#capybara {
-  width: clamp(70px, 18vw, 110px);
-  cursor: pointer;
-  user-select: none;
-  transition: transform 0.2s ease;
-}
-
-#capybara.wiggle {
-  animation: capyWiggle 0.6s ease-in-out;
-}
-
-@keyframes capyWiggle {
-  0%   { transform: rotate(0deg) scale(1); }
-  20%  { transform: rotate(-10deg) scale(1.05); }
-  40%  { transform: rotate(10deg) scale(1.08); }
-  60%  { transform: rotate(-8deg) scale(1.05); }
-  80%  { transform: rotate(8deg) scale(1.03); }
-  100% { transform: rotate(0deg) scale(1); }
-}
-
-.capy-kiss {
-  position: absolute;
-  font-size: 1.6rem;
-  animation: kissPop 1.6s ease-out forwards;
-  pointer-events: none;
-}
-
-@keyframes kissPop {
-  0%   { opacity: 0; transform: translateY(0) scale(0.6); }
-  20%  { opacity: 1; transform: translateY(-10px) scale(1); }
-  100% { opacity: 0; transform: translateY(-80px) scale(1.6); }
-}
     .wrapper {
       text-align: center;
       width: 100%;
@@ -94,7 +56,7 @@
 
     .subtitle {
       font-size: clamp(1.4rem, 5vw, 1.8rem);
-      margin-bottom: 40px;
+      margin-bottom: 30px;
       color: #e91e63;
     }
 
@@ -105,12 +67,12 @@
 
     .buttons-container {
       position: relative;
-      min-height: 380px;
+      min-height: 420px;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      gap: 80px;
+      gap: 60px;
     }
 
     button {
@@ -165,14 +127,63 @@
       color: white;
       font-weight: bold;
     }
-    
-    <div id="capybara-container">
-  <img
-    id="capybara"
-    src="https://i.postimg.cc/90h7Q4yS/capybara.png"
-    alt="Capybara 💕"
-  >
-</div>
+
+    /* ─── CAPYBARA ─────────────────────────────────────── */
+    #capybara-container {
+      margin-top: 10px;
+      display: flex;
+      justify-content: center;
+    }
+
+    #capybara {
+      width: clamp(70px, 18vw, 110px);
+      cursor: pointer;
+      user-select: none;
+    }
+
+    #capybara.wiggle {
+      animation: capyWiggle 0.6s ease-in-out;
+    }
+
+    @keyframes capyWiggle {
+      0% { transform: rotate(0) scale(1); }
+      25% { transform: rotate(-10deg) scale(1.05); }
+      50% { transform: rotate(10deg) scale(1.08); }
+      75% { transform: rotate(-6deg) scale(1.05); }
+      100% { transform: rotate(0) scale(1); }
+    }
+
+    .capy-kiss {
+      position: absolute;
+      font-size: 1.6rem;
+      animation: kissPop 1.6s forwards;
+      pointer-events: none;
+    }
+
+    @keyframes kissPop {
+      from { opacity: 0; transform: translateY(0) scale(0.6); }
+      to   { opacity: 0; transform: translateY(-80px) scale(1.6); }
+    }
+
+    .capy-judge {
+      position: absolute;
+      background: rgba(255,255,255,0.95);
+      color: #6c757d;
+      padding: 6px 12px;
+      border-radius: 14px;
+      font-size: 0.95rem;
+      font-weight: bold;
+      box-shadow: 0 4px 14px rgba(0,0,0,0.25);
+      animation: judgeFade 2.2s forwards;
+      pointer-events: none;
+      z-index: 30;
+    }
+
+    @keyframes judgeFade {
+      0% { opacity: 0; transform: translateY(10px) scale(0.9); }
+      20% { opacity: 1; }
+      100% { opacity: 0; transform: translateY(-40px) scale(1.05); }
+    }
 
     .flower-decor {
       position: absolute;
@@ -288,16 +299,8 @@
       animation: yesShakeBounce 0.6s ease-in-out infinite, yesGlow 0.6s alternate infinite;
     }
 
-    .buttons-container,
-    button,
-    .flower-decor,
-    .wrapper {
-      touch-action: manipulation;
-      pointer-events: auto;
-    }
-
-    /* Added rule: hide bouquet only on celebration page */
-    body.celebration .flower-decor {
+    body.celebration .flower-decor,
+    body.celebration #capybara-container {
       display: none !important;
     }
   </style>
@@ -315,6 +318,10 @@
   <div class="buttons-container">
     <button id="yesBtn" class="disabled" disabled>YESSS!! Of course!💕🥰</button>
     <button id="noBtn">No 🙄🥺</button>
+
+    <div id="capybara-container">
+      <img id="capybara" src="https://i.postimg.cc/90h7Q4yS/capybara.png" alt="Capybara">
+    </div>
   </div>
 </div>
 
@@ -324,6 +331,7 @@
 <script>
 const noBtn = document.getElementById("noBtn");
 const yesBtn = document.getElementById("yesBtn");
+const capybara = document.getElementById("capybara");
 const app = document.getElementById("app");
 const pop = document.getElementById("pop");
 const sparkle = document.getElementById("sparkle");
@@ -333,13 +341,80 @@ let yesGrowing = false;
 let yesScale = 1;
 
 const noOptions = ["Nooo? Really?!?😱", "STOP!!😢寶寶為什麼?😭", "No? Are you serious baby?!? 😩😵", "不好😰", "寶寶 please! PLEASE PLEASE! 🥺😿"];
+const capyJudgements = ["🤨 really?", "…wow.", "that was a choice.", "side eye 👀", "capy disapproves.", "hm."];
+
+const heartChars = ["💖","💕","💘","🩷","💗","💝","❤️","💞"];
 
 document.addEventListener('touchstart', () => {
   pop.volume = 0.6;
   sparkle.volume = 0.7;
 }, { once: true });
 
-const heartChars = ["💖","💕","💘","🩷","💗","💝","❤️","💞"];
+// ─── CAPYBARA INTERACTION ───────────────────────────────────────
+capybara.addEventListener("click", () => {
+  capybara.classList.remove("wiggle");
+  void capybara.offsetWidth;
+  capybara.classList.add("wiggle");
+
+  const rect = capybara.getBoundingClientRect();
+  for (let i = 0; i < 5; i++) {
+    const kiss = document.createElement("div");
+    kiss.className = "capy-kiss";
+    kiss.textContent = ["💋","💕","😘"][Math.floor(Math.random()*3)];
+    kiss.style.left = rect.left + rect.width / 2 + "px";
+    kiss.style.top = rect.top + "px";
+    document.body.appendChild(kiss);
+    setTimeout(() => kiss.remove(), 1600);
+  }
+});
+
+// ─── NO BUTTON + CAPY JUDGEMENT ─────────────────────────────────
+noBtn.addEventListener('click', () => {
+  noClickCount++;
+
+  // Capybara wiggle + judgement speech bubble
+  capybara.classList.remove("wiggle");
+  void capybara.offsetWidth;
+  capybara.classList.add("wiggle");
+
+  const rect = capybara.getBoundingClientRect();
+  const judge = document.createElement("div");
+  judge.className = "capy-judge";
+  judge.textContent = capyJudgements[Math.floor(Math.random() * capyJudgements.length)];
+  judge.style.left = rect.left + rect.width / 2 + "px";
+  judge.style.top = rect.top - 10 + "px";
+  document.body.appendChild(judge);
+  setTimeout(() => judge.remove(), 2200);
+
+  // Logic
+  if (noClickCount >= 5 && !yesGrowing) {
+    yesGrowing = true;
+    yesBtn.classList.add('surrenderYes');
+    yesBtn.disabled = false;
+    yesBtn.classList.remove('disabled');
+    yesBtn.onclick = () => finalYes();
+
+    const growInterval = setInterval(() => {
+      yesScale = Math.min(2.5, yesScale + 0.03);
+      yesBtn.style.transform = `scale(${yesScale})`;
+      if (yesScale >= 2.5) clearInterval(growInterval);
+    }, 100);
+
+    noBtn.textContent = "ugh okayyy... YES YES YES! Of course! Only for YOU😏💕";
+    noBtn.classList.add('surrender');
+    noBtn.onclick = () => finalYes();
+  } else {
+    const index = Math.min(noClickCount - 1, noOptions.length - 1);
+    noBtn.textContent = noOptions[index];
+  }
+
+  if (pop) {
+    pop.currentTime = 0;
+    pop.play().catch(() => {});
+  }
+});
+
+// ─── TRAIL HEARTS (drag/finger) ─────────────────────────────────
 let isDrawingHearts = false;
 let lastX = 0, lastY = 0;
 let throttleTimer = null;
@@ -358,7 +433,6 @@ function createTrailHeart(x, y) {
   heart.style.transform = `rotate(${(Math.random()-0.5)*40}deg) scale(${0.8 + Math.random()*0.5})`;
   
   document.body.appendChild(heart);
-  
   setTimeout(() => heart.remove(), 2600);
 }
 
@@ -367,26 +441,21 @@ function onPointerDown(e) {
   document.body.style.touchAction = 'none';
   const x = e.clientX || (e.touches && e.touches[0].clientX);
   const y = e.clientY || (e.touches && e.touches[0].clientY);
-  
   createTrailHeart(x, y);
-  lastX = x;
-  lastY = y;
+  lastX = x; lastY = y;
 }
 
 function onPointerMove(e) {
   if (!isDrawingHearts) return;
-  
   const x = e.clientX || (e.touches && e.touches[0].clientX);
   const y = e.clientY || (e.touches && e.touches[0].clientY);
   
   if (!throttleTimer) {
     throttleTimer = setTimeout(() => { throttleTimer = null; }, 100);
-    
     const dist = Math.hypot(x - lastX, y - lastY);
     if (dist > 18) {
       createTrailHeart(x, y);
-      lastX = x;
-      lastY = y;
+      lastX = x; lastY = y;
     }
   }
 }
@@ -405,36 +474,7 @@ document.addEventListener("mousedown", e => onPointerDown(e));
 document.addEventListener("mousemove", e => onPointerMove(e));
 document.addEventListener("mouseup",   onPointerUp);
 
-noBtn.addEventListener('click', () => {
-  noClickCount++;
-  
-  if (noClickCount >= 6 && !yesGrowing) {
-    yesGrowing = true;
-    yesBtn.classList.add('surrenderYes');
-    yesBtn.disabled = false;
-    yesBtn.classList.remove('disabled');
-    yesBtn.onclick = () => finalYes();
-
-    const growInterval = setInterval(() => {
-      yesScale = Math.min(2.5, yesScale + 0.03);
-      yesBtn.style.transform = `scale(${yesScale})`;
-      if (yesScale >= 2.5) clearInterval(growInterval);
-    }, 100);
-
-    noBtn.textContent = "ugh okayyy... YES YES YES! Of course! Only for YOU😏💕";
-    noBtn.classList.add('surrender');
-    noBtn.onclick = () => finalYes();
-  } else {
-    const index = noClickCount - 1;
-    noBtn.textContent = noOptions[index];
-  }
-
-  if (pop) {
-    pop.currentTime = 0;
-    pop.play().catch(() => {});
-  }
-});
-
+// ─── FLOWER BOUQUET CLICK ───────────────────────────────────────
 document.querySelectorAll('.flower-decor').forEach(flower => {
   flower.addEventListener('click', (e) => {
     flower.classList.add('glow');
@@ -461,10 +501,10 @@ document.querySelectorAll('.flower-decor').forEach(flower => {
   });
 });
 
+// ─── FINAL YES ──────────────────────────────────────────────────
 function finalYes() {
   if (sparkle) sparkle.play().catch(() => {});
 
-  // Hide the bouquet flower only on this final page
   document.body.classList.add('celebration');
 
   app.innerHTML = `
@@ -474,7 +514,7 @@ function finalYes() {
       </h1>
       <p class="handwritten">
         寶寶, my heart has chosen you every day since I met you... <br>
-        You make me sooo very happy! Thank you for saying yes now and when you said yes to be my 女朋友 — I can't wait to hold you and share many adventures togehter. You are very special to me! 我愛你喔 💘
+        You make me sooo very happy! Thank you for saying yes now and when you said yes to be my 女朋友 — I can't wait to hold you and share many adventures together. You are very special to me! 我愛你喔 💘
       </p>
       <p class="ps">P.S. You're still the most beautiful thing I've ever seen, inside and out. 🌹</p>
       
@@ -518,33 +558,6 @@ function createFirework() {
     document.body.appendChild(spark);
     setTimeout(() => spark.remove(), 1500);
   }
-}
-const capybara = document.getElementById("capybara");
-
-if (capybara) {
-  capybara.addEventListener("click", (e) => {
-    // Wiggle
-    capybara.classList.remove("wiggle");
-    void capybara.offsetWidth; // reset animation
-    capybara.classList.add("wiggle");
-
-    // Optional vibration on mobile
-    if ('vibrate' in navigator) navigator.vibrate(40);
-
-    // Spawn kisses
-    const rect = capybara.getBoundingClientRect();
-    for (let i = 0; i < 5; i++) {
-      const kiss = document.createElement("div");
-      kiss.className = "capy-kiss";
-      kiss.textContent = ["💋","😘","💕","💖"][Math.floor(Math.random()*4)];
-
-      kiss.style.left = rect.left + rect.width / 2 + (Math.random()*40 - 20) + "px";
-      kiss.style.top  = rect.top + (Math.random()*20) + "px";
-
-      document.body.appendChild(kiss);
-      setTimeout(() => kiss.remove(), 1600);
-    }
-  });
 }
 </script>
 
