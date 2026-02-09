@@ -36,7 +36,45 @@
       50%  { background-position: 100% 50%; }
       100% { background-position: 0% 50%; }
     }
+    
+    #capybara-container {
+  margin-top: 30px;
+  display: flex;
+  justify-content: center;
+}
 
+#capybara {
+  width: clamp(70px, 18vw, 110px);
+  cursor: pointer;
+  user-select: none;
+  transition: transform 0.2s ease;
+}
+
+#capybara.wiggle {
+  animation: capyWiggle 0.6s ease-in-out;
+}
+
+@keyframes capyWiggle {
+  0%   { transform: rotate(0deg) scale(1); }
+  20%  { transform: rotate(-10deg) scale(1.05); }
+  40%  { transform: rotate(10deg) scale(1.08); }
+  60%  { transform: rotate(-8deg) scale(1.05); }
+  80%  { transform: rotate(8deg) scale(1.03); }
+  100% { transform: rotate(0deg) scale(1); }
+}
+
+.capy-kiss {
+  position: absolute;
+  font-size: 1.6rem;
+  animation: kissPop 1.6s ease-out forwards;
+  pointer-events: none;
+}
+
+@keyframes kissPop {
+  0%   { opacity: 0; transform: translateY(0) scale(0.6); }
+  20%  { opacity: 1; transform: translateY(-10px) scale(1); }
+  100% { opacity: 0; transform: translateY(-80px) scale(1.6); }
+}
     .wrapper {
       text-align: center;
       width: 100%;
@@ -127,6 +165,14 @@
       color: white;
       font-weight: bold;
     }
+    
+    <div id="capybara-container">
+  <img
+    id="capybara"
+    src="https://i.postimg.cc/90h7Q4yS/capybara.png"
+    alt="Capybara 💕"
+  >
+</div>
 
     .flower-decor {
       position: absolute;
@@ -472,6 +518,33 @@ function createFirework() {
     document.body.appendChild(spark);
     setTimeout(() => spark.remove(), 1500);
   }
+}
+const capybara = document.getElementById("capybara");
+
+if (capybara) {
+  capybara.addEventListener("click", (e) => {
+    // Wiggle
+    capybara.classList.remove("wiggle");
+    void capybara.offsetWidth; // reset animation
+    capybara.classList.add("wiggle");
+
+    // Optional vibration on mobile
+    if ('vibrate' in navigator) navigator.vibrate(40);
+
+    // Spawn kisses
+    const rect = capybara.getBoundingClientRect();
+    for (let i = 0; i < 5; i++) {
+      const kiss = document.createElement("div");
+      kiss.className = "capy-kiss";
+      kiss.textContent = ["💋","😘","💕","💖"][Math.floor(Math.random()*4)];
+
+      kiss.style.left = rect.left + rect.width / 2 + (Math.random()*40 - 20) + "px";
+      kiss.style.top  = rect.top + (Math.random()*20) + "px";
+
+      document.body.appendChild(kiss);
+      setTimeout(() => kiss.remove(), 1600);
+    }
+  });
 }
 </script>
 
