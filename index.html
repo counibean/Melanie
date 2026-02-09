@@ -357,7 +357,7 @@ document.addEventListener("mouseup",   onPointerUp);
 noBtn.addEventListener('click', () => {
   noClickCount++;
   
-  if (noClickCount >= 5 && !yesGrowing) {
+  if (noClickCount >= 6 && !yesGrowing) {
     yesGrowing = true;
     yesBtn.classList.add('surrenderYes');
     yesBtn.disabled = false;
