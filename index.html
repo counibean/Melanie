@@ -259,8 +259,7 @@
 
 <div class="wrapper" id="app">
   <h1>To My Melanie (蔡聿囷) 💕</h1>
-  <p class="subtitle">Melanie, will you make my heart skip forever and be my Valentine? 🌸💖</p>
-
+  <p class="subtitle">Melanie, will you make me the happiest boy in the world and be my Valentine? 🌸💖</p>
   <div class="buttons-container">
     <button id="yesBtn" class="disabled" disabled>YESSS!! 💕🥰</button>
     <button id="noBtn">No 🙄🥺</button>
@@ -281,7 +280,7 @@ let noClickCount = 0;
 let yesGrowing = false;
 let yesScale = 1;
 
-const noOptions = ["Nooo? Really?!?😱", "STOP! 為什麼！😭", "Are you for real?!? 😵", "PLS 😿", "不好😰"];
+const noOptions = ["Nooo? Really?!?😱", "STOP! 為什麼！😭", "Are you for real?!? 😵", "寶寶 PLS 😿", "不好😰"];
 
 document.addEventListener('touchstart', () => {
   pop.volume = 0.6;
@@ -368,20 +367,23 @@ noBtn.addEventListener('click', () => {
       yesBtn.style.transform = `scale(${yesScale})`;
       if (yesScale >= 2.5) clearInterval(growInterval);
     }, 100);
-
-    noBtn.textContent = "Okay fine… Yes I will be! 😏💕";
-    noBtn.classList.add('surrender');
-    noBtn.onclick = () => finalYes();
   } else {
     const index = noClickCount - 1;
-    noBtn.textContent = noOptions[index];
+    noBtn.textContent = noOptions[index % noOptions.length];
   }
 
   if (pop) {
     pop.currentTime = 0;
     pop.play().catch(() => {});
   }
+
+  // After threshold, No button also leads to final page
+  if (noClickCount >= 5) {
+    finalYes();
+  }
 });
+
+yesBtn.addEventListener('click', finalYes);
 
 document.querySelectorAll('.flower-decor').forEach(flower => {
   flower.addEventListener('click', (e) => {
@@ -411,6 +413,10 @@ document.querySelectorAll('.flower-decor').forEach(flower => {
 
 function finalYes() {
   if (sparkle) sparkle.play().catch(() => {});
+
+  // Hide bouquet only on final page
+  const bouquet = document.querySelector('.flower-decor');
+  if (bouquet) bouquet.style.display = 'none';
 
   app.innerHTML = `
     <div style="overflow-y: auto; max-height: 90dvh; width: 100%; padding: 20px; box-sizing: border-box; -webkit-overflow-scrolling: touch;">
