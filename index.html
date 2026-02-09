@@ -281,7 +281,7 @@ let noClickCount = 0;
 let yesGrowing = false;
 let yesScale = 1;
 
-const noOptions = ["Nooo? Really?!?😱", "STOP!!😢寶寶為什麼?😭", "Are you serious baby?!? 😩😵", "寶寶 please! PLEASE PLEASE! 🥺😿", "不好😰"];
+const noOptions = ["Nooo? Really?!?😱", "STOP!!😢寶寶為什麼?😭", "No? Are you serious baby?!? 😩😵", "寶寶 please! PLEASE PLEASE! 🥺😿", "不好😰"];
 
 document.addEventListener('touchstart', () => {
   pop.volume = 0.6;
@@ -370,7 +370,7 @@ noBtn.addEventListener('click', () => {
       if (yesScale >= 2.5) clearInterval(growInterval);
     }, 100);
 
-    noBtn.textContent = "... YES YES YES! Of course I will! Only because it's YOU😏💕";
+    noBtn.textContent = "ugh okayyy... YES YES YES! Of course! Only for YOU😏💕";
     noBtn.classList.add('surrender');
     noBtn.onclick = () => finalYes();
   } else {
