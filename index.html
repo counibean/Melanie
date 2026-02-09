@@ -362,6 +362,7 @@ noBtn.addEventListener('click', () => {
     yesBtn.classList.add('surrenderYes');
     yesBtn.disabled = false;
     yesBtn.classList.remove('disabled');
+    yesBtn.onclick = () => finalYes();
 
     const growInterval = setInterval(() => {
       yesScale = Math.min(2.5, yesScale + 0.03);
