@@ -69,7 +69,7 @@
     }
 
     .flower-decor.right {
-      transform: scale(-1, 1); /* horizontal mirror */
+      transform: scale(-1, 1);
     }
 
     .flower-decor.glow {
@@ -78,13 +78,12 @@
     }
 
     .flower-decor.right.glow {
-      /* Preserve mirror while applying normal scale */
       transform: scale(-1, 1) scale(1.15) !important;
     }
 
     @keyframes flowerPulse {
-      0%, 100% { filter: drop-shadow(0 0 20px #ff4d94) brightness(1.5); }
-      50%      { filter: drop-shadow(0 0 40px #ff4d94) brightness(2); }
+      0%,100% { filter: drop-shadow(0 0 20px #ff4d94) brightness(1.5); }
+      50% { filter: drop-shadow(0 0 40px #ff4d94) brightness(2); }
     }
 
     h1 {
@@ -102,7 +101,7 @@
 
     @keyframes pulse {
       0%, 100% { transform: scale(1); }
-      50%      { transform: scale(1.06); }
+      50% { transform: scale(1.06); }
     }
 
     .buttons-container {
@@ -179,7 +178,7 @@
       cursor: pointer;
       user-select: none;
     }
-
+    
     #capybara.wiggle {
       animation: capyWiggle 0.6s ease-in-out;
     }
@@ -224,6 +223,53 @@
       100% { opacity: 0; transform: translateY(-40px) scale(1.05); }
     }
 
+    .handwritten {
+      font-family: 'Caveat', cursive;
+      font-size: clamp(1.8rem, 6vw, 2.6rem);
+      color: white;
+      line-height: 1.6;
+      margin: 30px auto 20px;
+      max-width: 85%;
+      text-shadow: 0 2px 8px rgba(0,0,0,0.3);
+    }
+
+    .ps {
+      font-size: 1.3rem;
+      color: #fff9;
+      margin-top: 40px;
+      font-style: italic;
+    }
+
+    .memory-photo {
+      max-width: 85%;
+      border-radius: 24px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+      border: 4px solid rgba(255, 255, 255, 0.3);
+      margin: 30px auto;
+      display: block;
+      animation: photoFade 2s ease-out;
+    }
+
+    @keyframes photoFade {
+      0% { opacity: 0; transform: scale(0.95); }
+      100% { opacity: 1; transform: scale(1); }
+    }
+
+    .heart {
+      position: absolute;
+      font-size: clamp(1.2rem,3vw,2.5rem);
+      animation: floatUp 12s linear forwards;
+      opacity: 0;
+      pointer-events: none;
+      animation-delay: calc(var(--delay) * 1s);
+    }
+
+    @keyframes floatUp {
+      0% { opacity: 0; transform: translateY(120vh) translateX(0) rotate(0deg); }
+      10% { opacity: 1; }
+      100% { opacity: 0; transform: translateY(-40vh) translateX(var(--sway)) rotate(720deg); }
+    }
+
     .trail-heart {
       position: absolute;
       font-size: clamp(1.1rem, 2.8vw, 2.2rem);
@@ -242,20 +288,45 @@
       100% { opacity: 0;    transform: scale(1.7) translateY(-120px) rotate(45deg); }
     }
 
+    .spark {
+      position: absolute;
+      font-size: 1.8rem;
+      animation: explode 1.4s ease-out forwards;
+      pointer-events: none;
+      transform: rotate(var(--rot));
+    }
+
+    @keyframes explode {
+      from { transform: scale(1) rotate(var(--rot)); opacity: 1; }
+      to   { transform: translate(var(--x), var(--y)) scale(0.2) rotate(calc(var(--rot) + 360deg)); opacity: 0; }
+    }
+
+    @keyframes yesShakeBounce {
+      0%,100% { transform: scale(1.4) translateY(0) rotate(0deg); }
+      25% { transform: scale(1.45) translateY(-5px) rotate(-8deg); }
+      50% { transform: scale(1.5) translateY(-10px) rotate(8deg); }
+      75% { transform: scale(1.45) translateY(-5px) rotate(-4deg); }
+    }
+
+    #yesBtn.surrenderYes {
+      animation: yesShakeBounce 0.6s ease-in-out infinite, yesGlow 0.6s alternate infinite;
+    }
+
     .love-msg {
       position: absolute;
       background: rgba(255,255,255,0.92);
       color: #ff4d94;
-      padding: 8px 16px;
-      border-radius: 16px;
+      padding: 10px 24px;
+      border-radius: 20px;
       font-weight: bold;
-      font-size: clamp(1rem, 3.5vw, 1.3rem);
-      box-shadow: 0 6px 18px rgba(0,0,0,0.25);
+      font-size: clamp(1.1rem, 4vw, 1.4rem);
+      box-shadow: 0 6px 20px rgba(0,0,0,0.25);
       z-index: 9999;
       pointer-events: none;
       white-space: nowrap;
       opacity: 1;
-      transition: opacity 0.6s ease-out;
+      transition: opacity 0.7s ease-out;
+      text-align: center;
     }
 
     body.celebration .flower-row,
@@ -342,9 +413,10 @@ capybara.addEventListener("click", () => {
   }
 });
 
-// NO BUTTON + CAPY JUDGEMENT (unchanged)
+// NO BUTTON + CAPY JUDGEMENT
 noBtn.addEventListener('click', () => {
   noClickCount++;
+
   capybara.classList.remove("wiggle");
   void capybara.offsetWidth;
   capybara.classList.add("wiggle");
@@ -385,7 +457,7 @@ noBtn.addEventListener('click', () => {
   }
 });
 
-// TRAIL HEARTS (unchanged from working version)
+// TRAIL HEARTS
 let isDrawingHearts = false;
 let lastX = 0, lastY = 0;
 let throttleTimer = null;
@@ -441,38 +513,39 @@ document.addEventListener("mousedown", onPointerDown);
 document.addEventListener("mousemove", onPointerMove);
 document.addEventListener("mouseup", onPointerUp);
 
-// ─── FIXED FLOWER CLICK HANDLER ─────────────────────────────────────────
+// ─── FLOWER CLICK ────────────────────────────────────────────────────────
 document.querySelectorAll('.flower-decor').forEach(flower => {
   flower.addEventListener('click', () => {
     flower.classList.add('glow');
     if ('vibrate' in navigator) navigator.vibrate([50, 30, 50]);
 
+    const isRight = flower.classList.contains('right');
+    const messageText = isRight ? "Hugs and kisses! 💕" : "I love you! 💕";
+
     const rect = flower.getBoundingClientRect();
-    const centerX = rect.left + rect.width / 2;
     const centerY = rect.top + rect.height / 2;
 
     const msg = document.createElement('div');
     msg.className = 'love-msg';
-    msg.textContent = "I love you! 💕";
+    msg.textContent = messageText;
 
-    // Position slightly to the right and above center
-    msg.style.left = (centerX + 30) + 'px';
-    msg.style.top  = (centerY - 40) + 'px';
+    // Center horizontally between the flowers
+    msg.style.left = '50%';
+    msg.style.transform = 'translateX(-50%)';
+    msg.style.top  = (centerY - 60) + 'px';   // adjust vertical offset as needed
 
     document.body.appendChild(msg);
 
-    // Fade out and remove
     setTimeout(() => {
       msg.style.opacity = '0';
       setTimeout(() => msg.remove(), 700);
     }, 1400);
 
-    // Remove glow class after animation
     setTimeout(() => flower.classList.remove('glow'), 1500);
   });
 });
 
-// FINAL YES + celebration (unchanged)
+// ─── FINAL YES ───────────────────────────────────────────────────────────
 function finalYes() {
   if (sparkle) sparkle.play().catch(() => {});
 
