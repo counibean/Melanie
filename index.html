@@ -43,6 +43,21 @@
       100% { background-position: 0% 50%; }
     }
 
+    /* Falling rose petals */
+    .petal {
+      position: absolute;
+      font-size: clamp(1.2rem, 3vw, 2.2rem);
+      opacity: 0.4;
+      pointer-events: none;
+      animation: fall linear forwards;
+      z-index: 1;
+    }
+
+    @keyframes fall {
+      0%   { transform: translateY(-10vh) rotate(0deg); opacity: 0.6; }
+      100% { transform: translateY(110vh) rotate(720deg); opacity: 0; }
+    }
+
     .wrapper {
       text-align: center;
       width: 100%;
@@ -511,6 +526,8 @@ const sparkle = document.getElementById("sparkle");
 const soundHint = document.getElementById("sound-hint");
 
 let noClickCount = 0;
+let yesGrowing = false;
+let yesScale = 1;
 let noDebounce = false;
 
 const noOptions = [
@@ -596,7 +613,19 @@ noBtn.addEventListener('click', () => {
   noClickCount++;
   wiggleCapybara();
 
-  if (noClickCount >= 5) {
+  if (noClickCount >= 5 && !yesGrowing) {
+    yesGrowing = true;
+    yesBtn.classList.add('surrenderYes');
+    yesBtn.disabled = false;
+    yesBtn.classList.remove('disabled');
+    yesBtn.onclick = finalYes;
+
+    const growInterval = setInterval(() => {
+      yesScale = Math.min(2.5, yesScale + 0.03);
+      yesBtn.style.transform = `scale(${yesScale})`;
+      if (yesScale >= 2.5) clearInterval(growInterval);
+    }, 100);
+
     noBtn.textContent = "ugh okayyy... YES YES YES! Of course! Only for YOU 😏💕";
     noBtn.classList.add('surrender');
     noBtn.onclick = finalYes;
@@ -708,6 +737,20 @@ document.querySelectorAll('.flower-decor').forEach(flower => {
     setTimeout(() => flower.classList.remove('glow'), 1500);
   });
 });
+
+// Falling petals
+function createPetal() {
+  const petal = document.createElement("div");
+  petal.className = "petal";
+  petal.textContent = ["🌸","🌷","🌹"][Math.floor(Math.random()*3)];
+  petal.style.left = Math.random() * 100 + "vw";
+  petal.style.animationDuration = (8 + Math.random() * 12) + "s";
+  petal.style.animationDelay = Math.random() * 5 + "s";
+  document.body.appendChild(petal);
+  setTimeout(() => petal.remove(), 20000);
+}
+
+setInterval(createPetal, 1800);
 
 // Final yes
 function finalYes() {
