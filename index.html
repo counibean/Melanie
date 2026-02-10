@@ -30,8 +30,8 @@
       touch-action: manipulation;
       display: flex;
       flex-direction: column;
-      justify-content: center;
-      padding-bottom: calc(env(safe-area-inset-bottom) + 80px);
+      justify-content: flex-start;
+      padding-bottom: calc(env(safe-area-inset-bottom) + 120px);
       position: relative;
     }
 
@@ -44,13 +44,20 @@
     .wrapper {
       text-align: center;
       width: 100%;
-      max-width: 600px;
-      padding: 20px;
+      max-width: 620px;
+      padding: 24px 20px;
       box-sizing: border-box;
       z-index: 10;
       pointer-events: auto;
       margin: 0 auto;
-      position: relative;
+    }
+
+    .content-center {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      padding-top: 3vh;
     }
 
     .flower-row {
@@ -59,18 +66,17 @@
       align-items: flex-start;
       width: 100%;
       max-width: 520px;
-      margin: 10px auto 5px auto;
+      margin: 0 auto 20px auto;
     }
 
     .flower-decor {
       width: clamp(80px, 20vw, 130px);
-      max-height: 26vh;
+      max-height: 24vh;
       height: auto;
       object-fit: contain;
       cursor: pointer;
       user-select: none;
       transition: filter 0.3s, transform 0.3s;
-      transform-origin: center center;
     }
 
     .flower-decor.right {
@@ -92,64 +98,63 @@
     }
 
     h1 {
-      font-size: clamp(2.2rem, 7vw, 3.8rem);
-      margin: 0 0 25px;
+      font-size: clamp(2.4rem, 8vw, 4.2rem);
+      margin: 12px 0 16px;
       line-height: 1.1;
       animation: pulse 2.5s infinite ease-in-out;
     }
 
     .subtitle {
-      font-size: clamp(1.4rem, 5vw, 1.8rem);
-      margin-bottom: 30px;
+      font-size: clamp(1.45rem, 5.2vw, 2rem);
+      margin: 0 0 36px 0;
       color: #e91e63;
+      line-height: 1.4;
+      max-width: 90%;
     }
 
     @keyframes pulse {
       0%, 100% { transform: scale(1); }
-      50% { transform: scale(1.06); }
+      50% { transform: scale(1.05); }
     }
 
     .buttons-container {
-      position: relative;
-      min-height: 420px;
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: center;
-      gap: 60px;
+      gap: 28px;
+      margin: 0 0 80px 0;
     }
 
     button {
-      font-size: clamp(1.3rem, 5vw, 1.7rem);
-      padding: 16px 48px;
+      font-size: clamp(1.35rem, 5.2vw, 1.85rem);
+      padding: 16px 54px;
       border-radius: 999px;
       border: none;
       cursor: pointer;
       box-shadow: 0 8px 25px rgba(0,0,0,0.22);
       user-select: none;
-      transition: transform 0.3s ease, box-shadow 0.4s ease, opacity 0.4s ease;
-      position: relative;
+      transition: all 0.3s ease;
+      min-width: 220px;
     }
 
     #yesBtn {
       background: linear-gradient(135deg, #ff4d94, #ff80ab);
       color: white;
       animation: gentleBounce 3s infinite ease-in-out, yesGlow 4s infinite ease-in-out;
-      z-index: 2;
     }
 
     #yesBtn.disabled,
     #yesBtn:disabled {
-      opacity: 0.55;
+      opacity: 0.5;
       cursor: not-allowed;
       animation: none;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
       pointer-events: none;
     }
 
     @keyframes gentleBounce {
       0%,100% { transform: scale(1); }
-      50% { transform: scale(1.08); }
+      50% { transform: scale(1.07); }
     }
 
     @keyframes yesGlow {
@@ -160,21 +165,19 @@
     #noBtn {
       background: #6c757d;
       color: white;
-      z-index: 1;
     }
 
     #noBtn.surrender {
-      font-size: clamp(1.6rem, 6vw, 2.2rem) !important;
+      font-size: clamp(1.7rem, 6.2vw, 2.4rem) !important;
       background: linear-gradient(135deg, #ff4d94, #ff80ab);
       box-shadow: 0 0 30px rgba(255,77,148,0.8);
-      padding: 20px 60px;
-      color: white;
+      padding: 22px 68px;
       font-weight: bold;
     }
 
     #capybara-container {
       position: fixed;
-      bottom: 16px;
+      bottom: 24px;
       left: 50%;
       transform: translateX(-50%);
       z-index: 20;
@@ -182,11 +185,10 @@
     }
 
     #capybara {
-      width: clamp(80px, 22vw, 140px);
+      width: clamp(90px, 24vw, 160px);
       max-width: 180px;
-      filter: drop-shadow(0 6px 14px rgba(0,0,0,0.35));
+      filter: drop-shadow(0 6px 16px rgba(0,0,0,0.35));
       cursor: pointer;
-      user-select: none;
       transition: transform 0.8s ease;
     }
     
@@ -440,40 +442,41 @@
     }
 
     @media (max-height: 680px) {
-      .flower-row { margin: 8px auto 4px auto; }
-      .flower-decor { max-height: 20vh; }
-      h1 { font-size: clamp(1.9rem, 6.5vw, 3.2rem); margin-bottom: 18px; }
-      .subtitle { margin-bottom: 20px; }
-      .buttons-container { min-height: 340px; gap: 40px; }
-      .love-msg { top: 35px; font-size: clamp(0.95rem, 3.8vw, 1.2rem); padding: 8px 20px; }
-      #countdown { margin: 30px auto 15px; padding: 16px; }
+      .content-center { padding-top: 2.5vh; }
+      h1 { margin: 10px 0 12px; }
+      .subtitle { margin-bottom: 28px; }
+      .buttons-container { gap: 22px; margin-bottom: 70px; }
+      #capybara-container { bottom: 16px; }
+      button { padding: 14px 48px; font-size: clamp(1.25rem, 5vw, 1.7rem); }
     }
 
     @media (max-height: 580px) {
-      .buttons-container { min-height: 280px; gap: 30px; }
+      .buttons-container { gap: 18px; margin-bottom: 60px; }
+      .subtitle { margin-bottom: 24px; }
     }
   </style>
 </head>
 <body>
 
-<div class="wrapper" id="app">
-  <div class="flower-row">
-    <img src="https://image.similarpng.com/file/similarpng/original-picture/2022/02/Romantic-pink-rose-bouquet-isolated-on-transparent-background-PNG.png" 
-         class="flower-decor" 
-         alt="Rose bouquet">
+<div class="wrapper">
+  <div class="content-center" id="app">
+    <div class="flower-row">
+      <img src="https://image.similarpng.com/file/similarpng/original-picture/2022/02/Romantic-pink-rose-bouquet-isolated-on-transparent-background-PNG.png" 
+           class="flower-decor" 
+           alt="Rose bouquet">
+      <img src="https://image.similarpng.com/file/similarpng/original-picture/2022/02/Romantic-pink-rose-bouquet-isolated-on-transparent-background-PNG.png" 
+           class="flower-decor right" 
+           alt="Mirrored rose bouquet">
+    </div>
 
-    <img src="https://image.similarpng.com/file/similarpng/original-picture/2022/02/Romantic-pink-rose-bouquet-isolated-on-transparent-background-PNG.png" 
-         class="flower-decor right" 
-         alt="Mirrored rose bouquet">
-  </div>
+    <h1>To My Melanie (蔡聿囷) 💕</h1>
+    
+    <p class="subtitle">親愛的, will you make me the happiest boy in the whole world and be my Valentine? 🌸💖</p>
 
-  <h1>To My Melanie (蔡聿囷) 💕</h1>
-  
-  <p class="subtitle">親愛的, will you make me the happiest boy in the whole world and be my Valentine? 🌸💖</p>
-
-  <div class="buttons-container">
-    <button id="yesBtn" class="disabled" disabled>YESSS!! Of course!💕🥰</button>
-    <button id="noBtn">No 🙄🥺</button>
+    <div class="buttons-container">
+      <button id="yesBtn" class="disabled" disabled>YESSS!! Of course!💕🥰</button>
+      <button id="noBtn">No 🙄🥺</button>
+    </div>
   </div>
 </div>
 
@@ -583,7 +586,6 @@ function mergeButtons() {
   const yesRect = yesBtn.getBoundingClientRect();
   const noRect = noBtn.getBoundingClientRect();
 
-  // ── Position buttons absolutely inside container ────────────────────────
   yesBtn.style.position = 'absolute';
   yesBtn.style.left   = `${yesRect.left - containerRect.left}px`;
   yesBtn.style.top    = `${yesRect.top  - containerRect.top}px`;
@@ -594,11 +596,9 @@ function mergeButtons() {
   noBtn.style.top    = `${noRect.top  - containerRect.top}px`;
   noBtn.style.width  = `${noRect.width}px`;
 
-  // ── Target = true center of container ──────────────────────────────────
   const centerX = containerRect.width / 2;
-  const centerY = (yesRect.top + yesRect.height / 2 - containerRect.top);   // keep original vertical position
+  const centerY = (yesRect.top + yesRect.height / 2 - containerRect.top);
 
-  // Move both buttons toward center + shrink
   setTimeout(() => {
     yesBtn.style.transition = 'all 1.3s cubic-bezier(0.4, 0, 0.2, 1)';
     yesBtn.style.transform = `translate(${centerX - (yesRect.left - containerRect.left + yesRect.width / 2)}px, ${centerY - (yesRect.top - containerRect.top + yesRect.height / 2)}px) scale(0.4)`;
@@ -609,7 +609,6 @@ function mergeButtons() {
     noBtn.style.opacity = '0';
   }, 80);
 
-  // Create centered merged button after animation
   setTimeout(() => {
     yesBtn.remove();
     noBtn.remove();
@@ -633,7 +632,6 @@ function mergeButtons() {
 
     container.appendChild(merged);
 
-    // Animate in
     requestAnimationFrame(() => {
       merged.style.transform = 'translate(-50%, -50%) scale(1)';
       merged.style.opacity   = '1';
@@ -736,14 +734,11 @@ document.querySelectorAll('.flower-decor').forEach(flower => {
 
 // Final yes
 function finalYes() {
-  // Hide fixed capybara
   const fixedCapy = document.getElementById('capybara-container');
   fixedCapy.style.display = 'none';
 
-  // Blank the page
   app.innerHTML = '';
 
-  // Create growing capybara container
   const growingCapyContainer = document.createElement('div');
   growingCapyContainer.style.display = 'flex';
   growingCapyContainer.style.flexDirection = 'column';
@@ -752,14 +747,12 @@ function finalYes() {
   growingCapyContainer.style.height = '100vh';
   growingCapyContainer.style.width = '100vw';
 
-  // Create capybara image
   const capyImg = document.createElement('img');
   capyImg.src = "https://i.postimg.cc/7h1FNTdx/A28577C0-A453-462E-86D3-117A705C9067.png";
   capyImg.alt = "Cute Capy with Flower";
   capyImg.style.width = 'clamp(70px, 18vw, 110px)';
   capyImg.style.transition = 'transform 2s ease-in-out';
 
-  // Create message
   const message = document.createElement('div');
   message.textContent = "我早就知道你會答應的～嘻嘻";
   message.className = "capy-judge";
@@ -773,12 +766,10 @@ function finalYes() {
   growingCapyContainer.appendChild(message);
   app.appendChild(growingCapyContainer);
 
-  // Trigger growth
   setTimeout(() => {
     capyImg.style.transform = 'scale(2)';
   }, 100);
 
-  // After 3.5 seconds → celebration
   setTimeout(() => {
 
     document.body.classList.add('celebration');
@@ -820,7 +811,6 @@ function finalYes() {
     setInterval(createHeart, 300);
     setInterval(createFirework, 700);
 
-    // Show fixed capybara again
     fixedCapy.style.display = 'flex';
 
   }, 3500);
