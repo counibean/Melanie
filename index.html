@@ -43,7 +43,6 @@
       100% { background-position: 0% 50%; }
     }
 
-    /* Falling rose petals */
     .petal {
       position: absolute;
       font-size: clamp(1.2rem, 3vw, 2.2rem);
@@ -87,7 +86,6 @@
       cursor: pointer;
       user-select: none;
       transition: filter 0.3s, transform 0.3s;
-      transform-origin: center center;
     }
 
     .flower-decor.right {
@@ -144,7 +142,7 @@
       cursor: pointer;
       box-shadow: 0 8px 25px rgba(0,0,0,0.22);
       user-select: none;
-      transition: transform 0.3s ease, box-shadow 0.4s ease, opacity 0.4s ease;
+      transition: all 0.4s ease;
       position: relative;
     }
 
@@ -180,13 +178,18 @@
       z-index: 1;
     }
 
-    #noBtn.surrender {
-      font-size: clamp(1.6rem, 6vw, 2.2rem) !important;
-      background: linear-gradient(135deg, #ff4d94, #ff80ab);
-      box-shadow: 0 0 30px rgba(255,77,148,0.8);
-      padding: 20px 60px;
-      color: white;
-      font-weight: bold;
+    .merged-yes {
+      font-size: clamp(1.8rem, 7vw, 2.4rem) !important;
+      padding: 24px 80px !important;
+      background: linear-gradient(135deg, #ff4d94, #ff80ab) !important;
+      box-shadow: 0 12px 40px rgba(255,77,148,0.7) !important;
+      animation: mergedPulse 2s infinite ease-in-out, yesGlow 3s infinite !important;
+      transform: scale(1.15);
+    }
+
+    @keyframes mergedPulse {
+      0%,100% { transform: scale(1.15); }
+      50% { transform: scale(1.22); }
     }
 
     #capybara-container {
@@ -199,11 +202,16 @@
       width: clamp(70px, 18vw, 110px);
       cursor: pointer;
       user-select: none;
-      transition: transform 0.8s ease;
+      transition: transform 1.2s ease, filter 1.2s ease;
     }
     
     #capybara.wiggle {
       animation: capyWiggle 0.6s ease-in-out;
+    }
+
+    #capybara.giant-easter-egg {
+      transform: scale(3.2) !important;
+      filter: brightness(1.15) hue-rotate(15deg) saturate(1.4);
     }
 
     @keyframes capyWiggle {
@@ -392,17 +400,6 @@
       to   { transform: translate(var(--x), var(--y)) scale(0.2) rotate(calc(var(--rot) + 360deg)); opacity: 0; }
     }
 
-    @keyframes yesShakeBounce {
-      0%,100% { transform: scale(1.4) translateY(0) rotate(0deg); }
-      25% { transform: scale(1.45) translateY(-5px) rotate(-8deg); }
-      50% { transform: scale(1.5) translateY(-10px) rotate(8deg); }
-      75% { transform: scale(1.45) translateY(-5px) rotate(-4deg); }
-    }
-
-    #yesBtn.surrenderYes {
-      animation: yesShakeBounce 0.6s ease-in-out infinite, yesGlow 0.6s alternate infinite;
-    }
-
     .love-msg {
       position: absolute;
       left: 50%;
@@ -529,6 +526,8 @@ let noClickCount = 0;
 let yesGrowing = false;
 let yesScale = 1;
 let noDebounce = false;
+let capyClickCount = 0;
+let isMerged = false;
 
 const noOptions = [
   "No - Really?!? 😱",
@@ -564,9 +563,7 @@ document.addEventListener('touchstart', () => {
 }, { once: false });
 
 function getNonRepeatingJudgement() {
-  if (judgementQueue.length === 0) {
-    judgementQueue = [...capyJudgements];
-  }
+  if (judgementQueue.length === 0) judgementQueue = [...capyJudgements];
   const index = Math.floor(Math.random() * judgementQueue.length);
   const judgement = judgementQueue[index];
   judgementQueue.splice(index, 1);
@@ -591,7 +588,12 @@ function showCapyJudgement() {
 }
 
 capybara.addEventListener("click", () => {
+  capyClickCount++;
   wiggleCapybara();
+
+  if (capyClickCount >= 8) {
+    capybara.classList.add("giant-easter-egg");
+  }
 
   const rect = capybara.getBoundingClientRect();
   for (let i = 0; i < 5; i++) {
@@ -615,41 +617,32 @@ noBtn.addEventListener('click', () => {
 
   if (noClickCount >= 5 && !yesGrowing) {
     yesGrowing = true;
-    yesBtn.classList.add('surrenderYes');
-    yesBtn.disabled = false;
-    yesBtn.classList.remove('disabled');
-    yesBtn.onclick = finalYes;
+    isMerged = true;
 
-    const growInterval = setInterval(() => {
-      yesScale = Math.min(2.5, yesScale + 0.03);
-      yesBtn.style.transform = `scale(${yesScale})`;
-      if (yesScale >= 2.5) clearInterval(growInterval);
-    }, 100);
-
-    noBtn.textContent = "ugh okayyy... YES YES YES! Of course! Only for YOU 😏💕";
-    noBtn.classList.add('surrender');
+    // Merge logic: hide original yes, make noBtn become the big YES
+    yesBtn.style.display = "none";
+    noBtn.textContent = "YES YES YES! Of course 寶寶～ 💕🥰";
+    noBtn.classList.add('merged-yes');
     noBtn.onclick = finalYes;
 
+    const growInterval = setInterval(() => {
+      yesScale = Math.min(1.8, yesScale + 0.04);
+      noBtn.style.transform = `scale(${yesScale})`;
+      if (yesScale >= 1.8) clearInterval(growInterval);
+    }, 80);
+
     showCapyJudgement();
-    if (pop) {
-      pop.currentTime = 0;
-      pop.play().catch(() => {});
-    }
+    if (pop) pop.currentTime = 0, pop.play().catch(() => {});
   } 
   else {
     const index = Math.min(noClickCount - 1, noOptions.length - 1);
     noBtn.textContent = noOptions[index];
-
     showCapyJudgement();
-
-    if (pop) {
-      pop.currentTime = 0;
-      pop.play().catch(() => {});
-    }
+    if (pop) pop.currentTime = 0, pop.play().catch(() => {});
   }
 });
 
-// Trail hearts
+// Trail hearts (unchanged)
 let isDrawingHearts = false;
 let lastX = 0, lastY = 0;
 let throttleTimer = null;
@@ -705,7 +698,7 @@ document.addEventListener("mousedown", onPointerDown);
 document.addEventListener("mousemove", onPointerMove);
 document.addEventListener("mouseup", onPointerUp);
 
-// Flower click
+// Flower click (unchanged)
 document.querySelectorAll('.flower-decor').forEach(flower => {
   flower.addEventListener('click', () => {
     flower.classList.add('glow');
@@ -754,10 +747,8 @@ setInterval(createPetal, 1800);
 
 // Final yes
 function finalYes() {
-  // Blank the page
   app.innerHTML = '';
 
-  // Create growing capybara container
   const capyContainer = document.createElement('div');
   capyContainer.style.display = 'flex';
   capyContainer.style.flexDirection = 'column';
@@ -766,14 +757,15 @@ function finalYes() {
   capyContainer.style.height = '100vh';
   capyContainer.style.width = '100vw';
 
-  // Create capybara image
   const capyImg = document.createElement('img');
   capyImg.src = "https://i.postimg.cc/7h1FNTdx/A28577C0-A453-462E-86D3-117A705C9067.png";
   capyImg.alt = "Cute Capy with Flower";
   capyImg.style.width = 'clamp(70px, 18vw, 110px)';
   capyImg.style.transition = 'transform 2s ease-in-out';
+  if (capyClickCount >= 8) {
+    capyImg.classList.add("giant-easter-egg");
+  }
 
-  // Create message
   const message = document.createElement('div');
   message.textContent = "我早就知道你會答應的～嘻嘻";
   message.className = "capy-judge";
@@ -787,12 +779,10 @@ function finalYes() {
   capyContainer.appendChild(message);
   app.appendChild(capyContainer);
 
-  // Trigger growth
   setTimeout(() => {
     capyImg.style.transform = 'scale(2)';
   }, 100);
 
-  // After 3.5 seconds → celebration
   setTimeout(() => {
     if (sparkle) sparkle.play().catch(() => {});
 
