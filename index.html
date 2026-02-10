@@ -173,13 +173,18 @@
     }
 
     #capybara-container {
-      margin-top: 10px;
-      display: flex;
-      justify-content: center;
+      position: fixed;
+      bottom: 16px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 20;
+      pointer-events: auto;
     }
 
     #capybara {
-      width: clamp(70px, 18vw, 110px);
+      width: clamp(80px, 22vw, 140px);
+      max-width: 180px;
+      filter: drop-shadow(0 6px 14px rgba(0,0,0,0.35));
       cursor: pointer;
       user-select: none;
       transition: transform 0.8s ease;
@@ -430,8 +435,7 @@
       100% { opacity: 0; transform: translateY(-55px) scale(0.95); }
     }
 
-    body.celebration .flower-row,
-    body.celebration #capybara-container {
+    body.celebration .flower-row {
       display: none !important;
     }
 
@@ -470,11 +474,11 @@
   <div class="buttons-container">
     <button id="yesBtn" class="disabled" disabled>YESSS!! Of course!💕🥰</button>
     <button id="noBtn">No 🙄🥺</button>
-
-    <div id="capybara-container">
-      <img id="capybara" src="https://i.postimg.cc/7h1FNTdx/A28577C0-A453-462E-86D3-117A705C9067.png" alt="Cute Capy with Flower">
-    </div>
   </div>
+</div>
+
+<div id="capybara-container">
+  <img id="capybara" src="https://i.postimg.cc/7h1FNTdx/A28577C0-A453-462E-86D3-117A705C9067.png" alt="Cute Capy with Flower">
 </div>
 
 <script>
@@ -574,73 +578,71 @@ noBtn.addEventListener('click', () => {
 
 function mergeButtons() {
   const container = document.querySelector('.buttons-container');
-  container.style.height = `${container.getBoundingClientRect().height}px`;
-
   const containerRect = container.getBoundingClientRect();
+
   const yesRect = yesBtn.getBoundingClientRect();
   const noRect = noBtn.getBoundingClientRect();
 
-  // Set positions to absolute
+  // ── Position buttons absolutely inside container ────────────────────────
   yesBtn.style.position = 'absolute';
-  yesBtn.style.left = `${yesRect.left - containerRect.left}px`;
-  yesBtn.style.top = `${yesRect.top - containerRect.top}px`;
-  yesBtn.style.width = `${yesRect.width}px`;
-  yesBtn.style.height = `${yesRect.height}px`;
+  yesBtn.style.left   = `${yesRect.left - containerRect.left}px`;
+  yesBtn.style.top    = `${yesRect.top  - containerRect.top}px`;
+  yesBtn.style.width  = `${yesRect.width}px`;
 
   noBtn.style.position = 'absolute';
-  noBtn.style.left = `${noRect.left - containerRect.left}px`;
-  noBtn.style.top = `${noRect.top - containerRect.top}px`;
-  noBtn.style.width = `${noRect.width}px`;
-  noBtn.style.height = `${noRect.height}px`;
+  noBtn.style.left   = `${noRect.left - containerRect.left}px`;
+  noBtn.style.top    = `${noRect.top  - containerRect.top}px`;
+  noBtn.style.width  = `${noRect.width}px`;
 
-  // Calculate midpoint
-  const mergeX = ((yesRect.left + yesRect.width / 2) + (noRect.left + noRect.width / 2)) / 2 - containerRect.left;
-  const mergeY = ((yesRect.top + yesRect.height / 2) + (noRect.top + noRect.height / 2)) / 2 - containerRect.top;
+  // ── Target = true center of container ──────────────────────────────────
+  const centerX = containerRect.width / 2;
+  const centerY = (yesRect.top + yesRect.height / 2 - containerRect.top);   // keep original vertical position
 
-  // Animate movement to merge point with scale down
+  // Move both buttons toward center + shrink
   setTimeout(() => {
-    yesBtn.style.transition = 'transform 1.2s ease-in-out, opacity 0.8s ease-in-out';
-    yesBtn.style.transform = `translate(${mergeX - (yesRect.left - containerRect.left + yesRect.width / 2)}px, ${mergeY - (yesRect.top - containerRect.top + yesRect.height / 2)}px) scale(0)`;
-
-    noBtn.style.transition = 'transform 1.2s ease-in-out, opacity 0.8s ease-in-out';
-    noBtn.style.transform = `translate(${mergeX - (noRect.left - containerRect.left + noRect.width / 2)}px, ${mergeY - (noRect.top - containerRect.top + noRect.height / 2)}px) scale(0)`;
-  }, 100);
-
-  // Fade out during movement
-  setTimeout(() => {
+    yesBtn.style.transition = 'all 1.3s cubic-bezier(0.4, 0, 0.2, 1)';
+    yesBtn.style.transform = `translate(${centerX - (yesRect.left - containerRect.left + yesRect.width / 2)}px, ${centerY - (yesRect.top - containerRect.top + yesRect.height / 2)}px) scale(0.4)`;
     yesBtn.style.opacity = '0';
-    noBtn.style.opacity = '0';
-  }, 400);
 
-  // Remove old buttons and create new merged button
+    noBtn.style.transition = 'all 1.3s cubic-bezier(0.4, 0, 0.2, 1)';
+    noBtn.style.transform = `translate(${centerX - (noRect.left - containerRect.left + noRect.width / 2)}px, ${centerY - (noRect.top - containerRect.top + noRect.height / 2)}px) scale(0.4)`;
+    noBtn.style.opacity = '0';
+  }, 80);
+
+  // Create centered merged button after animation
   setTimeout(() => {
     yesBtn.remove();
     noBtn.remove();
 
-    const mergedBtn = document.createElement('button');
-    mergedBtn.id = 'mergedBtn';
-    mergedBtn.textContent = 'Yes, let\'s celebrate our love! 💖🥰';
-    mergedBtn.style.background = 'linear-gradient(135deg, #ff4d94, #ff80ab)';
-    mergedBtn.style.color = 'white';
-    mergedBtn.style.opacity = '0';
-    mergedBtn.style.transform = 'translate(-50%, -50%) scale(0)';
-    mergedBtn.style.transition = 'opacity 1s ease-in-out, transform 1s ease-in-out';
-    mergedBtn.style.position = 'absolute';
-    mergedBtn.style.left = `${mergeX}px`;
-    mergedBtn.style.top = `${mergeY}px`;
-    mergedBtn.style.fontSize = 'clamp(1.5rem, 5.5vw, 2rem)';
-    mergedBtn.style.padding = '18px 52px';
-    mergedBtn.style.zIndex = '3';
-    mergedBtn.addEventListener('click', finalYes);
+    const merged = document.createElement('button');
+    merged.textContent = "Yes, let's celebrate our love! 💖🥰";
+    merged.style.position = 'absolute';
+    merged.style.left     = '50%';
+    merged.style.top      = `${centerY}px`;
+    merged.style.transform = 'translate(-50%, -50%) scale(0.6)';
+    merged.style.opacity   = '0';
+    merged.style.transition = 'all 0.9s ease-out';
+    merged.style.background = 'linear-gradient(135deg, #ff4d94, #ff80ab)';
+    merged.style.color     = 'white';
+    merged.style.fontSize  = 'clamp(1.5rem, 5.5vw, 2.1rem)';
+    merged.style.padding   = '20px 60px';
+    merged.style.borderRadius = '999px';
+    merged.style.boxShadow = '0 10px 30px rgba(255,77,148,0.5)';
+    merged.style.whiteSpace = 'nowrap';
+    merged.style.zIndex    = '5';
 
-    container.appendChild(mergedBtn);
+    container.appendChild(merged);
 
-    setTimeout(() => {
-      mergedBtn.style.opacity = '1';
-      mergedBtn.style.transform = 'translate(-50%, -50%) scale(1)';
-      mergedBtn.style.animation = 'gentleBounce 3s infinite ease-in-out, yesGlow 4s infinite ease-in-out';
-    }, 100);
-  }, 1500);
+    // Animate in
+    requestAnimationFrame(() => {
+      merged.style.transform = 'translate(-50%, -50%) scale(1)';
+      merged.style.opacity   = '1';
+      merged.style.animation = 'gentleBounce 3s infinite ease-in-out, yesGlow 4s infinite ease-in-out';
+    });
+
+    merged.addEventListener('click', finalYes);
+
+  }, 1400);
 }
 
 // Trail hearts
@@ -734,17 +736,21 @@ document.querySelectorAll('.flower-decor').forEach(flower => {
 
 // Final yes
 function finalYes() {
+  // Hide fixed capybara
+  const fixedCapy = document.getElementById('capybara-container');
+  fixedCapy.style.display = 'none';
+
   // Blank the page
   app.innerHTML = '';
 
   // Create growing capybara container
-  const capyContainer = document.createElement('div');
-  capyContainer.style.display = 'flex';
-  capyContainer.style.flexDirection = 'column';
-  capyContainer.style.alignItems = 'center';
-  capyContainer.style.justifyContent = 'center';
-  capyContainer.style.height = '100vh';
-  capyContainer.style.width = '100vw';
+  const growingCapyContainer = document.createElement('div');
+  growingCapyContainer.style.display = 'flex';
+  growingCapyContainer.style.flexDirection = 'column';
+  growingCapyContainer.style.alignItems = 'center';
+  growingCapyContainer.style.justifyContent = 'center';
+  growingCapyContainer.style.height = '100vh';
+  growingCapyContainer.style.width = '100vw';
 
   // Create capybara image
   const capyImg = document.createElement('img');
@@ -763,9 +769,9 @@ function finalYes() {
   message.style.padding = '12px 24px';
   message.style.animation = 'judgeFade 4s forwards';
 
-  capyContainer.appendChild(capyImg);
-  capyContainer.appendChild(message);
-  app.appendChild(capyContainer);
+  growingCapyContainer.appendChild(capyImg);
+  growingCapyContainer.appendChild(message);
+  app.appendChild(growingCapyContainer);
 
   // Trigger growth
   setTimeout(() => {
@@ -813,6 +819,10 @@ function finalYes() {
 
     setInterval(createHeart, 300);
     setInterval(createFirework, 700);
+
+    // Show fixed capybara again
+    fixedCapy.style.display = 'flex';
+
   }, 3500);
 }
 
