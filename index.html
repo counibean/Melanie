@@ -5,6 +5,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>To My Melanie (蔡聿囷) 💕</title>
   <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;700&display=swap" rel="stylesheet">
+  
+  <!-- Preload important assets -->
+  <link rel="preload" href="https://i.postimg.cc/7h1FNTdx/A28577C0-A453-462E-86D3-117A705C9067.png" as="image">
+  <link rel="preload" href="https://i.postimg.cc/yYR21mkP/8b0f9164-ce1a-4748-9f48-386ba1f45bef.jpg" as="image">
+  <link rel="preload" href="https://assets.mixkit.co/sfx/preview/mixkit-fast-small-sweep-transition-166.mp3" as="audio">
+  <link rel="preload" href="https://assets.mixkit.co/sfx/preview/mixkit-magic-sweep-game-trophy-257.mp3" as="audio">
 
   <style>
     html, body {
@@ -21,7 +27,7 @@
       font-family: system-ui, -apple-system, sans-serif;
       background: linear-gradient(135deg, #ffe6f2, #fff0f5, #ffe6f2);
       background-size: 300% 300%;
-      animation: breatheBg 15s ease infinite;
+      animation: breatheBg 40s ease-in-out infinite;
       color: #d63384;
       touch-action: manipulation;
       display: flex;
@@ -37,6 +43,21 @@
       100% { background-position: 0% 50%; }
     }
 
+    /* Falling rose petals */
+    .petal {
+      position: absolute;
+      font-size: clamp(1.2rem, 3vw, 2.2rem);
+      opacity: 0.4;
+      pointer-events: none;
+      animation: fall linear forwards;
+      z-index: 1;
+    }
+
+    @keyframes fall {
+      0%   { transform: translateY(-10vh) rotate(0deg); opacity: 0.6; }
+      100% { transform: translateY(110vh) rotate(720deg); opacity: 0; }
+    }
+
     .wrapper {
       text-align: center;
       width: 100%;
@@ -46,6 +67,7 @@
       z-index: 10;
       pointer-events: auto;
       margin: 0 auto;
+      position: relative;
     }
 
     .flower-row {
@@ -177,6 +199,7 @@
       width: clamp(70px, 18vw, 110px);
       cursor: pointer;
       user-select: none;
+      transition: transform 0.8s ease;
     }
     
     #capybara.wiggle {
@@ -247,12 +270,14 @@
       border: 4px solid rgba(255, 255, 255, 0.3);
       margin: 30px auto;
       display: block;
-      animation: photoFade 2s ease-out;
+      opacity: 0;
+      transform: scale(0.92);
+      animation: photoReveal 2.2s ease-out forwards;
+      animation-delay: 1.2s;
     }
 
-    @keyframes photoFade {
-      0% { opacity: 0; transform: scale(0.95); }
-      100% { opacity: 1; transform: scale(1); }
+    @keyframes photoReveal {
+      to { opacity: 1; transform: scale(1); }
     }
 
     #countdown {
@@ -327,6 +352,7 @@
       opacity: 0;
       pointer-events: none;
       animation-delay: calc(var(--delay) * 1s);
+      z-index: 5;
     }
 
     @keyframes floatUp {
@@ -426,6 +452,23 @@
       display: none !important;
     }
 
+    #sound-hint {
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(255,255,255,0.9);
+      color: #d63384;
+      padding: 10px 20px;
+      border-radius: 30px;
+      font-size: 1rem;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+      z-index: 9999;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.6s;
+    }
+
     @media (max-height: 680px) {
       .flower-row { margin: 8px auto 4px auto; }
       .flower-decor { max-height: 20vh; }
@@ -435,9 +478,15 @@
       .love-msg { top: 35px; font-size: clamp(0.95rem, 3.8vw, 1.2rem); padding: 8px 20px; }
       #countdown { margin: 30px auto 15px; padding: 16px; }
     }
+
+    @media (max-height: 580px) {
+      .buttons-container { min-height: 280px; gap: 30px; }
+    }
   </style>
 </head>
 <body>
+
+<div id="sound-hint">Tap anywhere to enable sound ♡</div>
 
 <div class="wrapper" id="app">
   <div class="flower-row">
@@ -474,10 +523,12 @@ const capybara = document.getElementById("capybara");
 const app = document.getElementById("app");
 const pop = document.getElementById("pop");
 const sparkle = document.getElementById("sparkle");
+const soundHint = document.getElementById("sound-hint");
 
 let noClickCount = 0;
 let yesGrowing = false;
 let yesScale = 1;
+let noDebounce = false;
 
 const noOptions = [
   "No - Really?!? 😱",
@@ -500,10 +551,17 @@ let judgementQueue = [...capyJudgements];
 
 const heartChars = ["💖","💕","💘","🩷","💗","💝","❤️","💞"];
 
+let hasInteracted = false;
+
 document.addEventListener('touchstart', () => {
-  pop.volume = 0.6;
-  sparkle.volume = 0.7;
-}, { once: true });
+  if (!hasInteracted) {
+    pop.volume = 0.6;
+    sparkle.volume = 0.7;
+    soundHint.style.opacity = '0';
+    setTimeout(() => soundHint.remove(), 800);
+    hasInteracted = true;
+  }
+}, { once: false });
 
 function getNonRepeatingJudgement() {
   if (judgementQueue.length === 0) {
@@ -548,6 +606,10 @@ capybara.addEventListener("click", () => {
 });
 
 noBtn.addEventListener('click', () => {
+  if (noDebounce) return;
+  noDebounce = true;
+  setTimeout(() => { noDebounce = false; }, 400);
+
   noClickCount++;
   wiggleCapybara();
 
@@ -676,6 +738,21 @@ document.querySelectorAll('.flower-decor').forEach(flower => {
   });
 });
 
+// Falling petals
+function createPetal() {
+  const petal = document.createElement("div");
+  petal.className = "petal";
+  petal.textContent = ["🌸","🌷","🌹"][Math.floor(Math.random()*3)];
+  petal.style.left = Math.random() * 100 + "vw";
+  petal.style.animationDuration = (8 + Math.random() * 12) + "s";
+  petal.style.animationDelay = Math.random() * 5 + "s";
+  document.body.appendChild(petal);
+  setTimeout(() => petal.remove(), 20000);
+}
+
+setInterval(createPetal, 1800);
+
+// Final yes
 function finalYes() {
   // Blank the page
   app.innerHTML = '';
@@ -698,22 +775,24 @@ function finalYes() {
 
   // Create message
   const message = document.createElement('div');
-  message.textContent = "Good choice!";
+  message.textContent = "我早就知道你會答應的～嘻嘻";
   message.className = "capy-judge";
   message.style.position = 'relative';
-  message.style.top = '20px';
-  message.style.animation = 'judgeFade 3s forwards'; // Extend duration for visibility
+  message.style.top = '30px';
+  message.style.fontSize = '1.4rem';
+  message.style.padding = '12px 24px';
+  message.style.animation = 'judgeFade 4s forwards';
 
   capyContainer.appendChild(capyImg);
   capyContainer.appendChild(message);
   app.appendChild(capyContainer);
 
-  // Trigger growth after a short delay
+  // Trigger growth
   setTimeout(() => {
     capyImg.style.transform = 'scale(2)';
   }, 100);
 
-  // After 3 seconds, proceed to celebration
+  // After 3.5 seconds → celebration
   setTimeout(() => {
     if (sparkle) sparkle.play().catch(() => {});
 
@@ -724,6 +803,7 @@ function finalYes() {
 
         <div id="countdown">
           <h3>Counting down to 14 Feb 19:25 💕</h3>
+          <p style="margin:8px 0; font-size:1.1rem; opacity:0.9;">until our first Valentine’s Day together ♡</p>
           <div class="countdown-timer" id="timer">
             <div class="countdown-unit"><span id="days">0</span><small>days</small></div>
             <div class="countdown-unit"><span id="hours">00</span><small>hours</small></div>
@@ -754,7 +834,7 @@ function finalYes() {
 
     setInterval(createHeart, 300);
     setInterval(createFirework, 700);
-  }, 3000);
+  }, 3500);
 }
 
 function updateCountdown() {
