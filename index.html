@@ -9,8 +9,6 @@
   <!-- Preload important assets -->
   <link rel="preload" href="https://i.postimg.cc/7h1FNTdx/A28577C0-A453-462E-86D3-117A705C9067.png" as="image">
   <link rel="preload" href="https://i.postimg.cc/yYR21mkP/8b0f9164-ce1a-4748-9f48-386ba1f45bef.jpg" as="image">
-  <link rel="preload" href="https://assets.mixkit.co/sfx/preview/mixkit-fast-small-sweep-transition-166.mp3" as="audio">
-  <link rel="preload" href="https://assets.mixkit.co/sfx/preview/mixkit-magic-sweep-game-trophy-257.mp3" as="audio">
 
   <style>
     html, body {
@@ -41,21 +39,6 @@
       0%   { background-position: 0% 50%; }
       50%  { background-position: 100% 50%; }
       100% { background-position: 0% 50%; }
-    }
-
-    /* Falling rose petals */
-    .petal {
-      position: absolute;
-      font-size: clamp(1.2rem, 3vw, 2.2rem);
-      opacity: 0.4;
-      pointer-events: none;
-      animation: fall linear forwards;
-      z-index: 1;
-    }
-
-    @keyframes fall {
-      0%   { transform: translateY(-10vh) rotate(0deg); opacity: 0.6; }
-      100% { transform: translateY(110vh) rotate(720deg); opacity: 0; }
     }
 
     .wrapper {
@@ -212,18 +195,6 @@
       50% { transform: rotate(10deg) scale(1.08); }
       75% { transform: rotate(-6deg) scale(1.05); }
       100% { transform: rotate(0) scale(1); }
-    }
-
-    .capy-kiss {
-      position: absolute;
-      font-size: 1.6rem;
-      animation: kissPop 1.6s forwards;
-      pointer-events: none;
-    }
-
-    @keyframes kissPop {
-      from { opacity: 0; transform: translateY(0) scale(0.6); }
-      to   { opacity: 0; transform: translateY(-80px) scale(1.6); }
     }
 
     .capy-judge {
@@ -392,81 +363,9 @@
       to   { transform: translate(var(--x), var(--y)) scale(0.2) rotate(calc(var(--rot) + 360deg)); opacity: 0; }
     }
 
-    @keyframes yesShakeBounce {
-      0%,100% { transform: scale(1.4) translateY(0) rotate(0deg); }
-      25% { transform: scale(1.45) translateY(-5px) rotate(-8deg); }
-      50% { transform: scale(1.5) translateY(-10px) rotate(8deg); }
-      75% { transform: scale(1.45) translateY(-5px) rotate(-4deg); }
-    }
-
-    #yesBtn.surrenderYes {
-      animation: yesShakeBounce 0.6s ease-in-out infinite, yesGlow 0.6s alternate infinite;
-    }
-
-    .love-msg {
-      position: absolute;
-      left: 50%;
-      transform: translateX(-50%);
-      top: 45px;
-      background: rgba(255,255,255,0.94);
-      color: #ff4d94;
-      padding: 10px 24px;
-      border-radius: 24px;
-      font-weight: bold;
-      font-size: clamp(1.0rem, 4vw, 1.35rem);
-      box-shadow: 0 6px 20px rgba(255,77,148,0.3);
-      z-index: 9999;
-      pointer-events: none;
-      white-space: nowrap;
-      opacity: 0;
-      animation: popupLove 1.0s ease-out forwards;
-    }
-
-    .love-msg .mini-heart {
-      position: absolute;
-      font-size: 1.3rem;
-      color: #ff4d94;
-      opacity: 0;
-      pointer-events: none;
-      animation: miniHeartFloat 1.4s ease-out forwards;
-    }
-
-    .love-msg .mini-heart:nth-child(1) { left: -18%; animation-delay: 0.1s; }
-    .love-msg .mini-heart:nth-child(2) { left: 50%; animation-delay: 0.2s; }
-    .love-msg .mini-heart:nth-child(3) { left: 118%; animation-delay: 0.35s; }
-
-    @keyframes popupLove {
-      0%   { opacity: 0;   transform: translateX(-50%) translateY(15px) scale(0.92); }
-      60%  { opacity: 1;   transform: translateX(-50%) translateY(-2px)  scale(1.03); }
-      100% { opacity: 1;   transform: translateX(-50%) translateY(0px)   scale(1);   }
-    }
-
-    @keyframes miniHeartFloat {
-      0%   { opacity: 0; transform: translateY(0) scale(0.7); }
-      50%  { opacity: 0.95; transform: translateY(-25px) scale(1.1); }
-      100% { opacity: 0; transform: translateY(-55px) scale(0.95); }
-    }
-
     body.celebration .flower-row,
     body.celebration #capybara-container {
       display: none !important;
-    }
-
-    #sound-hint {
-      position: fixed;
-      bottom: 20px;
-      left: 50%;
-      transform: translateX(-50%);
-      background: rgba(255,255,255,0.9);
-      color: #d63384;
-      padding: 10px 20px;
-      border-radius: 30px;
-      font-size: 1rem;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-      z-index: 9999;
-      pointer-events: none;
-      opacity: 0;
-      transition: opacity 0.6s;
     }
 
     @media (max-height: 680px) {
@@ -485,8 +384,6 @@
   </style>
 </head>
 <body>
-
-<div id="sound-hint">Tap anywhere to enable sound ♡</div>
 
 <div class="wrapper" id="app">
   <div class="flower-row">
@@ -513,17 +410,11 @@
   </div>
 </div>
 
-<audio id="pop" preload="auto" src="https://assets.mixkit.co/sfx/preview/mixkit-fast-small-sweep-transition-166.mp3"></audio>
-<audio id="sparkle" preload="auto" src="https://assets.mixkit.co/sfx/preview/mixkit-magic-sweep-game-trophy-257.mp3"></audio>
-
 <script>
 const noBtn = document.getElementById("noBtn");
 const yesBtn = document.getElementById("yesBtn");
 const capybara = document.getElementById("capybara");
 const app = document.getElementById("app");
-const pop = document.getElementById("pop");
-const sparkle = document.getElementById("sparkle");
-const soundHint = document.getElementById("sound-hint");
 
 let noClickCount = 0;
 let yesGrowing = false;
@@ -550,18 +441,6 @@ const capyJudgements = [
 let judgementQueue = [...capyJudgements];
 
 const heartChars = ["💖","💕","💘","🩷","💗","💝","❤️","💞"];
-
-let hasInteracted = false;
-
-document.addEventListener('touchstart', () => {
-  if (!hasInteracted) {
-    pop.volume = 0.6;
-    sparkle.volume = 0.7;
-    soundHint.style.opacity = '0';
-    setTimeout(() => soundHint.remove(), 800);
-    hasInteracted = true;
-  }
-}, { once: false });
 
 function getNonRepeatingJudgement() {
   if (judgementQueue.length === 0) {
@@ -590,20 +469,7 @@ function showCapyJudgement() {
   setTimeout(() => judge.remove(), 2200);
 }
 
-capybara.addEventListener("click", () => {
-  wiggleCapybara();
-
-  const rect = capybara.getBoundingClientRect();
-  for (let i = 0; i < 5; i++) {
-    const kiss = document.createElement("div");
-    kiss.className = "capy-kiss";
-    kiss.textContent = ["💋","💕","😘"][Math.floor(Math.random()*3)];
-    kiss.style.left = (rect.left + rect.width / 2) + "px";
-    kiss.style.top = rect.top + "px";
-    document.body.appendChild(kiss);
-    setTimeout(() => kiss.remove(), 1600);
-  }
-});
+capybara.addEventListener("click", wiggleCapybara);
 
 noBtn.addEventListener('click', () => {
   if (noDebounce) return;
@@ -631,21 +497,12 @@ noBtn.addEventListener('click', () => {
     noBtn.onclick = finalYes;
 
     showCapyJudgement();
-    if (pop) {
-      pop.currentTime = 0;
-      pop.play().catch(() => {});
-    }
   } 
   else {
     const index = Math.min(noClickCount - 1, noOptions.length - 1);
     noBtn.textContent = noOptions[index];
 
     showCapyJudgement();
-
-    if (pop) {
-      pop.currentTime = 0;
-      pop.play().catch(() => {});
-    }
   }
 });
 
@@ -738,20 +595,6 @@ document.querySelectorAll('.flower-decor').forEach(flower => {
   });
 });
 
-// Falling petals
-function createPetal() {
-  const petal = document.createElement("div");
-  petal.className = "petal";
-  petal.textContent = ["🌸","🌷","🌹"][Math.floor(Math.random()*3)];
-  petal.style.left = Math.random() * 100 + "vw";
-  petal.style.animationDuration = (8 + Math.random() * 12) + "s";
-  petal.style.animationDelay = Math.random() * 5 + "s";
-  document.body.appendChild(petal);
-  setTimeout(() => petal.remove(), 20000);
-}
-
-setInterval(createPetal, 1800);
-
 // Final yes
 function finalYes() {
   // Blank the page
@@ -794,8 +637,6 @@ function finalYes() {
 
   // After 3.5 seconds → celebration
   setTimeout(() => {
-    if (sparkle) sparkle.play().catch(() => {});
-
     document.body.classList.add('celebration');
 
     app.innerHTML = `
