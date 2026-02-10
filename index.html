@@ -314,46 +314,46 @@
 
     .love-msg {
       position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      top: 60px;
       background: rgba(255,255,255,0.94);
       color: #ff4d94;
-      padding: 12px 28px;
+      padding: 10px 24px;
       border-radius: 24px;
       font-weight: bold;
-      font-size: clamp(1.1rem, 4vw, 1.45rem);
-      box-shadow: 0 8px 24px rgba(255,77,148,0.3);
+      font-size: clamp(1.0rem, 4vw, 1.35rem);
+      box-shadow: 0 6px 20px rgba(255,77,148,0.3);
       z-index: 9999;
       pointer-events: none;
       white-space: nowrap;
       opacity: 0;
-      transform: translate(-50%, 10px) scale(0.92);
-      text-align: center;
-      animation: popupLove 1.1s ease-out forwards;
+      animation: popupLove 1.0s ease-out forwards;
     }
 
     .love-msg .mini-heart {
       position: absolute;
-      font-size: 1.4rem;
+      font-size: 1.3rem;
       color: #ff4d94;
       opacity: 0;
       pointer-events: none;
-      animation: miniHeartFloat 1.6s ease-out forwards;
+      animation: miniHeartFloat 1.4s ease-out forwards;
     }
 
-    .love-msg .mini-heart:nth-child(1) { left: -20%; animation-delay: 0.1s; }
-    .love-msg .mini-heart:nth-child(2) { left: 50%; animation-delay: 0.25s; }
-    .love-msg .mini-heart:nth-child(3) { left: 120%; animation-delay: 0.4s; }
+    .love-msg .mini-heart:nth-child(1) { left: -18%; animation-delay: 0.1s; }
+    .love-msg .mini-heart:nth-child(2) { left: 50%; animation-delay: 0.2s; }
+    .love-msg .mini-heart:nth-child(3) { left: 118%; animation-delay: 0.35s; }
 
     @keyframes popupLove {
-      0%   { opacity: 0;   transform: translate(-50%, 30px) scale(0.88); }
-      50%  { opacity: 1;   transform: translate(-50%, -3px)  scale(1.04); }
-      80%  { transform: translate(-50%, 2px) scale(0.98); }
-      100% { opacity: 1;   transform: translate(-50%, -8px) scale(1); }
+      0%   { opacity: 0;   transform: translateX(-50%) translateY(15px) scale(0.92); }
+      60%  { opacity: 1;   transform: translateX(-50%) translateY(-2px)  scale(1.03); }
+      100% { opacity: 1;   transform: translateX(-50%) translateY(0px)   scale(1);   }
     }
 
     @keyframes miniHeartFloat {
-      0%   { opacity: 0; transform: translateY(0) scale(0.6); }
-      40%  { opacity: 0.9; transform: translateY(-30px) scale(1.15); }
-      100% { opacity: 0; transform: translateY(-70px) scale(0.9); }
+      0%   { opacity: 0; transform: translateY(0) scale(0.7); }
+      50%  { opacity: 0.95; transform: translateY(-25px) scale(1.1); }
+      100% { opacity: 0; transform: translateY(-55px) scale(0.95); }
     }
 
     body.celebration .flower-row,
@@ -367,6 +367,7 @@
       h1 { font-size: clamp(1.9rem, 6.5vw, 3.2rem); margin-bottom: 18px; }
       .subtitle { margin-bottom: 20px; }
       .buttons-container { min-height: 340px; gap: 40px; }
+      .love-msg { top: 50px; font-size: clamp(0.95rem, 3.8vw, 1.2rem); padding: 8px 20px; }
     }
   </style>
 </head>
@@ -549,9 +550,6 @@ document.querySelectorAll('.flower-decor').forEach(flower => {
     const isRight = flower.classList.contains('right');
     const messageText = isRight ? "Hugs and kisses! 💕" : "I love you! 💕";
 
-    const rect = flower.getBoundingClientRect();
-    const centerY = rect.top + rect.height / 2;
-
     const msg = document.createElement('div');
     msg.className = 'love-msg';
     msg.textContent = messageText;
@@ -565,14 +563,6 @@ document.querySelectorAll('.flower-decor').forEach(flower => {
       mini.style.left = `${-20 + index * 70}%`;
       msg.appendChild(mini);
     });
-
-    // Center horizontally + enforce higher top position
-    msg.style.left = '50%';
-    msg.style.transform = 'translateX(-50%)';
-
-    const desiredTop = centerY - 25;               // ← raised (was -45)
-    const safeTop = Math.max(140, desiredTop);     // ← raised (was 120)
-    msg.style.top = safeTop + 'px';
 
     document.body.appendChild(msg);
 
