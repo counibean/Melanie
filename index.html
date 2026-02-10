@@ -566,12 +566,12 @@ document.querySelectorAll('.flower-decor').forEach(flower => {
       msg.appendChild(mini);
     });
 
-    // Center horizontally + enforce safe/higher top position
+    // Center horizontally + enforce higher top position
     msg.style.left = '50%';
     msg.style.transform = 'translateX(-50%)';
 
-    const desiredTop = centerY - 45;
-    const safeTop = Math.max(120, desiredTop);
+    const desiredTop = centerY - 25;               // ← raised (was -45)
+    const safeTop = Math.max(140, desiredTop);     // ← raised (was 120)
     msg.style.top = safeTop + 'px';
 
     document.body.appendChild(msg);
