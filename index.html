@@ -186,17 +186,15 @@
     }
 
     .flower-decor {
-      position: absolute;
-      top: 5%;
-      left: 5%;
-      width: clamp(70px, 18vw, 120px);
-      max-height: 25vh;
+      display: block;
+      margin: 0 auto 30px auto;
+      width: clamp(90px, 22vw, 140px);
+      max-height: 28vh;
       height: auto;
       object-fit: contain;
       cursor: pointer;
       user-select: none;
       transition: filter 0.3s, transform 0.3s;
-      z-index: 5;
     }
 
     .flower-decor.glow {
@@ -303,16 +301,37 @@
     body.celebration #capybara-container {
       display: none !important;
     }
+
+    /* Bonus: Better spacing on very short screens */
+    @media (max-height: 680px) {
+      h1 {
+        font-size: clamp(1.9rem, 6.5vw, 3.2rem);
+        margin-bottom: 12px;
+      }
+      .subtitle {
+        font-size: clamp(1.2rem, 4.5vw, 1.5rem);
+        margin-bottom: 20px;
+      }
+      .flower-decor {
+        max-height: 18vh;
+        margin-bottom: 20px;
+      }
+      .buttons-container {
+        min-height: 340px;
+        gap: 40px;
+      }
+    }
   </style>
 </head>
 <body>
 
-<img src="https://image.similarpng.com/file/similarpng/original-picture/2022/02/Romantic-pink-rose-bouquet-isolated-on-transparent-background-PNG.png" 
-     class="flower-decor" 
-     alt="Rose bouquet">
-
 <div class="wrapper" id="app">
   <h1>To My Melanie (蔡聿囷) 💕</h1>
+  
+  <img src="https://image.similarpng.com/file/similarpng/original-picture/2022/02/Romantic-pink-rose-bouquet-isolated-on-transparent-background-PNG.png" 
+       class="flower-decor" 
+       alt="Rose bouquet">
+
   <p class="subtitle">親愛的, will you make me the happiest boy in the whole world and be my Valentine? 🌸💖</p>
 
   <div class="buttons-container">
