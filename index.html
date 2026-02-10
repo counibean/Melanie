@@ -681,6 +681,17 @@ function finalYes() {
 
   app.innerHTML = `
     <div style="overflow-y: auto; max-height: 90dvh; width: 100%; padding: 20px; box-sizing: border-box; -webkit-overflow-scrolling: touch;">
+
+      <div id="countdown">
+        <h3>Counting down to 14 Feb 19:25 💕</h3>
+        <div class="countdown-timer" id="timer">
+          <div class="countdown-unit"><span id="days">0</span><small>days</small></div>
+          <div class="countdown-unit"><span id="hours">00</span><small>hours</small></div>
+          <div class="countdown-unit"><span id="minutes">00</span><small>minutes</small></div>
+          <div class="countdown-unit"><span id="seconds">00</span><small>seconds</small></div>
+        </div>
+      </div>
+
       <h1 style="font-size: clamp(3.5rem, 12vw, 5.5rem); color: white; margin: 20px 0; text-shadow: 0 4px 12px rgba(0,0,0,0.4);">
         YAYYY!!! 💖
       </h1>
@@ -692,16 +703,6 @@ function finalYes() {
       
       <img src="https://i.postimg.cc/yYR21mkP/8b0f9164-ce1a-4748-9f48-386ba1f45bef.jpg" alt="Us together 💕" class="memory-photo">
       <p class="photo-caption" style="text-align:center; color:white; font-style:italic; margin-top: 15px;">I miss you! see you soon 💕</p>
-
-      <div id="countdown">
-        <h3>Counting down to 14 Feb 19:25 💕</h3>
-        <div class="countdown-timer" id="timer">
-          <div class="countdown-unit"><span id="days">0</span><small>days</small></div>
-          <div class="countdown-unit"><span id="hours">00</span><small>hours</small></div>
-          <div class="countdown-unit"><span id="minutes">00</span><small>minutes</small></div>
-          <div class="countdown-unit"><span id="seconds">00</span><small>seconds</small></div>
-        </div>
-      </div>
     </div>
   `;
 
