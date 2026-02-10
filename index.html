@@ -255,6 +255,71 @@
       100% { opacity: 1; transform: scale(1); }
     }
 
+    #countdown {
+      margin: 40px auto 20px;
+      padding: 20px;
+      background: rgba(255, 255, 255, 0.25);
+      border-radius: 24px;
+      max-width: 90%;
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(255, 255, 255, 0.4);
+      color: white;
+      text-align: center;
+      box-shadow: 0 8px 32px rgba(255, 77, 148, 0.25);
+    }
+
+    #countdown h3 {
+      margin: 0 0 16px;
+      font-size: clamp(1.4rem, 5vw, 1.9rem);
+      color: #fff;
+      text-shadow: 0 2px 8px rgba(0,0,0,0.4);
+    }
+
+    .countdown-timer {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .countdown-unit {
+      background: rgba(255, 77, 148, 0.85);
+      padding: 12px 18px;
+      border-radius: 16px;
+      min-width: 70px;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.3);
+      animation: heartbeat 2s infinite ease-in-out;
+    }
+
+    .countdown-unit span {
+      display: block;
+      font-size: clamp(1.8rem, 7vw, 2.8rem);
+      font-weight: bold;
+      line-height: 1;
+      color: white;
+      text-shadow: 0 2px 6px rgba(0,0,0,0.5);
+    }
+
+    .countdown-unit small {
+      font-size: 0.9rem;
+      opacity: 0.9;
+    }
+
+    @keyframes heartbeat {
+      0%, 100% { transform: scale(1); }
+      50%      { transform: scale(1.06); }
+    }
+
+    #countdown.finished {
+      background: linear-gradient(135deg, #ff4d94, #ff80ab);
+      animation: celebrationPulse 3s infinite;
+    }
+
+    @keyframes celebrationPulse {
+      0%,100% { box-shadow: 0 0 20px rgba(255,77,148,0.6); }
+      50%     { box-shadow: 0 0 40px rgba(255,77,148,1); }
+    }
+
     .heart {
       position: absolute;
       font-size: clamp(1.2rem,3vw,2.5rem);
@@ -368,6 +433,7 @@
       .subtitle { margin-bottom: 20px; }
       .buttons-container { min-height: 340px; gap: 40px; }
       .love-msg { top: 35px; font-size: clamp(0.95rem, 3.8vw, 1.2rem); padding: 8px 20px; }
+      #countdown { margin: 30px auto 15px; padding: 16px; }
     }
   </style>
 </head>
@@ -484,7 +550,6 @@ noBtn.addEventListener('click', () => {
   wiggleCapybara();
 
   if (noClickCount >= 5 && !yesGrowing) {
-    // SURRENDER MOMENT ───────────────────────────────────────────────
     yesGrowing = true;
     yesBtn.classList.add('surrenderYes');
     yesBtn.disabled = false;
@@ -501,7 +566,6 @@ noBtn.addEventListener('click', () => {
     noBtn.classList.add('surrender');
     noBtn.onclick = finalYes;
 
-    // Final judgment only once — at the moment of surrender
     showCapyJudgement();
     if (pop) {
       pop.currentTime = 0;
@@ -509,7 +573,6 @@ noBtn.addEventListener('click', () => {
     }
   } 
   else {
-    // Normal clicks (1–4): change text + show judgment
     const index = Math.min(noClickCount - 1, noOptions.length - 1);
     noBtn.textContent = noOptions[index];
 
@@ -629,14 +692,58 @@ function finalYes() {
       
       <img src="https://i.postimg.cc/yYR21mkP/8b0f9164-ce1a-4748-9f48-386ba1f45bef.jpg" alt="Us together 💕" class="memory-photo">
       <p class="photo-caption" style="text-align:center; color:white; font-style:italic; margin-top: 15px;">I miss you! see you soon 💕</p>
+
+      <div id="countdown">
+        <h3>Counting down to 14 Feb 19:25 💕</h3>
+        <div class="countdown-timer" id="timer">
+          <div class="countdown-unit"><span id="days">0</span><small>days</small></div>
+          <div class="countdown-unit"><span id="hours">00</span><small>hours</small></div>
+          <div class="countdown-unit"><span id="minutes">00</span><small>minutes</small></div>
+          <div class="countdown-unit"><span id="seconds">00</span><small>seconds</small></div>
+        </div>
+      </div>
     </div>
   `;
 
   document.body.style.background = "linear-gradient(135deg, #ff9a9e, #fad0c4, #ff9a9e)";
   document.body.style.animation = "breatheBg 12s ease infinite";
 
+  updateCountdown();
+  setInterval(updateCountdown, 1000);
+
   setInterval(createHeart, 300);
   setInterval(createFirework, 700);
+}
+
+function updateCountdown() {
+  const target = new Date('2026-02-14T19:25:00');
+  const now = new Date();
+  const diff = target - now;
+
+  const countdownEl = document.getElementById('countdown');
+
+  if (diff <= 0) {
+    countdownEl.innerHTML = `
+      <h3 style="margin:0; font-size: clamp(1.8rem, 6vw, 2.8rem);">
+        It's our day! 💕🌹
+      </h3>
+      <p style="margin-top:12px; font-size:1.2rem; opacity:0.9;">
+        I love you Melanie 🥰
+      </p>
+    `;
+    countdownEl.classList.add('finished');
+    return;
+  }
+
+  const days    = Math.floor(diff / (1000 * 60 * 60 * 24));
+  const hours   = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+  const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+  const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+
+  document.getElementById('days').textContent    = days;
+  document.getElementById('hours').textContent   = String(hours).padStart(2, '0');
+  document.getElementById('minutes').textContent = String(minutes).padStart(2, '0');
+  document.getElementById('seconds').textContent = String(seconds).padStart(2, '0');
 }
 
 function createHeart() {
