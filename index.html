@@ -435,23 +435,6 @@
       display: none !important;
     }
 
-    #sound-hint {
-      position: fixed;
-      bottom: 20px;
-      left: 50%;
-      transform: translateX(-50%);
-      background: rgba(255,255,255,0.9);
-      color: #d63384;
-      padding: 10px 20px;
-      border-radius: 30px;
-      font-size: 1rem;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-      z-index: 9999;
-      pointer-events: none;
-      opacity: 0;
-      transition: opacity 0.6s;
-    }
-
     @media (max-height: 680px) {
       .flower-row { margin: 8px auto 4px auto; }
       .flower-decor { max-height: 20vh; }
@@ -612,20 +595,20 @@ function mergeButtons() {
   const mergeX = ((yesRect.left + yesRect.width / 2) + (noRect.left + noRect.width / 2)) / 2 - containerRect.left;
   const mergeY = ((yesRect.top + yesRect.height / 2) + (noRect.top + noRect.height / 2)) / 2 - containerRect.top;
 
-  // Animate movement to merge point
+  // Animate movement to merge point with scale down
   setTimeout(() => {
-    yesBtn.style.transition = 'transform 1s ease, opacity 1s ease';
-    yesBtn.style.transform = `translate(${mergeX - (yesRect.left - containerRect.left + yesRect.width / 2)}px, ${mergeY - (yesRect.top - containerRect.top + yesRect.height / 2)}px)`;
+    yesBtn.style.transition = 'transform 1.2s ease-in-out, opacity 0.8s ease-in-out';
+    yesBtn.style.transform = `translate(${mergeX - (yesRect.left - containerRect.left + yesRect.width / 2)}px, ${mergeY - (yesRect.top - containerRect.top + yesRect.height / 2)}px) scale(0)`;
 
-    noBtn.style.transition = 'transform 1s ease, opacity 1s ease';
-    noBtn.style.transform = `translate(${mergeX - (noRect.left - containerRect.left + noRect.width / 2)}px, ${mergeY - (noRect.top - containerRect.top + noRect.height / 2)}px)`;
+    noBtn.style.transition = 'transform 1.2s ease-in-out, opacity 0.8s ease-in-out';
+    noBtn.style.transform = `translate(${mergeX - (noRect.left - containerRect.left + noRect.width / 2)}px, ${mergeY - (noRect.top - containerRect.top + noRect.height / 2)}px) scale(0)`;
   }, 100);
 
-  // Fade out after movement starts
+  // Fade out during movement
   setTimeout(() => {
     yesBtn.style.opacity = '0';
     noBtn.style.opacity = '0';
-  }, 600);
+  }, 400);
 
   // Remove old buttons and create new merged button
   setTimeout(() => {
@@ -638,23 +621,24 @@ function mergeButtons() {
     mergedBtn.style.background = 'linear-gradient(135deg, #ff4d94, #ff80ab)';
     mergedBtn.style.color = 'white';
     mergedBtn.style.opacity = '0';
-    mergedBtn.style.transition = 'opacity 1s ease';
+    mergedBtn.style.transform = 'translate(-50%, -50%) scale(0)';
+    mergedBtn.style.transition = 'opacity 1s ease-in-out, transform 1s ease-in-out';
     mergedBtn.style.position = 'absolute';
     mergedBtn.style.left = `${mergeX}px`;
     mergedBtn.style.top = `${mergeY}px`;
     mergedBtn.style.fontSize = 'clamp(1.5rem, 5.5vw, 2rem)';
     mergedBtn.style.padding = '18px 52px';
     mergedBtn.style.zIndex = '3';
-    mergedBtn.style.transform = 'translate(-50%, -50%)'; // Center it at the merge point
     mergedBtn.addEventListener('click', finalYes);
 
     container.appendChild(mergedBtn);
 
     setTimeout(() => {
       mergedBtn.style.opacity = '1';
+      mergedBtn.style.transform = 'translate(-50%, -50%) scale(1)';
       mergedBtn.style.animation = 'gentleBounce 3s infinite ease-in-out, yesGlow 4s infinite ease-in-out';
     }, 100);
-  }, 1200);
+  }, 1500);
 }
 
 // Trail hearts
