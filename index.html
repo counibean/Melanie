@@ -316,7 +316,7 @@
       position: absolute;
       left: 50%;
       transform: translateX(-50%);
-      top: 45px;                           /* ← raised from 60px to 45px */
+      top: 45px;
       background: rgba(255,255,255,0.94);
       color: #ff4d94;
       padding: 10px 24px;
@@ -412,9 +412,24 @@ const sparkle = document.getElementById("sparkle");
 let noClickCount = 0;
 let yesGrowing = false;
 let yesScale = 1;
+let lastJudgementIndex = -1;
 
-const noOptions = ["Nooo? Really?!?😱", "STOP!!😢寶寶為什麼?😭", "No? Are you serious baby?!? 😩😵", "不好😰", "寶寶 please! PLEASE PLEASE! 🥺😿"];
-const capyJudgements = ["🤨 really?", "…wow.", "that was a choice.", "side eye 👀", "capy disapproves.", "hm."];
+const noOptions = [
+  "Nooo? Really?!? 😱",
+  "STOP!! 😢 寶寶為什麼? 😭",
+  "No? Are you serious baby?!? 😩😵",
+  "不好 😰",
+  "寶寶 please! PLEASE PLEASE! 🥺😿"
+];
+
+const capyJudgements = [
+  "🤨 really?",
+  "…wow.",
+  "that was a choice.",
+  "side eye 👀",
+  "capy disapproves.",
+  "hm."
+];
 
 const heartChars = ["💖","💕","💘","🩷","💗","💝","❤️","💞"];
 
@@ -423,7 +438,15 @@ document.addEventListener('touchstart', () => {
   sparkle.volume = 0.7;
 }, { once: true });
 
-// CAPYBARA INTERACTION
+function getNonRepeatingJudgement() {
+  let index;
+  do {
+    index = Math.floor(Math.random() * capyJudgements.length);
+  } while (index === lastJudgementIndex && capyJudgements.length > 1);
+  lastJudgementIndex = index;
+  return capyJudgements[index];
+}
+
 capybara.addEventListener("click", () => {
   capybara.classList.remove("wiggle");
   void capybara.offsetWidth;
@@ -441,7 +464,6 @@ capybara.addEventListener("click", () => {
   }
 });
 
-// NO BUTTON + CAPY JUDGEMENT
 noBtn.addEventListener('click', () => {
   noClickCount++;
 
@@ -450,13 +472,6 @@ noBtn.addEventListener('click', () => {
   capybara.classList.add("wiggle");
 
   const rect = capybara.getBoundingClientRect();
-  const judge = document.createElement("div");
-  judge.className = "capy-judge";
-  judge.textContent = capyJudgements[Math.floor(Math.random() * capyJudgements.length)];
-  judge.style.left = (rect.left + rect.width / 2) + "px";
-  judge.style.top = (rect.top - 10) + "px";
-  document.body.appendChild(judge);
-  setTimeout(() => judge.remove(), 2200);
 
   if (noClickCount >= 5 && !yesGrowing) {
     yesGrowing = true;
@@ -471,21 +486,42 @@ noBtn.addEventListener('click', () => {
       if (yesScale >= 2.5) clearInterval(growInterval);
     }, 100);
 
-    noBtn.textContent = "ugh okayyy... YES YES YES! Of course! Only for YOU😏💕";
+    noBtn.textContent = "ugh okayyy... YES YES YES! Of course! Only for YOU 😏💕";
     noBtn.classList.add('surrender');
     noBtn.onclick = () => finalYes();
+
+    // Show the FINAL capybara judgment when surrendering
+    const judge = document.createElement("div");
+    judge.className = "capy-judge";
+    judge.textContent = getNonRepeatingJudgement();
+    judge.style.left = (rect.left + rect.width / 2) + "px";
+    judge.style.top = (rect.top - 10) + "px";
+    document.body.appendChild(judge);
+    setTimeout(() => judge.remove(), 2200);
+
+    if (pop) {
+      pop.currentTime = 0;
+      pop.play().catch(() => {});
+    }
   } else {
     const index = Math.min(noClickCount - 1, noOptions.length - 1);
     noBtn.textContent = noOptions[index];
-  }
 
-  if (pop) {
-    pop.currentTime = 0;
-    pop.play().catch(() => {});
+    const judge = document.createElement("div");
+    judge.className = "capy-judge";
+    judge.textContent = getNonRepeatingJudgement();
+    judge.style.left = (rect.left + rect.width / 2) + "px";
+    judge.style.top = (rect.top - 10) + "px";
+    document.body.appendChild(judge);
+    setTimeout(() => judge.remove(), 2200);
+
+    if (pop) {
+      pop.currentTime = 0;
+      pop.play().catch(() => {});
+    }
   }
 });
 
-// TRAIL HEARTS
 let isDrawingHearts = false;
 let lastX = 0, lastY = 0;
 let throttleTimer = null;
@@ -541,7 +577,6 @@ document.addEventListener("mousedown", onPointerDown);
 document.addEventListener("mousemove", onPointerMove);
 document.addEventListener("mouseup", onPointerUp);
 
-// ─── FLOWER CLICK ────────────────────────────────────────────────────────
 document.querySelectorAll('.flower-decor').forEach(flower => {
   flower.addEventListener('click', () => {
     flower.classList.add('glow');
@@ -554,7 +589,6 @@ document.querySelectorAll('.flower-decor').forEach(flower => {
     msg.className = 'love-msg';
     msg.textContent = messageText;
 
-    // Add mini hearts
     const miniHearts = ['💗', '💖', '💕'];
     miniHearts.forEach((heart, index) => {
       const mini = document.createElement('span');
@@ -566,7 +600,6 @@ document.querySelectorAll('.flower-decor').forEach(flower => {
 
     document.body.appendChild(msg);
 
-    // Fade out and remove
     setTimeout(() => {
       msg.style.opacity = '0';
       setTimeout(() => msg.remove(), 700);
@@ -576,7 +609,6 @@ document.querySelectorAll('.flower-decor').forEach(flower => {
   });
 });
 
-// ─── FINAL YES ───────────────────────────────────────────────────────────
 function finalYes() {
   if (sparkle) sparkle.play().catch(() => {});
 
