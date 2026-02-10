@@ -481,18 +481,18 @@ let yesScale = 1;
 let lastJudgementIndex = -1;
 
 const noOptions = [
-  "Nooo? Really?!? 😱",
-  "STOP!! 😢 寶寶為什麼? 😭",
-  "No? Are you serious baby?!? 😩😵",
-  "不好 😰",
-  "寶寶 please! PLEASE PLEASE! 🥺😿"
+  "No - Really?!? 😱",
+  "No - 寶寶為什麼? 😭",
+  "No no - Are you serious baby?!? 😩😵",
+  "Nooo - 不好 😰",
+  "Nooo - 寶寶 PLEASE PLS PLS?! 🥺😿"
 ];
 
 const capyJudgements = [
   "🤨 really?",
   "…wow.",
-  "that was a choice.",
-  "side eye 👀",
+  "不好👎🏼",
+  "you're going to say no?",
   "capy disapproves.",
   "hm."
 ];
@@ -648,7 +648,7 @@ document.querySelectorAll('.flower-decor').forEach(flower => {
     if ('vibrate' in navigator) navigator.vibrate([50, 30, 50]);
 
     const isRight = flower.classList.contains('right');
-    const messageText = isRight ? "Hugs and kisses! 💕" : "I love you! 💕";
+    const messageText = isRight ? "我想你想到心都痛了! 💕" : "I love you! 💕";
 
     const msg = document.createElement('div');
     msg.className = 'love-msg';
