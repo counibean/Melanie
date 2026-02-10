@@ -202,16 +202,11 @@
       width: clamp(70px, 18vw, 110px);
       cursor: pointer;
       user-select: none;
-      transition: transform 1.2s ease, filter 1.2s ease;
+      transition: transform 0.8s ease;
     }
     
     #capybara.wiggle {
       animation: capyWiggle 0.6s ease-in-out;
-    }
-
-    #capybara.giant-easter-egg {
-      transform: scale(3.2) !important;
-      filter: brightness(1.15) hue-rotate(15deg) saturate(1.4);
     }
 
     @keyframes capyWiggle {
@@ -526,7 +521,6 @@ let noClickCount = 0;
 let yesGrowing = false;
 let yesScale = 1;
 let noDebounce = false;
-let capyClickCount = 0;
 let isMerged = false;
 
 const noOptions = [
@@ -536,17 +530,6 @@ const noOptions = [
   "Nooo - 不好 😰",
   "Nooo - 寶寶 PLEASE PLS PLS?! 🥺😿"
 ];
-
-const capyJudgements = [
-  "🤨 really?",
-  "…wow.",
-  "不好👎🏼",
-  "you're going to say no?",
-  "capy disapproves.",
-  "hm."
-];
-
-let judgementQueue = [...capyJudgements];
 
 const heartChars = ["💖","💕","💘","🩷","💗","💝","❤️","💞"];
 
@@ -562,38 +545,14 @@ document.addEventListener('touchstart', () => {
   }
 }, { once: false });
 
-function getNonRepeatingJudgement() {
-  if (judgementQueue.length === 0) judgementQueue = [...capyJudgements];
-  const index = Math.floor(Math.random() * judgementQueue.length);
-  const judgement = judgementQueue[index];
-  judgementQueue.splice(index, 1);
-  return judgement;
-}
-
 function wiggleCapybara() {
   capybara.classList.remove("wiggle");
   void capybara.offsetWidth;
   capybara.classList.add("wiggle");
 }
 
-function showCapyJudgement() {
-  const rect = capybara.getBoundingClientRect();
-  const judge = document.createElement("div");
-  judge.className = "capy-judge";
-  judge.textContent = getNonRepeatingJudgement();
-  judge.style.left = (rect.left + rect.width / 2) + "px";
-  judge.style.top = (rect.top - 10) + "px";
-  document.body.appendChild(judge);
-  setTimeout(() => judge.remove(), 2200);
-}
-
 capybara.addEventListener("click", () => {
-  capyClickCount++;
   wiggleCapybara();
-
-  if (capyClickCount >= 8) {
-    capybara.classList.add("giant-easter-egg");
-  }
 
   const rect = capybara.getBoundingClientRect();
   for (let i = 0; i < 5; i++) {
@@ -619,7 +578,6 @@ noBtn.addEventListener('click', () => {
     yesGrowing = true;
     isMerged = true;
 
-    // Merge logic: hide original yes, make noBtn become the big YES
     yesBtn.style.display = "none";
     noBtn.textContent = "YES YES YES! Of course 寶寶～ 💕🥰";
     noBtn.classList.add('merged-yes');
@@ -631,18 +589,23 @@ noBtn.addEventListener('click', () => {
       if (yesScale >= 1.8) clearInterval(growInterval);
     }, 80);
 
-    showCapyJudgement();
-    if (pop) pop.currentTime = 0, pop.play().catch(() => {});
+    if (pop) {
+      pop.currentTime = 0;
+      pop.play().catch(() => {});
+    }
   } 
   else {
     const index = Math.min(noClickCount - 1, noOptions.length - 1);
     noBtn.textContent = noOptions[index];
-    showCapyJudgement();
-    if (pop) pop.currentTime = 0, pop.play().catch(() => {});
+
+    if (pop) {
+      pop.currentTime = 0;
+      pop.play().catch(() => {});
+    }
   }
 });
 
-// Trail hearts (unchanged)
+// Trail hearts
 let isDrawingHearts = false;
 let lastX = 0, lastY = 0;
 let throttleTimer = null;
@@ -698,7 +661,7 @@ document.addEventListener("mousedown", onPointerDown);
 document.addEventListener("mousemove", onPointerMove);
 document.addEventListener("mouseup", onPointerUp);
 
-// Flower click (unchanged)
+// Flower click
 document.querySelectorAll('.flower-decor').forEach(flower => {
   flower.addEventListener('click', () => {
     flower.classList.add('glow');
@@ -745,7 +708,7 @@ function createPetal() {
 
 setInterval(createPetal, 1800);
 
-// Final yes
+// Final yes – no judgment bubble here
 function finalYes() {
   app.innerHTML = '';
 
@@ -762,9 +725,6 @@ function finalYes() {
   capyImg.alt = "Cute Capy with Flower";
   capyImg.style.width = 'clamp(70px, 18vw, 110px)';
   capyImg.style.transition = 'transform 2s ease-in-out';
-  if (capyClickCount >= 8) {
-    capyImg.classList.add("giant-easter-egg");
-  }
 
   const message = document.createElement('div');
   message.textContent = "我早就知道你會答應的～嘻嘻";
