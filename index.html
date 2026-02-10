@@ -344,10 +344,10 @@
     .love-msg .mini-heart:nth-child(3) { left: 120%; animation-delay: 0.5s; }
 
     @keyframes popupLove {
-      0% { opacity: 0; transform: translate(-50%, 40px) scale(0.7); }
-      60% { opacity: 1; transform: translate(-50%, -10px) scale(1.08); }
-      80% { transform: translate(-50%, 0px) scale(0.96); }
-      100% { opacity: 1; transform: translate(-50%, -30px) scale(1); }
+      0%   { opacity: 0; transform: translate(-50%, 80px) scale(0.7); }   /* ← changed from 60px */
+      60%  { opacity: 1; transform: translate(-50%, -5px) scale(1.08); }  /* softer peak */
+      80%  { transform: translate(-50%, 5px) scale(0.96); }
+      100% { opacity: 1; transform: translate(-50%, -20px) scale(1); }    /* ← ends a bit higher */
     }
 
     @keyframes miniHeartFloat {
@@ -566,10 +566,13 @@ document.querySelectorAll('.flower-decor').forEach(flower => {
       msg.appendChild(mini);
     });
 
-    // Center horizontally between flowers
+    // Center horizontally + enforce safe top position
     msg.style.left = '50%';
     msg.style.transform = 'translateX(-50%)';
-    msg.style.top  = (centerY - 60) + 'px';  // adjust vertical offset
+
+    const desiredTop = centerY - 60;
+    const safeTop = Math.max(100, desiredTop);   // ← prevents clipping at top on tall screens
+    msg.style.top = safeTop + 'px';
 
     document.body.appendChild(msg);
 
