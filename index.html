@@ -100,7 +100,6 @@
       50% { transform: scale(1.06); }
     }
 
-    /* ─── rest of your original styles (buttons, capybara, hearts, celebration, etc.) ─── */
     .buttons-container {
       position: relative;
       min-height: 420px;
@@ -168,6 +167,7 @@
       margin-top: 10px;
       display: flex;
       justify-content: center;
+      position: relative; /* helps contain capy kisses if needed */
     }
 
     #capybara {
@@ -175,7 +175,7 @@
       cursor: pointer;
       user-select: none;
     }
-    
+
     #capybara.wiggle {
       animation: capyWiggle 0.6s ease-in-out;
     }
@@ -188,9 +188,36 @@
       100% { transform: rotate(0) scale(1); }
     }
 
-    .capy-kiss, .capy-judge {
+    .capy-kiss {
       position: absolute;
+      font-size: 1.6rem;
+      animation: kissPop 1.6s forwards;
       pointer-events: none;
+    }
+
+    @keyframes kissPop {
+      from { opacity: 0; transform: translateY(0) scale(0.6); }
+      to   { opacity: 0; transform: translateY(-80px) scale(1.6); }
+    }
+
+    .capy-judge {
+      position: absolute;
+      background: rgba(255,255,255,0.95);
+      color: #6c757d;
+      padding: 6px 12px;
+      border-radius: 14px;
+      font-size: 0.95rem;
+      font-weight: bold;
+      box-shadow: 0 4px 14px rgba(0,0,0,0.25);
+      animation: judgeFade 2.2s forwards;
+      pointer-events: none;
+      z-index: 30;
+    }
+
+    @keyframes judgeFade {
+      0% { opacity: 0; transform: translateY(10px) scale(0.9); }
+      20% { opacity: 1; }
+      100% { opacity: 0; transform: translateY(-40px) scale(1.05); }
     }
 
     .handwritten {
@@ -225,9 +252,61 @@
       100% { opacity: 1; transform: scale(1); }
     }
 
-    .heart, .trail-heart, .spark {
+    .heart {
       position: absolute;
+      font-size: clamp(1.2rem,3vw,2.5rem);
+      animation: floatUp 12s linear forwards;
+      opacity: 0;
       pointer-events: none;
+      animation-delay: calc(var(--delay) * 1s);
+    }
+
+    @keyframes floatUp {
+      0% { opacity: 0; transform: translateY(120vh) translateX(0) rotate(0deg); }
+      10% { opacity: 1; }
+      100% { opacity: 0; transform: translateY(-40vh) translateX(var(--sway)) rotate(720deg); }
+    }
+
+    .trail-heart {
+      position: absolute;
+      font-size: clamp(1.1rem, 2.8vw, 2.2rem);
+      pointer-events: none;
+      user-select: none;
+      animation: fadeHeart 2.4s forwards;
+      opacity: 0.92;
+      color: #ff4d94;
+      z-index: 999;               /* high z-index to ensure visibility */
+      will-change: transform, opacity;
+    }
+
+    @keyframes fadeHeart {
+      0%   { opacity: 0.92; transform: scale(0.7) translateY(0) rotate(0deg); }
+      30%  { opacity: 1;    transform: scale(1.15) translateY(-12px) rotate(15deg); }
+      100% { opacity: 0;    transform: scale(1.7) translateY(-120px) rotate(45deg); }
+    }
+
+    .spark {
+      position: absolute;
+      font-size: 1.8rem;
+      animation: explode 1.4s ease-out forwards;
+      pointer-events: none;
+      transform: rotate(var(--rot));
+    }
+
+    @keyframes explode {
+      from { transform: scale(1) rotate(var(--rot)); opacity: 1; }
+      to   { transform: translate(var(--x), var(--y)) scale(0.2) rotate(calc(var(--rot) + 360deg)); opacity: 0; }
+    }
+
+    @keyframes yesShakeBounce {
+      0%,100% { transform: scale(1.4) translateY(0) rotate(0deg); }
+      25% { transform: scale(1.45) translateY(-5px) rotate(-8deg); }
+      50% { transform: scale(1.5) translateY(-10px) rotate(8deg); }
+      75% { transform: scale(1.45) translateY(-5px) rotate(-4deg); }
+    }
+
+    #yesBtn.surrenderYes {
+      animation: yesShakeBounce 0.6s ease-in-out infinite, yesGlow 0.6s alternate infinite;
     }
 
     body.celebration .flower-row,
@@ -235,7 +314,6 @@
       display: none !important;
     }
 
-    /* Short screen adjustments */
     @media (max-height: 680px) {
       .flower-row {
         margin: 8px auto 4px auto;
@@ -263,11 +341,11 @@
   <div class="flower-row">
     <img src="https://image.similarpng.com/file/similarpng/original-picture/2022/02/Romantic-pink-rose-bouquet-isolated-on-transparent-background-PNG.png" 
          class="flower-decor" 
-         alt="Rose bouquet">
+         alt="Rose bouquet left">
 
     <img src="https://image.similarpng.com/file/similarpng/original-picture/2022/02/Romantic-pink-rose-bouquet-isolated-on-transparent-background-PNG.png" 
          class="flower-decor right" 
-         alt="Mirrored rose bouquet">
+         alt="Rose bouquet right (mirrored)">
   </div>
 
   <h1>To My Melanie (蔡聿囷) 💕</h1>
@@ -309,7 +387,7 @@ document.addEventListener('touchstart', () => {
   sparkle.volume = 0.7;
 }, { once: true });
 
-// CAPYBARA INTERACTION
+// ─── CAPYBARA INTERACTION ───────────────────────────────────────
 capybara.addEventListener("click", () => {
   capybara.classList.remove("wiggle");
   void capybara.offsetWidth;
@@ -320,14 +398,14 @@ capybara.addEventListener("click", () => {
     const kiss = document.createElement("div");
     kiss.className = "capy-kiss";
     kiss.textContent = ["💋","💕","😘"][Math.floor(Math.random()*3)];
-    kiss.style.left = rect.left + rect.width / 2 + "px";
+    kiss.style.left = (rect.left + rect.width / 2) + "px";
     kiss.style.top = rect.top + "px";
     document.body.appendChild(kiss);
     setTimeout(() => kiss.remove(), 1600);
   }
 });
 
-// NO BUTTON LOGIC
+// ─── NO BUTTON + CAPY JUDGEMENT ─────────────────────────────────
 noBtn.addEventListener('click', () => {
   noClickCount++;
 
@@ -339,8 +417,8 @@ noBtn.addEventListener('click', () => {
   const judge = document.createElement("div");
   judge.className = "capy-judge";
   judge.textContent = capyJudgements[Math.floor(Math.random() * capyJudgements.length)];
-  judge.style.left = rect.left + rect.width / 2 + "px";
-  judge.style.top = rect.top - 10 + "px";
+  judge.style.left = (rect.left + rect.width / 2) + "px";
+  judge.style.top = (rect.top - 10) + "px";
   document.body.appendChild(judge);
   setTimeout(() => judge.remove(), 2200);
 
@@ -371,12 +449,14 @@ noBtn.addEventListener('click', () => {
   }
 });
 
-// TRAIL HEARTS
+// ─── TRAIL HEARTS (restored original behavior) ───────────────────────────────
 let isDrawingHearts = false;
 let lastX = 0, lastY = 0;
 let throttleTimer = null;
 
 function createTrailHeart(x, y) {
+  if (x <= 0 || y <= 0 || !isFinite(x) || !isFinite(y)) return;
+
   const heart = document.createElement("div");
   heart.className = "trail-heart";
   heart.textContent = heartChars[Math.floor(Math.random() * heartChars.length)];
@@ -396,21 +476,21 @@ function createTrailHeart(x, y) {
 function onPointerDown(e) {
   isDrawingHearts = true;
   document.body.style.touchAction = 'none';
-  const x = e.clientX || (e.touches && e.touches[0].clientX);
-  const y = e.clientY || (e.touches && e.touches[0].clientY);
-  createTrailHeart(x, y);
+  const x = e.clientX || (e.touches && e.touches[0]?.clientX) || 0;
+  const y = e.clientY || (e.touches && e.touches[0]?.clientY) || 0;
+  if (x > 0 && y > 0) createTrailHeart(x, y);
   lastX = x; lastY = y;
 }
 
 function onPointerMove(e) {
   if (!isDrawingHearts) return;
-  const x = e.clientX || (e.touches && e.touches[0].clientX);
-  const y = e.clientY || (e.touches && e.touches[0].clientY);
+  const x = e.clientX || (e.touches && e.touches[0]?.clientX) || 0;
+  const y = e.clientY || (e.touches && e.touches[0]?.clientY) || 0;
   
   if (!throttleTimer) {
-    throttleTimer = setTimeout(() => { throttleTimer = null; }, 100);
+    throttleTimer = setTimeout(() => { throttleTimer = null; }, 80);
     const dist = Math.hypot(x - lastX, y - lastY);
-    if (dist > 18) {
+    if (dist > 16) {  // slightly smaller threshold for smoother feel
       createTrailHeart(x, y);
       lastX = x; lastY = y;
     }
@@ -424,24 +504,25 @@ function onPointerUp() {
 
 document.addEventListener("pointerdown", onPointerDown, { passive: false });
 document.addEventListener("pointermove", onPointerMove, { passive: false });
-document.addEventListener("pointerup",   onPointerUp);
+document.addEventListener("pointerup", onPointerUp);
 document.addEventListener("pointercancel", onPointerUp);
 
-document.addEventListener("mousedown", e => onPointerDown(e));
-document.addEventListener("mousemove", e => onPointerMove(e));
-document.addEventListener("mouseup",   onPointerUp);
+// Also support classic mouse events
+document.addEventListener("mousedown", onPointerDown);
+document.addEventListener("mousemove", onPointerMove);
+document.addEventListener("mouseup", onPointerUp);
 
-// FLOWER CLICK (now works on both flowers)
+// ─── FLOWER BOUQUET CLICK (both flowers) ────────────────────────────────
 document.querySelectorAll('.flower-decor').forEach(flower => {
-  flower.addEventListener('click', (e) => {
+  flower.addEventListener('click', () => {
     flower.classList.add('glow');
     if ('vibrate' in navigator) navigator.vibrate([50, 30, 50]);
 
     let msg = document.createElement('div');
     msg.textContent = "I love you! 💕";
     msg.style.position = 'absolute';
-    msg.style.left = (flower.offsetLeft + flower.offsetWidth + 10) + 'px';
-    msg.style.top = (flower.offsetTop + flower.offsetHeight / 2 - 15) + 'px';
+    msg.style.left = (flower.getBoundingClientRect().left + flower.offsetWidth + 10) + 'px';
+    msg.style.top = (flower.getBoundingClientRect().top + flower.offsetHeight / 2 - 15) + 'px';
     msg.style.background = 'rgba(255,255,255,0.85)';
     msg.style.color = '#ff4d94';
     msg.style.padding = '6px 12px';
@@ -458,7 +539,7 @@ document.querySelectorAll('.flower-decor').forEach(flower => {
   });
 });
 
-// FINAL YES (celebration)
+// ─── FINAL YES ───────────────────────────────────────────────────────────
 function finalYes() {
   if (sparkle) sparkle.play().catch(() => {});
 
