@@ -9,6 +9,8 @@
   <!-- Preload important assets -->
   <link rel="preload" href="https://i.postimg.cc/7h1FNTdx/A28577C0-A453-462E-86D3-117A705C9067.png" as="image">
   <link rel="preload" href="https://i.postimg.cc/yYR21mkP/8b0f9164-ce1a-4748-9f48-386ba1f45bef.jpg" as="image">
+  <link rel="preload" href="https://assets.mixkit.co/sfx/preview/mixkit-fast-small-sweep-transition-166.mp3" as="audio">
+  <link rel="preload" href="https://assets.mixkit.co/sfx/preview/mixkit-magic-sweep-game-trophy-257.mp3" as="audio">
 
   <style>
     html, body {
@@ -30,6 +32,8 @@
       touch-action: manipulation;
       display: flex;
       flex-direction: column;
+      justify-content: center;
+      padding-bottom: env(safe-area-inset-bottom);
       position: relative;
     }
 
@@ -42,22 +46,13 @@
     .wrapper {
       text-align: center;
       width: 100%;
-      max-width: 640px;
-      padding: 20px 16px;
+      max-width: 600px;
+      padding: 20px;
       box-sizing: border-box;
+      z-index: 10;
+      pointer-events: auto;
       margin: 0 auto;
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-    }
-
-    .content-center {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: flex-start;
-      padding-top: clamp(2vh, 4vw, 5vh);
-      flex: 1;
+      position: relative;
     }
 
     .flower-row {
@@ -66,17 +61,18 @@
       align-items: flex-start;
       width: 100%;
       max-width: 520px;
-      margin: 0 auto 20px auto;
+      margin: 10px auto 5px auto;
     }
 
     .flower-decor {
-      width: clamp(70px, 18vw, 120px);
-      max-height: 22vh;
+      width: clamp(80px, 20vw, 130px);
+      max-height: 26vh;
       height: auto;
       object-fit: contain;
       cursor: pointer;
       user-select: none;
       transition: filter 0.3s, transform 0.3s;
+      transform-origin: center center;
     }
 
     .flower-decor.right {
@@ -98,119 +94,96 @@
     }
 
     h1 {
-      font-size: clamp(2.2rem, 9vw, 4.5rem);
-      margin: 12px 0 16px;
+      font-size: clamp(2.2rem, 7vw, 3.8rem);
+      margin: 0 0 25px;
       line-height: 1.1;
       animation: pulse 2.5s infinite ease-in-out;
     }
 
     .subtitle {
-      font-size: clamp(1.3rem, 5vw, 1.9rem);
-      margin: 0 0 32px 0;
+      font-size: clamp(1.4rem, 5vw, 1.8rem);
+      margin-bottom: 30px;
       color: #e91e63;
-      line-height: 1.4;
-      max-width: 92%;
     }
 
     @keyframes pulse {
       0%, 100% { transform: scale(1); }
-      50% { transform: scale(1.05); }
+      50% { transform: scale(1.06); }
     }
 
     .buttons-container {
-      display: flex;
-      flex-direction: row;
-      justify-content: center;
-      align-items: center;
-      gap: clamp(16px, 6vw, 48px);
-      margin: clamp(24px, 8vw, 60px) auto clamp(60px, 15vh, 120px) auto;
-      width: 100%;
-      max-width: 90vw;
-      padding: 0 12px;
-      box-sizing: border-box;
       position: relative;
-    }
-
-    .buttons-container.centered-merge {
+      min-height: 420px;
+      display: flex;
       flex-direction: column;
-      gap: 0;
-      margin: clamp(40px, 12vh, 80px) auto;
+      align-items: center;
+      justify-content: center;
+      gap: 60px;
     }
 
     button {
-      font-size: clamp(1.2rem, 4.5vw, 1.7rem);
-      padding: clamp(14px, 4vw, 18px) clamp(32px, 8vw, 52px);
+      font-size: clamp(1.3rem, 5vw, 1.7rem);
+      padding: 16px 48px;
       border-radius: 999px;
       border: none;
       cursor: pointer;
+      box-shadow: 0 8px 25px rgba(0,0,0,0.22);
       user-select: none;
-      transition: all 0.5s ease;
-      min-width: clamp(220px, 45vw, 280px);
-      max-width: clamp(300px, 55vw, 360px);
-      width: 100%;
-      white-space: normal;
-      text-align: center;
-      box-sizing: border-box;
+      transition: transform 0.3s ease, box-shadow 0.4s ease, opacity 0.4s ease;
       position: relative;
-      z-index: 2;
-      overflow: hidden;
-      line-height: 1.35;
     }
 
-    #yesBtn,
-    #mergedBtn {
+    #yesBtn {
       background: linear-gradient(135deg, #ff4d94, #ff80ab);
       color: white;
       animation: gentleBounce 3s infinite ease-in-out, yesGlow 4s infinite ease-in-out;
-      box-shadow: 0 8px 25px rgba(255, 77, 148, 0.4);
+      z-index: 2;
     }
 
     #yesBtn.disabled,
     #yesBtn:disabled {
-      opacity: 0.5;
+      opacity: 0.55;
       cursor: not-allowed;
       animation: none;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
       pointer-events: none;
+    }
+
+    @keyframes gentleBounce {
+      0%,100% { transform: scale(1); }
+      50% { transform: scale(1.08); }
+    }
+
+    @keyframes yesGlow {
+      0%,100% { box-shadow: 0 0 20px rgba(255,77,148,0.6); }
+      50% { box-shadow: 0 0 40px rgba(255,77,148,1); }
     }
 
     #noBtn {
       background: #6c757d;
       color: white;
-      box-shadow: 0 8px 25px rgba(0,0,0,0.22);
+      z-index: 1;
     }
 
     #noBtn.surrender {
+      font-size: clamp(1.6rem, 6vw, 2.2rem) !important;
       background: linear-gradient(135deg, #ff4d94, #ff80ab);
+      box-shadow: 0 0 30px rgba(255,77,148,0.8);
+      padding: 20px 60px;
       color: white;
-      box-shadow: 0 8px 25px rgba(255, 77, 148, 0.4);
-      animation: gentleBounce 3s infinite ease-in-out, yesGlow 4s infinite ease-in-out;
-    }
-
-    @keyframes gentleBounce {
-      0%,100% { transform: scale(1); }
-      50%     { transform: scale(1.07); }
-    }
-
-    @keyframes yesGlow {
-      0%,100% { box-shadow: 0 0 20px rgba(255,77,148,0.6); }
-      50%     { box-shadow: 0 0 40px rgba(255,77,148,1); }
+      font-weight: bold;
     }
 
     #capybara-container {
-      position: fixed;
-      bottom: clamp(16px, 5vw, 24px);
-      left: 50%;
-      transform: translateX(-50%);
-      z-index: 20;
-      pointer-events: auto;
+      margin-top: 10px;
+      display: flex;
+      justify-content: center;
     }
 
     #capybara {
-      width: clamp(80px, 22vw, 150px);
-      max-width: 170px;
-      filter: drop-shadow(0 6px 16px rgba(0,0,0,0.35));
+      width: clamp(70px, 18vw, 110px);
       cursor: pointer;
+      user-select: none;
       transition: transform 0.8s ease;
     }
     
@@ -224,6 +197,18 @@
       50% { transform: rotate(10deg) scale(1.08); }
       75% { transform: rotate(-6deg) scale(1.05); }
       100% { transform: rotate(0) scale(1); }
+    }
+
+    .capy-kiss {
+      position: absolute;
+      font-size: 1.6rem;
+      animation: kissPop 1.6s forwards;
+      pointer-events: none;
+    }
+
+    @keyframes kissPop {
+      from { opacity: 0; transform: translateY(0) scale(0.6); }
+      to   { opacity: 0; transform: translateY(-80px) scale(1.6); }
     }
 
     .capy-judge {
@@ -392,59 +377,138 @@
       to   { transform: translate(var(--x), var(--y)) scale(0.2) rotate(calc(var(--rot) + 360deg)); opacity: 0; }
     }
 
-    body.celebration .flower-row {
+    @keyframes yesShakeBounce {
+      0%,100% { transform: scale(1.4) translateY(0) rotate(0deg); }
+      25% { transform: scale(1.45) translateY(-5px) rotate(-8deg); }
+      50% { transform: scale(1.5) translateY(-10px) rotate(8deg); }
+      75% { transform: scale(1.45) translateY(-5px) rotate(-4deg); }
+    }
+
+    #yesBtn.surrenderYes {
+      animation: yesShakeBounce 0.6s ease-in-out infinite, yesGlow 0.6s alternate infinite;
+    }
+
+    .love-msg {
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      top: 45px;
+      background: rgba(255,255,255,0.94);
+      color: #ff4d94;
+      padding: 10px 24px;
+      border-radius: 24px;
+      font-weight: bold;
+      font-size: clamp(1.0rem, 4vw, 1.35rem);
+      box-shadow: 0 6px 20px rgba(255,77,148,0.3);
+      z-index: 9999;
+      pointer-events: none;
+      white-space: nowrap;
+      opacity: 0;
+      animation: popupLove 1.0s ease-out forwards;
+    }
+
+    .love-msg .mini-heart {
+      position: absolute;
+      font-size: 1.3rem;
+      color: #ff4d94;
+      opacity: 0;
+      pointer-events: none;
+      animation: miniHeartFloat 1.4s ease-out forwards;
+    }
+
+    .love-msg .mini-heart:nth-child(1) { left: -18%; animation-delay: 0.1s; }
+    .love-msg .mini-heart:nth-child(2) { left: 50%; animation-delay: 0.2s; }
+    .love-msg .mini-heart:nth-child(3) { left: 118%; animation-delay: 0.35s; }
+
+    @keyframes popupLove {
+      0%   { opacity: 0;   transform: translateX(-50%) translateY(15px) scale(0.92); }
+      60%  { opacity: 1;   transform: translateX(-50%) translateY(-2px)  scale(1.03); }
+      100% { opacity: 1;   transform: translateX(-50%) translateY(0px)   scale(1);   }
+    }
+
+    @keyframes miniHeartFloat {
+      0%   { opacity: 0; transform: translateY(0) scale(0.7); }
+      50%  { opacity: 0.95; transform: translateY(-25px) scale(1.1); }
+      100% { opacity: 0; transform: translateY(-55px) scale(0.95); }
+    }
+
+    body.celebration .flower-row,
+    body.celebration #capybara-container {
       display: none !important;
     }
 
+    #sound-hint {
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(255,255,255,0.9);
+      color: #d63384;
+      padding: 10px 20px;
+      border-radius: 30px;
+      font-size: 1rem;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+      z-index: 9999;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.6s;
+    }
+
     @media (max-height: 680px) {
-      .content-center { padding-top: 2.5vh; }
-      h1 { margin: 10px 0 12px; }
-      .subtitle { margin-bottom: 28px; }
-      .buttons-container { gap: clamp(14px, 5vw, 32px); margin-bottom: 70px; }
-      #capybara-container { bottom: 16px; }
-      button { padding: clamp(12px, 3.5vw, 16px) clamp(28px, 7vw, 44px); font-size: clamp(1.15rem, 4.8vw, 1.6rem); min-width: clamp(200px, 42vw, 260px); max-width: clamp(280px, 52vw, 340px); }
+      .flower-row { margin: 8px auto 4px auto; }
+      .flower-decor { max-height: 20vh; }
+      h1 { font-size: clamp(1.9rem, 6.5vw, 3.2rem); margin-bottom: 18px; }
+      .subtitle { margin-bottom: 20px; }
+      .buttons-container { min-height: 340px; gap: 40px; }
+      .love-msg { top: 35px; font-size: clamp(0.95rem, 3.8vw, 1.2rem); padding: 8px 20px; }
+      #countdown { margin: 30px auto 15px; padding: 16px; }
     }
 
     @media (max-height: 580px) {
-      .buttons-container { gap: 18px; margin-bottom: 60px; }
-      .subtitle { margin-bottom: 24px; }
+      .buttons-container { min-height: 280px; gap: 30px; }
     }
   </style>
 </head>
 <body>
 
-<div class="wrapper">
-  <div class="content-center" id="app">
-    <div class="flower-row">
-      <img src="https://image.similarpng.com/file/similarpng/original-picture/2022/02/Romantic-pink-rose-bouquet-isolated-on-transparent-background-PNG.png" 
-           class="flower-decor" 
-           alt="Rose bouquet">
-      <img src="https://image.similarpng.com/file/similarpng/original-picture/2022/02/Romantic-pink-rose-bouquet-isolated-on-transparent-background-PNG.png" 
-           class="flower-decor right" 
-           alt="Mirrored rose bouquet">
-    </div>
+<div id="sound-hint">Tap anywhere to enable sound ♡</div>
 
-    <h1>To My Melanie (蔡聿囷) 💕</h1>
-    
-    <p class="subtitle">親愛的, will you make me the happiest boy in the whole world and be my Valentine? 🌸💖</p>
+<div class="wrapper" id="app">
+  <div class="flower-row">
+    <img src="https://image.similarpng.com/file/similarpng/original-picture/2022/02/Romantic-pink-rose-bouquet-isolated-on-transparent-background-PNG.png" 
+         class="flower-decor" 
+         alt="Rose bouquet">
 
-    <div class="buttons-container" id="buttonsContainer">
-      <button id="yesBtn" class="disabled" disabled>YESSS!! Of course!💕🥰</button>
-      <button id="noBtn">No 🙄🥺</button>
+    <img src="https://image.similarpng.com/file/similarpng/original-picture/2022/02/Romantic-pink-rose-bouquet-isolated-on-transparent-background-PNG.png" 
+         class="flower-decor right" 
+         alt="Mirrored rose bouquet">
+  </div>
+
+  <h1>To My Melanie (蔡聿囷) 💕</h1>
+  
+  <p class="subtitle">親愛的, will you make me the happiest boy in the whole world and be my Valentine? 🌸💖</p>
+
+  <div class="buttons-container">
+    <button id="yesBtn" class="disabled" disabled>YESSS!! Of course!💕🥰</button>
+    <button id="noBtn">No 🙄🥺</button>
+
+    <div id="capybara-container">
+      <img id="capybara" src="https://i.postimg.cc/7h1FNTdx/A28577C0-A453-462E-86D3-117A705C9067.png" alt="Cute Capy with Flower">
     </div>
   </div>
 </div>
 
-<div id="capybara-container">
-  <img id="capybara" src="https://i.postimg.cc/7h1FNTdx/A28577C0-A453-462E-86D3-117A705C9067.png" alt="Cute Capy with Flower">
-</div>
+<audio id="pop" preload="auto" src="https://assets.mixkit.co/sfx/preview/mixkit-fast-small-sweep-transition-166.mp3"></audio>
+<audio id="sparkle" preload="auto" src="https://assets.mixkit.co/sfx/preview/mixkit-magic-sweep-game-trophy-257.mp3"></audio>
 
 <script>
 const noBtn = document.getElementById("noBtn");
 const yesBtn = document.getElementById("yesBtn");
 const capybara = document.getElementById("capybara");
 const app = document.getElementById("app");
-const buttonsContainer = document.getElementById("buttonsContainer");
+const pop = document.getElementById("pop");
+const sparkle = document.getElementById("sparkle");
+const soundHint = document.getElementById("sound-hint");
 
 let noClickCount = 0;
 let noDebounce = false;
@@ -469,6 +533,18 @@ const capyJudgements = [
 let judgementQueue = [...capyJudgements];
 
 const heartChars = ["💖","💕","💘","🩷","💗","💝","❤️","💞"];
+
+let hasInteracted = false;
+
+document.addEventListener('touchstart', () => {
+  if (!hasInteracted) {
+    pop.volume = 0.6;
+    sparkle.volume = 0.7;
+    soundHint.style.opacity = '0';
+    setTimeout(() => soundHint.remove(), 800);
+    hasInteracted = true;
+  }
+}, { once: false });
 
 function getNonRepeatingJudgement() {
   if (judgementQueue.length === 0) {
@@ -497,7 +573,20 @@ function showCapyJudgement() {
   setTimeout(() => judge.remove(), 2200);
 }
 
-capybara.addEventListener("click", wiggleCapybara);
+capybara.addEventListener("click", () => {
+  wiggleCapybara();
+
+  const rect = capybara.getBoundingClientRect();
+  for (let i = 0; i < 5; i++) {
+    const kiss = document.createElement("div");
+    kiss.className = "capy-kiss";
+    kiss.textContent = ["💋","💕","😘"][Math.floor(Math.random()*3)];
+    kiss.style.left = (rect.left + rect.width / 2) + "px";
+    kiss.style.top = rect.top + "px";
+    document.body.appendChild(kiss);
+    setTimeout(() => kiss.remove(), 1600);
+  }
+});
 
 noBtn.addEventListener('click', () => {
   if (noDebounce) return;
@@ -510,83 +599,28 @@ noBtn.addEventListener('click', () => {
   if (noClickCount >= 5) {
     noBtn.textContent = "ugh okayyy... YES YES YES! Of course! Only for YOU 😏💕";
     noBtn.classList.add('surrender');
-    noBtn.onclick = mergeButtons;
+    noBtn.onclick = finalYes;
 
     showCapyJudgement();
+    if (pop) {
+      pop.currentTime = 0;
+      pop.play().catch(() => {});
+    }
   } 
   else {
     const index = Math.min(noClickCount - 1, noOptions.length - 1);
     noBtn.textContent = noOptions[index];
 
     showCapyJudgement();
+
+    if (pop) {
+      pop.currentTime = 0;
+      pop.play().catch(() => {});
+    }
   }
 });
 
-function mergeButtons() {
-  yesBtn.disabled = true;
-  noBtn.disabled = true;
-
-  const containerRect = buttonsContainer.getBoundingClientRect();
-  const yesRect = yesBtn.getBoundingClientRect();
-  const noRect = noBtn.getBoundingClientRect();
-
-  yesBtn.style.position = 'absolute';
-  yesBtn.style.left = `${yesRect.left - containerRect.left}px`;
-  yesBtn.style.top = `${yesRect.top - containerRect.top}px`;
-  yesBtn.style.width = `${yesRect.width}px`;
-
-  noBtn.style.position = 'absolute';
-  noBtn.style.left = `${noRect.left - containerRect.left}px`;
-  noBtn.style.top = `${noRect.top - containerRect.top}px`;
-  noBtn.style.width = `${noRect.width}px`;
-
-  const centerX = containerRect.width / 2;
-
-  yesBtn.style.transition = 'all 1.1s cubic-bezier(0.4, 0, 0.2, 1)';
-  noBtn.style.transition = 'all 1.1s cubic-bezier(0.4, 0, 0.2, 1)';
-
-  yesBtn.style.transform = `translateX(${centerX - (yesRect.left - containerRect.left + yesRect.width / 2)}px) scale(0.92)`;
-  noBtn.style.transform = `translateX(${centerX - (noRect.left - containerRect.left + noRect.width / 2)}px) scale(0.92)`;
-
-  setTimeout(() => {
-    const merged = document.createElement('button');
-    merged.id = 'mergedBtn';
-    merged.textContent = "Yes, let's celebrate our love! 💖🥰";
-
-    merged.style.background = 'linear-gradient(135deg, #ff4d94, #ff80ab)';
-    merged.style.color = 'white';
-    merged.style.fontSize = 'clamp(1.6rem, 6vw, 2.4rem)';
-    merged.style.padding = '24px 72px';
-    merged.style.borderRadius = '999px';
-    merged.style.boxShadow = '0 8px 25px rgba(255,77,148,0.4)';
-    merged.style.border = 'none';
-    merged.style.cursor = 'pointer';
-    merged.style.whiteSpace = 'normal';
-    merged.style.animation = 'gentleBounce 3s infinite ease-in-out, yesGlow 4s infinite ease-in-out';
-    merged.style.transform = 'scale(0.85)';
-    merged.style.opacity = '0';
-    merged.style.transition = 'all 0.7s ease';
-    merged.style.minWidth = 'clamp(260px, 50vw, 320px)';
-    merged.style.maxWidth = 'clamp(320px, 60vw, 380px)';
-
-    buttonsContainer.appendChild(merged);
-
-    yesBtn.style.opacity = '0';
-    noBtn.style.opacity = '0';
-
-    setTimeout(() => {
-      yesBtn.remove();
-      noBtn.remove();
-
-      merged.style.transform = 'scale(1)';
-      merged.style.opacity = '1';
-
-      merged.addEventListener('click', finalYes);
-    }, 100);
-
-  }, 1200);
-}
-
+// Trail hearts
 let isDrawingHearts = false;
 let lastX = 0, lastY = 0;
 let throttleTimer = null;
@@ -642,6 +676,7 @@ document.addEventListener("mousedown", onPointerDown);
 document.addEventListener("mousemove", onPointerMove);
 document.addEventListener("mouseup", onPointerUp);
 
+// Flower click
 document.querySelectorAll('.flower-decor').forEach(flower => {
   flower.addEventListener('click', () => {
     flower.classList.add('glow');
@@ -674,26 +709,28 @@ document.querySelectorAll('.flower-decor').forEach(flower => {
   });
 });
 
+// Final yes
 function finalYes() {
-  const fixedCapy = document.getElementById('capybara-container');
-  fixedCapy.style.display = 'none';
-
+  // Blank the page
   app.innerHTML = '';
 
-  const growingCapyContainer = document.createElement('div');
-  growingCapyContainer.style.display = 'flex';
-  growingCapyContainer.style.flexDirection = 'column';
-  growingCapyContainer.style.alignItems = 'center';
-  growingCapyContainer.style.justifyContent = 'center';
-  growingCapyContainer.style.height = '100vh';
-  growingCapyContainer.style.width = '100vw';
+  // Create growing capybara container
+  const capyContainer = document.createElement('div');
+  capyContainer.style.display = 'flex';
+  capyContainer.style.flexDirection = 'column';
+  capyContainer.style.alignItems = 'center';
+  capyContainer.style.justifyContent = 'center';
+  capyContainer.style.height = '100vh';
+  capyContainer.style.width = '100vw';
 
+  // Create capybara image
   const capyImg = document.createElement('img');
   capyImg.src = "https://i.postimg.cc/7h1FNTdx/A28577C0-A453-462E-86D3-117A705C9067.png";
   capyImg.alt = "Cute Capy with Flower";
   capyImg.style.width = 'clamp(70px, 18vw, 110px)';
   capyImg.style.transition = 'transform 2s ease-in-out';
 
+  // Create message
   const message = document.createElement('div');
   message.textContent = "我早就知道你會答應的～嘻嘻";
   message.className = "capy-judge";
@@ -703,15 +740,18 @@ function finalYes() {
   message.style.padding = '12px 24px';
   message.style.animation = 'judgeFade 4s forwards';
 
-  growingCapyContainer.appendChild(capyImg);
-  growingCapyContainer.appendChild(message);
-  app.appendChild(growingCapyContainer);
+  capyContainer.appendChild(capyImg);
+  capyContainer.appendChild(message);
+  app.appendChild(capyContainer);
 
+  // Trigger growth
   setTimeout(() => {
     capyImg.style.transform = 'scale(2)';
   }, 100);
 
+  // After 3.5 seconds → celebration
   setTimeout(() => {
+    if (sparkle) sparkle.play().catch(() => {});
 
     document.body.classList.add('celebration');
 
@@ -751,7 +791,6 @@ function finalYes() {
 
     setInterval(createHeart, 300);
     setInterval(createFirework, 700);
-
   }, 3500);
 }
 
@@ -819,7 +858,8 @@ function createFirework() {
 
 <noscript>
   <div style="text-align:center; font-size:1.5rem; color:#d63384; padding:40px;">
-    Please enable JavaScript to see the magic happen 💕
+    <h1>To My Melanie 💕</h1>
+    <p>(JavaScript is needed for the full romantic experience 😊)</p>
   </div>
 </noscript>
 
