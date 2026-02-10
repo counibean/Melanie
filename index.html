@@ -204,18 +204,6 @@
       100% { transform: rotate(0) scale(1); }
     }
 
-    .capy-kiss {
-      position: absolute;
-      font-size: 1.6rem;
-      animation: kissPop 1.6s forwards;
-      pointer-events: none;
-    }
-
-    @keyframes kissPop {
-      from { opacity: 0; transform: translateY(0) scale(0.6); }
-      to   { opacity: 0; transform: translateY(-80px) scale(1.6); }
-    }
-
     .capy-judge {
       position: absolute;
       background: rgba(255,255,255,0.95);
@@ -543,17 +531,6 @@ function showCapyJudgement() {
 
 capybara.addEventListener("click", () => {
   wiggleCapybara();
-
-  const rect = capybara.getBoundingClientRect();
-  for (let i = 0; i < 5; i++) {
-    const kiss = document.createElement("div");
-    kiss.className = "capy-kiss";
-    kiss.textContent = ["💋","💕","😘"][Math.floor(Math.random()*3)];
-    kiss.style.left = (rect.left + rect.width / 2) + "px";
-    kiss.style.top = rect.top + "px";
-    document.body.appendChild(kiss);
-    setTimeout(() => kiss.remove(), 1600);
-  }
 });
 
 noBtn.addEventListener('click', () => {
@@ -879,11 +856,4 @@ function createFirework() {
 </script>
 
 <noscript>
-  <div style="text-align:center; font-size:1.5rem; color:#d63384; padding:40px;">
-    <h1>To My Melanie 💕</h1>
-    <p>(JavaScript is needed for the full romantic experience 😊)</p>
-  </div>
-</noscript>
-
-</body>
-</html>
+  <div style="text-align:center; font-size:1.5rem; color
