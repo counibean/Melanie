@@ -712,6 +712,8 @@ document.querySelectorAll('.flower-decor').forEach(flower => {
 // Final yes
 function finalYes() {
   const fixedCapy = document.getElementById('capybara-container');
+
+  // Hide capybara permanently right away
   fixedCapy.style.display = 'none';
 
   app.innerHTML = '';
@@ -788,7 +790,7 @@ function finalYes() {
     setInterval(createHeart, 300);
     setInterval(createFirework, 700);
 
-    fixedCapy.style.display = 'flex';
+    // No longer showing the capybara again
 
   }, 3500);
 }
@@ -856,4 +858,10 @@ function createFirework() {
 </script>
 
 <noscript>
-  <div style="text-align:center; font-size:1.5rem; color
+  <div style="text-align:center; font-size:1.5rem; color:#d63384; padding:40px;">
+    Please enable JavaScript to see the magic happen 💕
+  </div>
+</noscript>
+
+</body>
+</html>
