@@ -43,20 +43,6 @@
       100% { background-position: 0% 50%; }
     }
 
-    .petal {
-      position: absolute;
-      font-size: clamp(1.2rem, 3vw, 2.2rem);
-      opacity: 0.4;
-      pointer-events: none;
-      animation: fall linear forwards;
-      z-index: 1;
-    }
-
-    @keyframes fall {
-      0%   { transform: translateY(-10vh) rotate(0deg); opacity: 0.6; }
-      100% { transform: translateY(110vh) rotate(720deg); opacity: 0; }
-    }
-
     .wrapper {
       text-align: center;
       width: 100%;
@@ -531,6 +517,17 @@ const noOptions = [
   "Nooo - 寶寶 PLEASE PLS PLS?! 🥺😿"
 ];
 
+const capyJudgements = [
+  "🤨 really?",
+  "…wow.",
+  "不好👎🏼",
+  "you're going to say no?",
+  "capy disapproves.",
+  "hm."
+];
+
+let judgementQueue = [...capyJudgements];
+
 const heartChars = ["💖","💕","💘","🩷","💗","💝","❤️","💞"];
 
 let hasInteracted = false;
@@ -545,14 +542,34 @@ document.addEventListener('touchstart', () => {
   }
 }, { once: false });
 
+function getNonRepeatingJudgement() {
+  if (judgementQueue.length === 0) judgementQueue = [...capyJudgements];
+  const index = Math.floor(Math.random() * judgementQueue.length);
+  const judgement = judgementQueue[index];
+  judgementQueue.splice(index, 1);
+  return judgement;
+}
+
 function wiggleCapybara() {
   capybara.classList.remove("wiggle");
   void capybara.offsetWidth;
   capybara.classList.add("wiggle");
 }
 
+function showCapyJudgement() {
+  const rect = capybara.getBoundingClientRect();
+  const judge = document.createElement("div");
+  judge.className = "capy-judge";
+  judge.textContent = getNonRepeatingJudgement();
+  judge.style.left = (rect.left + rect.width / 2) + "px";
+  judge.style.top = (rect.top - 10) + "px";
+  document.body.appendChild(judge);
+  setTimeout(() => judge.remove(), 2200);
+}
+
 capybara.addEventListener("click", () => {
   wiggleCapybara();
+  showCapyJudgement();   // judgments when clicking capybara
 
   const rect = capybara.getBoundingClientRect();
   for (let i = 0; i < 5; i++) {
@@ -573,6 +590,7 @@ noBtn.addEventListener('click', () => {
 
   noClickCount++;
   wiggleCapybara();
+  showCapyJudgement();   // judgments on No clicks
 
   if (noClickCount >= 5 && !yesGrowing) {
     yesGrowing = true;
@@ -593,6 +611,7 @@ noBtn.addEventListener('click', () => {
       pop.currentTime = 0;
       pop.play().catch(() => {});
     }
+    // No judgment here when accepting
   } 
   else {
     const index = Math.min(noClickCount - 1, noOptions.length - 1);
@@ -605,7 +624,7 @@ noBtn.addEventListener('click', () => {
   }
 });
 
-// Trail hearts
+// Trail hearts (unchanged)
 let isDrawingHearts = false;
 let lastX = 0, lastY = 0;
 let throttleTimer = null;
@@ -661,7 +680,7 @@ document.addEventListener("mousedown", onPointerDown);
 document.addEventListener("mousemove", onPointerMove);
 document.addEventListener("mouseup", onPointerUp);
 
-// Flower click
+// Flower click (unchanged)
 document.querySelectorAll('.flower-decor').forEach(flower => {
   flower.addEventListener('click', () => {
     flower.classList.add('glow');
@@ -694,21 +713,7 @@ document.querySelectorAll('.flower-decor').forEach(flower => {
   });
 });
 
-// Falling petals
-function createPetal() {
-  const petal = document.createElement("div");
-  petal.className = "petal";
-  petal.textContent = ["🌸","🌷","🌹"][Math.floor(Math.random()*3)];
-  petal.style.left = Math.random() * 100 + "vw";
-  petal.style.animationDuration = (8 + Math.random() * 12) + "s";
-  petal.style.animationDelay = Math.random() * 5 + "s";
-  document.body.appendChild(petal);
-  setTimeout(() => petal.remove(), 20000);
-}
-
-setInterval(createPetal, 1800);
-
-// Final yes – no judgment bubble here
+// Final yes – no judgment bubble
 function finalYes() {
   app.innerHTML = '';
 
