@@ -43,7 +43,7 @@
       text-align: center;
       width: 100%;
       max-width: 640px;
-      padding: 24px 16px;
+      padding: 20px 16px;
       box-sizing: border-box;
       margin: 0 auto;
       flex: 1;
@@ -56,7 +56,7 @@
       flex-direction: column;
       align-items: center;
       justify-content: flex-start;
-      padding-top: 3vh;
+      padding-top: clamp(2vh, 4vw, 5vh);
       flex: 1;
     }
 
@@ -70,8 +70,8 @@
     }
 
     .flower-decor {
-      width: clamp(80px, 20vw, 130px);
-      max-height: 24vh;
+      width: clamp(70px, 18vw, 120px);
+      max-height: 22vh;
       height: auto;
       object-fit: contain;
       cursor: pointer;
@@ -98,18 +98,18 @@
     }
 
     h1 {
-      font-size: clamp(2.4rem, 8vw, 4.2rem);
+      font-size: clamp(2.2rem, 9vw, 4.5rem);
       margin: 12px 0 16px;
       line-height: 1.1;
       animation: pulse 2.5s infinite ease-in-out;
     }
 
     .subtitle {
-      font-size: clamp(1.45rem, 5.2vw, 2rem);
-      margin: 0 0 36px 0;
+      font-size: clamp(1.3rem, 5vw, 1.9rem);
+      margin: 0 0 32px 0;
       color: #e91e63;
       line-height: 1.4;
-      max-width: 90%;
+      max-width: 92%;
     }
 
     @keyframes pulse {
@@ -122,11 +122,11 @@
       flex-direction: row;
       justify-content: center;
       align-items: center;
-      gap: clamp(20px, 5vw, 50px);
-      margin: 40px auto 100px auto;
+      gap: clamp(16px, 6vw, 48px);
+      margin: clamp(24px, 8vw, 60px) auto clamp(60px, 15vh, 120px) auto;
       width: 100%;
-      max-width: 560px;
-      padding: 0 16px;
+      max-width: 90vw;
+      padding: 0 12px;
       box-sizing: border-box;
       position: relative;
     }
@@ -134,19 +134,19 @@
     .buttons-container.centered-merge {
       flex-direction: column;
       gap: 0;
-      margin: 60px auto;
+      margin: clamp(40px, 12vh, 80px) auto;
     }
 
     button {
-      font-size: clamp(1.25rem, 4.8vw, 1.75rem);
-      padding: 18px 48px;
+      font-size: clamp(1.2rem, 4.5vw, 1.7rem);
+      padding: clamp(14px, 4vw, 18px) clamp(32px, 8vw, 52px);
       border-radius: 999px;
       border: none;
       cursor: pointer;
       user-select: none;
       transition: all 0.5s ease;
-      min-width: 260px;
-      max-width: 320px;
+      min-width: clamp(220px, 45vw, 280px);
+      max-width: clamp(300px, 55vw, 360px);
       width: 100%;
       white-space: normal;
       text-align: center;
@@ -154,6 +154,7 @@
       position: relative;
       z-index: 2;
       overflow: hidden;
+      line-height: 1.35;
     }
 
     #yesBtn,
@@ -198,7 +199,7 @@
 
     #capybara-container {
       position: fixed;
-      bottom: 24px;
+      bottom: clamp(16px, 5vw, 24px);
       left: 50%;
       transform: translateX(-50%);
       z-index: 20;
@@ -206,8 +207,8 @@
     }
 
     #capybara {
-      width: clamp(90px, 24vw, 160px);
-      max-width: 180px;
+      width: clamp(80px, 22vw, 150px);
+      max-width: 170px;
       filter: drop-shadow(0 6px 16px rgba(0,0,0,0.35));
       cursor: pointer;
       transition: transform 0.8s ease;
@@ -399,9 +400,9 @@
       .content-center { padding-top: 2.5vh; }
       h1 { margin: 10px 0 12px; }
       .subtitle { margin-bottom: 28px; }
-      .buttons-container { gap: 22px; margin-bottom: 70px; }
+      .buttons-container { gap: clamp(14px, 5vw, 32px); margin-bottom: 70px; }
       #capybara-container { bottom: 16px; }
-      button { padding: 16px 40px; font-size: clamp(1.2rem, 5vw, 1.65rem); min-width: 240px; max-width: 300px; }
+      button { padding: clamp(12px, 3.5vw, 16px) clamp(28px, 7vw, 44px); font-size: clamp(1.15rem, 4.8vw, 1.6rem); min-width: clamp(200px, 42vw, 260px); max-width: clamp(280px, 52vw, 340px); }
     }
 
     @media (max-height: 580px) {
@@ -565,8 +566,8 @@ function mergeButtons() {
     merged.style.transform = 'scale(0.85)';
     merged.style.opacity = '0';
     merged.style.transition = 'all 0.7s ease';
-    merged.style.minWidth = '280px';
-    merged.style.maxWidth = '340px';
+    merged.style.minWidth = 'clamp(260px, 50vw, 320px)';
+    merged.style.maxWidth = 'clamp(320px, 60vw, 380px)';
 
     buttonsContainer.appendChild(merged);
 
