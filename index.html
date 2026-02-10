@@ -65,21 +65,26 @@
       cursor: pointer;
       user-select: none;
       transition: filter 0.3s, transform 0.3s;
+      transform-origin: center center;
     }
 
     .flower-decor.right {
-      transform: scaleX(-1);
+      transform: scale(-1, 1); /* horizontal mirror */
     }
 
     .flower-decor.glow {
       filter: drop-shadow(0 0 20px #ff4d94) brightness(1.5);
-      transform: scale(1.15);
       animation: flowerPulse 1.5s ease-in-out;
     }
 
+    .flower-decor.right.glow {
+      /* Preserve mirror while applying normal scale */
+      transform: scale(-1, 1) scale(1.15) !important;
+    }
+
     @keyframes flowerPulse {
-      0%,100% { filter: drop-shadow(0 0 20px #ff4d94) brightness(1.5); }
-      50% { filter: drop-shadow(0 0 40px #ff4d94) brightness(2); }
+      0%, 100% { filter: drop-shadow(0 0 20px #ff4d94) brightness(1.5); }
+      50%      { filter: drop-shadow(0 0 40px #ff4d94) brightness(2); }
     }
 
     h1 {
@@ -97,7 +102,7 @@
 
     @keyframes pulse {
       0%, 100% { transform: scale(1); }
-      50% { transform: scale(1.06); }
+      50%      { transform: scale(1.06); }
     }
 
     .buttons-container {
@@ -167,7 +172,6 @@
       margin-top: 10px;
       display: flex;
       justify-content: center;
-      position: relative; /* helps contain capy kisses if needed */
     }
 
     #capybara {
@@ -220,53 +224,6 @@
       100% { opacity: 0; transform: translateY(-40px) scale(1.05); }
     }
 
-    .handwritten {
-      font-family: 'Caveat', cursive;
-      font-size: clamp(1.8rem, 6vw, 2.6rem);
-      color: white;
-      line-height: 1.6;
-      margin: 30px auto 20px;
-      max-width: 85%;
-      text-shadow: 0 2px 8px rgba(0,0,0,0.3);
-    }
-
-    .ps {
-      font-size: 1.3rem;
-      color: #fff9;
-      margin-top: 40px;
-      font-style: italic;
-    }
-
-    .memory-photo {
-      max-width: 85%;
-      border-radius: 24px;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.4);
-      border: 4px solid rgba(255, 255, 255, 0.3);
-      margin: 30px auto;
-      display: block;
-      animation: photoFade 2s ease-out;
-    }
-
-    @keyframes photoFade {
-      0% { opacity: 0; transform: scale(0.95); }
-      100% { opacity: 1; transform: scale(1); }
-    }
-
-    .heart {
-      position: absolute;
-      font-size: clamp(1.2rem,3vw,2.5rem);
-      animation: floatUp 12s linear forwards;
-      opacity: 0;
-      pointer-events: none;
-      animation-delay: calc(var(--delay) * 1s);
-    }
-
-    @keyframes floatUp {
-      0% { opacity: 0; transform: translateY(120vh) translateX(0) rotate(0deg); }
-      10% { opacity: 1; }
-      100% { opacity: 0; transform: translateY(-40vh) translateX(var(--sway)) rotate(720deg); }
-    }
-
     .trail-heart {
       position: absolute;
       font-size: clamp(1.1rem, 2.8vw, 2.2rem);
@@ -275,7 +232,7 @@
       animation: fadeHeart 2.4s forwards;
       opacity: 0.92;
       color: #ff4d94;
-      z-index: 999;               /* high z-index to ensure visibility */
+      z-index: 999;
       will-change: transform, opacity;
     }
 
@@ -285,28 +242,20 @@
       100% { opacity: 0;    transform: scale(1.7) translateY(-120px) rotate(45deg); }
     }
 
-    .spark {
+    .love-msg {
       position: absolute;
-      font-size: 1.8rem;
-      animation: explode 1.4s ease-out forwards;
+      background: rgba(255,255,255,0.92);
+      color: #ff4d94;
+      padding: 8px 16px;
+      border-radius: 16px;
+      font-weight: bold;
+      font-size: clamp(1rem, 3.5vw, 1.3rem);
+      box-shadow: 0 6px 18px rgba(0,0,0,0.25);
+      z-index: 9999;
       pointer-events: none;
-      transform: rotate(var(--rot));
-    }
-
-    @keyframes explode {
-      from { transform: scale(1) rotate(var(--rot)); opacity: 1; }
-      to   { transform: translate(var(--x), var(--y)) scale(0.2) rotate(calc(var(--rot) + 360deg)); opacity: 0; }
-    }
-
-    @keyframes yesShakeBounce {
-      0%,100% { transform: scale(1.4) translateY(0) rotate(0deg); }
-      25% { transform: scale(1.45) translateY(-5px) rotate(-8deg); }
-      50% { transform: scale(1.5) translateY(-10px) rotate(8deg); }
-      75% { transform: scale(1.45) translateY(-5px) rotate(-4deg); }
-    }
-
-    #yesBtn.surrenderYes {
-      animation: yesShakeBounce 0.6s ease-in-out infinite, yesGlow 0.6s alternate infinite;
+      white-space: nowrap;
+      opacity: 1;
+      transition: opacity 0.6s ease-out;
     }
 
     body.celebration .flower-row,
@@ -315,23 +264,11 @@
     }
 
     @media (max-height: 680px) {
-      .flower-row {
-        margin: 8px auto 4px auto;
-      }
-      .flower-decor {
-        max-height: 20vh;
-      }
-      h1 {
-        font-size: clamp(1.9rem, 6.5vw, 3.2rem);
-        margin-bottom: 18px;
-      }
-      .subtitle {
-        margin-bottom: 20px;
-      }
-      .buttons-container {
-        min-height: 340px;
-        gap: 40px;
-      }
+      .flower-row { margin: 8px auto 4px auto; }
+      .flower-decor { max-height: 20vh; }
+      h1 { font-size: clamp(1.9rem, 6.5vw, 3.2rem); margin-bottom: 18px; }
+      .subtitle { margin-bottom: 20px; }
+      .buttons-container { min-height: 340px; gap: 40px; }
     }
   </style>
 </head>
@@ -341,11 +278,11 @@
   <div class="flower-row">
     <img src="https://image.similarpng.com/file/similarpng/original-picture/2022/02/Romantic-pink-rose-bouquet-isolated-on-transparent-background-PNG.png" 
          class="flower-decor" 
-         alt="Rose bouquet left">
+         alt="Rose bouquet">
 
     <img src="https://image.similarpng.com/file/similarpng/original-picture/2022/02/Romantic-pink-rose-bouquet-isolated-on-transparent-background-PNG.png" 
          class="flower-decor right" 
-         alt="Rose bouquet right (mirrored)">
+         alt="Mirrored rose bouquet">
   </div>
 
   <h1>To My Melanie (蔡聿囷) 💕</h1>
@@ -378,7 +315,7 @@ let yesGrowing = false;
 let yesScale = 1;
 
 const noOptions = ["Nooo? Really?!?😱", "STOP!!😢寶寶為什麼?😭", "No? Are you serious baby?!? 😩😵", "不好😰", "寶寶 please! PLEASE PLEASE! 🥺😿"];
-const capyJudgements = ["🤨 really?", "…wow.", "不好👎🏼.", "capy disapproves.", "🙄hm."];
+const capyJudgements = ["🤨 really?", "…wow.", "that was a choice.", "side eye 👀", "capy disapproves.", "hm."];
 
 const heartChars = ["💖","💕","💘","🩷","💗","💝","❤️","💞"];
 
@@ -387,7 +324,7 @@ document.addEventListener('touchstart', () => {
   sparkle.volume = 0.7;
 }, { once: true });
 
-// ─── CAPYBARA INTERACTION ───────────────────────────────────────
+// CAPYBARA INTERACTION
 capybara.addEventListener("click", () => {
   capybara.classList.remove("wiggle");
   void capybara.offsetWidth;
@@ -405,10 +342,9 @@ capybara.addEventListener("click", () => {
   }
 });
 
-// ─── NO BUTTON + CAPY JUDGEMENT ─────────────────────────────────
+// NO BUTTON + CAPY JUDGEMENT (unchanged)
 noBtn.addEventListener('click', () => {
   noClickCount++;
-
   capybara.classList.remove("wiggle");
   void capybara.offsetWidth;
   capybara.classList.add("wiggle");
@@ -449,26 +385,21 @@ noBtn.addEventListener('click', () => {
   }
 });
 
-// ─── TRAIL HEARTS (restored original behavior) ───────────────────────────────
+// TRAIL HEARTS (unchanged from working version)
 let isDrawingHearts = false;
 let lastX = 0, lastY = 0;
 let throttleTimer = null;
 
 function createTrailHeart(x, y) {
   if (x <= 0 || y <= 0 || !isFinite(x) || !isFinite(y)) return;
-
   const heart = document.createElement("div");
   heart.className = "trail-heart";
   heart.textContent = heartChars[Math.floor(Math.random() * heartChars.length)];
-  
   const offsetX = (Math.random() - 0.5) * 30;
   const offsetY = (Math.random() - 0.5) * 30;
-  
   heart.style.left = (x + offsetX) + "px";
   heart.style.top  = (y + offsetY) + "px";
-  
   heart.style.transform = `rotate(${(Math.random()-0.5)*40}deg) scale(${0.8 + Math.random()*0.5})`;
-  
   document.body.appendChild(heart);
   setTimeout(() => heart.remove(), 2600);
 }
@@ -486,11 +417,10 @@ function onPointerMove(e) {
   if (!isDrawingHearts) return;
   const x = e.clientX || (e.touches && e.touches[0]?.clientX) || 0;
   const y = e.clientY || (e.touches && e.touches[0]?.clientY) || 0;
-  
   if (!throttleTimer) {
     throttleTimer = setTimeout(() => { throttleTimer = null; }, 80);
     const dist = Math.hypot(x - lastX, y - lastY);
-    if (dist > 16) {  // slightly smaller threshold for smoother feel
+    if (dist > 16) {
       createTrailHeart(x, y);
       lastX = x; lastY = y;
     }
@@ -507,39 +437,42 @@ document.addEventListener("pointermove", onPointerMove, { passive: false });
 document.addEventListener("pointerup", onPointerUp);
 document.addEventListener("pointercancel", onPointerUp);
 
-// Also support classic mouse events
 document.addEventListener("mousedown", onPointerDown);
 document.addEventListener("mousemove", onPointerMove);
 document.addEventListener("mouseup", onPointerUp);
 
-// ─── FLOWER BOUQUET CLICK (both flowers) ────────────────────────────────
+// ─── FIXED FLOWER CLICK HANDLER ─────────────────────────────────────────
 document.querySelectorAll('.flower-decor').forEach(flower => {
   flower.addEventListener('click', () => {
     flower.classList.add('glow');
     if ('vibrate' in navigator) navigator.vibrate([50, 30, 50]);
 
-    let msg = document.createElement('div');
+    const rect = flower.getBoundingClientRect();
+    const centerX = rect.left + rect.width / 2;
+    const centerY = rect.top + rect.height / 2;
+
+    const msg = document.createElement('div');
+    msg.className = 'love-msg';
     msg.textContent = "I love you! 💕";
-    msg.style.position = 'absolute';
-    msg.style.left = (flower.getBoundingClientRect().left + flower.offsetWidth + 10) + 'px';
-    msg.style.top = (flower.getBoundingClientRect().top + flower.offsetHeight / 2 - 15) + 'px';
-    msg.style.background = 'rgba(255,255,255,0.85)';
-    msg.style.color = '#ff4d94';
-    msg.style.padding = '6px 12px';
-    msg.style.borderRadius = '12px';
-    msg.style.fontWeight = 'bold';
-    msg.style.fontSize = 'clamp(1rem,3vw,1.2rem)';
-    msg.style.boxShadow = '0 4px 12px rgba(0,0,0,0.2)';
+
+    // Position slightly to the right and above center
+    msg.style.left = (centerX + 30) + 'px';
+    msg.style.top  = (centerY - 40) + 'px';
+
     document.body.appendChild(msg);
 
+    // Fade out and remove
     setTimeout(() => {
-      msg.remove();
-      flower.classList.remove('glow');
-    }, 2000);
+      msg.style.opacity = '0';
+      setTimeout(() => msg.remove(), 700);
+    }, 1400);
+
+    // Remove glow class after animation
+    setTimeout(() => flower.classList.remove('glow'), 1500);
   });
 });
 
-// ─── FINAL YES ───────────────────────────────────────────────────────────
+// FINAL YES + celebration (unchanged)
 function finalYes() {
   if (sparkle) sparkle.play().catch(() => {});
 
