@@ -514,7 +514,8 @@ const noOptions = [
   "No - 寶寶為什麼? 😭",
   "No no - Are you serious baby?!? 😩😵",
   "Nooo - 不好 😰",
-  "Nooo - 寶寶 PLEASE PLS PLS?! 🥺😿"
+  "Nooo - 寶寶 PLEASE PLS PLS?! 🥺😿",
+  "okay okay, you win…."
 ];
 
 const capyJudgements = [
@@ -569,7 +570,6 @@ function showCapyJudgement() {
 
 capybara.addEventListener("click", () => {
   wiggleCapybara();
-  showCapyJudgement();   // judgments when clicking capybara
 
   const rect = capybara.getBoundingClientRect();
   for (let i = 0; i < 5; i++) {
@@ -581,6 +581,7 @@ capybara.addEventListener("click", () => {
     document.body.appendChild(kiss);
     setTimeout(() => kiss.remove(), 1600);
   }
+  // No judgment when clicking capybara
 });
 
 noBtn.addEventListener('click', () => {
@@ -590,9 +591,10 @@ noBtn.addEventListener('click', () => {
 
   noClickCount++;
   wiggleCapybara();
-  showCapyJudgement();   // judgments on No clicks
+  showCapyJudgement();  // judgment only on No button clicks
 
-  if (noClickCount >= 5 && !yesGrowing) {
+  if (noClickCount >= 6 && !yesGrowing) {
+    // After the new "okay okay, you win…." is shown → clicking it triggers merge
     yesGrowing = true;
     isMerged = true;
 
@@ -611,7 +613,7 @@ noBtn.addEventListener('click', () => {
       pop.currentTime = 0;
       pop.play().catch(() => {});
     }
-    // No judgment here when accepting
+    // No judgment when accepting
   } 
   else {
     const index = Math.min(noClickCount - 1, noOptions.length - 1);
@@ -624,7 +626,7 @@ noBtn.addEventListener('click', () => {
   }
 });
 
-// Trail hearts (unchanged)
+// Trail hearts
 let isDrawingHearts = false;
 let lastX = 0, lastY = 0;
 let throttleTimer = null;
@@ -680,7 +682,7 @@ document.addEventListener("mousedown", onPointerDown);
 document.addEventListener("mousemove", onPointerMove);
 document.addEventListener("mouseup", onPointerUp);
 
-// Flower click (unchanged)
+// Flower click
 document.querySelectorAll('.flower-decor').forEach(flower => {
   flower.addEventListener('click', () => {
     flower.classList.add('glow');
