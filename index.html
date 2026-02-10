@@ -511,8 +511,6 @@ const sparkle = document.getElementById("sparkle");
 const soundHint = document.getElementById("sound-hint");
 
 let noClickCount = 0;
-let yesGrowing = false;
-let yesScale = 1;
 let noDebounce = false;
 
 const noOptions = [
@@ -598,15 +596,7 @@ noBtn.addEventListener('click', () => {
   noClickCount++;
   wiggleCapybara();
 
-  if (noClickCount >= 5 && !yesGrowing) {
-    yesGrowing = true;
-
-    const growInterval = setInterval(() => {
-      yesScale = Math.min(2.5, yesScale + 0.03);
-      yesBtn.style.transform = `scale(${yesScale})`;
-      if (yesScale >= 2.5) clearInterval(growInterval);
-    }, 100);
-
+  if (noClickCount >= 5) {
     noBtn.textContent = "ugh okayyy... YES YES YES! Of course! Only for YOU 😏💕";
     noBtn.classList.add('surrender');
     noBtn.onclick = finalYes;
