@@ -42,8 +42,8 @@
     .wrapper {
       text-align: center;
       width: 100%;
-      max-width: 620px;
-      padding: 24px 20px;
+      max-width: 640px;
+      padding: 24px 16px;
       box-sizing: border-box;
       margin: 0 auto;
       flex: 1;
@@ -122,31 +122,38 @@
       flex-direction: row;
       justify-content: center;
       align-items: center;
-      gap: 40px;
-      margin: 40px 0 100px 0;
-      position: relative;
+      gap: clamp(20px, 5vw, 50px);
+      margin: 40px auto 100px auto;
       width: 100%;
-      max-width: 500px;
+      max-width: 560px;
+      padding: 0 16px;
+      box-sizing: border-box;
+      position: relative;
     }
 
     .buttons-container.centered-merge {
       flex-direction: column;
       gap: 0;
-      margin: 60px 0;
+      margin: 60px auto;
     }
 
     button {
-      font-size: clamp(1.35rem, 5.2vw, 1.85rem);
-      padding: 16px 54px;
+      font-size: clamp(1.25rem, 4.8vw, 1.75rem);
+      padding: 18px 48px;
       border-radius: 999px;
       border: none;
       cursor: pointer;
       user-select: none;
       transition: all 0.5s ease;
-      min-width: 220px;
+      min-width: 260px;
+      max-width: 320px;
+      width: 100%;
+      white-space: normal;
+      text-align: center;
       box-sizing: border-box;
       position: relative;
       z-index: 2;
+      overflow: hidden;
     }
 
     #yesBtn,
@@ -394,7 +401,7 @@
       .subtitle { margin-bottom: 28px; }
       .buttons-container { gap: 22px; margin-bottom: 70px; }
       #capybara-container { bottom: 16px; }
-      button { padding: 14px 48px; font-size: clamp(1.25rem, 5vw, 1.7rem); }
+      button { padding: 16px 40px; font-size: clamp(1.2rem, 5vw, 1.65rem); min-width: 240px; max-width: 300px; }
     }
 
     @media (max-height: 580px) {
@@ -553,11 +560,13 @@ function mergeButtons() {
     merged.style.boxShadow = '0 8px 25px rgba(255,77,148,0.4)';
     merged.style.border = 'none';
     merged.style.cursor = 'pointer';
-    merged.style.whiteSpace = 'nowrap';
+    merged.style.whiteSpace = 'normal';
     merged.style.animation = 'gentleBounce 3s infinite ease-in-out, yesGlow 4s infinite ease-in-out';
     merged.style.transform = 'scale(0.85)';
     merged.style.opacity = '0';
     merged.style.transition = 'all 0.7s ease';
+    merged.style.minWidth = '280px';
+    merged.style.maxWidth = '340px';
 
     buttonsContainer.appendChild(merged);
 
