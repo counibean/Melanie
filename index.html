@@ -45,11 +45,46 @@
       box-sizing: border-box;
       z-index: 10;
       pointer-events: auto;
+      margin: 0 auto;
+    }
+
+    .flower-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      width: 100%;
+      max-width: 520px;
+      margin: 10px auto 5px auto;
+    }
+
+    .flower-decor {
+      width: clamp(80px, 20vw, 130px);
+      max-height: 26vh;
+      height: auto;
+      object-fit: contain;
+      cursor: pointer;
+      user-select: none;
+      transition: filter 0.3s, transform 0.3s;
+    }
+
+    .flower-decor.right {
+      transform: scaleX(-1);
+    }
+
+    .flower-decor.glow {
+      filter: drop-shadow(0 0 20px #ff4d94) brightness(1.5);
+      transform: scale(1.15);
+      animation: flowerPulse 1.5s ease-in-out;
+    }
+
+    @keyframes flowerPulse {
+      0%,100% { filter: drop-shadow(0 0 20px #ff4d94) brightness(1.5); }
+      50% { filter: drop-shadow(0 0 40px #ff4d94) brightness(2); }
     }
 
     h1 {
       font-size: clamp(2.2rem, 7vw, 3.8rem);
-      margin: 10px 0 30px;
+      margin: 0 0 25px;
       line-height: 1.1;
       animation: pulse 2.5s infinite ease-in-out;
     }
@@ -65,6 +100,7 @@
       50% { transform: scale(1.06); }
     }
 
+    /* ─── rest of your original styles (buttons, capybara, hearts, celebration, etc.) ─── */
     .buttons-container {
       position: relative;
       min-height: 420px;
@@ -128,7 +164,6 @@
       font-weight: bold;
     }
 
-    /* ─── CAPYBARA ─────────────────────────────────────── */
     #capybara-container {
       margin-top: 10px;
       display: flex;
@@ -153,59 +188,9 @@
       100% { transform: rotate(0) scale(1); }
     }
 
-    .capy-kiss {
+    .capy-kiss, .capy-judge {
       position: absolute;
-      font-size: 1.6rem;
-      animation: kissPop 1.6s forwards;
       pointer-events: none;
-    }
-
-    @keyframes kissPop {
-      from { opacity: 0; transform: translateY(0) scale(0.6); }
-      to   { opacity: 0; transform: translateY(-80px) scale(1.6); }
-    }
-
-    .capy-judge {
-      position: absolute;
-      background: rgba(255,255,255,0.95);
-      color: #6c757d;
-      padding: 6px 12px;
-      border-radius: 14px;
-      font-size: 0.95rem;
-      font-weight: bold;
-      box-shadow: 0 4px 14px rgba(0,0,0,0.25);
-      animation: judgeFade 2.2s forwards;
-      pointer-events: none;
-      z-index: 30;
-    }
-
-    @keyframes judgeFade {
-      0% { opacity: 0; transform: translateY(10px) scale(0.9); }
-      20% { opacity: 1; }
-      100% { opacity: 0; transform: translateY(-40px) scale(1.05); }
-    }
-
-    .flower-decor {
-      display: block;
-      margin: 20px auto 15px auto;
-      width: clamp(90px, 22vw, 140px);
-      max-height: 28vh;
-      height: auto;
-      object-fit: contain;
-      cursor: pointer;
-      user-select: none;
-      transition: filter 0.3s, transform 0.3s;
-    }
-
-    .flower-decor.glow {
-      filter: drop-shadow(0 0 20px #ff4d94) brightness(1.5);
-      transform: scale(1.15);
-      animation: flowerPulse 1.5s ease-in-out;
-    }
-
-    @keyframes flowerPulse {
-      0%,100% { filter: drop-shadow(0 0 20px #ff4d94) brightness(1.5); }
-      50% { filter: drop-shadow(0 0 40px #ff4d94) brightness(2); }
     }
 
     .handwritten {
@@ -240,80 +225,29 @@
       100% { opacity: 1; transform: scale(1); }
     }
 
-    .heart {
+    .heart, .trail-heart, .spark {
       position: absolute;
-      font-size: clamp(1.2rem,3vw,2.5rem);
-      animation: floatUp 12s linear forwards;
-      opacity: 0;
       pointer-events: none;
-      animation-delay: calc(var(--delay) * 1s);
     }
 
-    @keyframes floatUp {
-      0% { opacity: 0; transform: translateY(120vh) translateX(0) rotate(0deg); }
-      10% { opacity: 1; }
-      100% { opacity: 0; transform: translateY(-40vh) translateX(var(--sway)) rotate(720deg); }
-    }
-
-    .trail-heart {
-      position: absolute;
-      font-size: clamp(1.1rem, 2.8vw, 2.2rem);
-      pointer-events: none;
-      user-select: none;
-      animation: fadeHeart 2.4s forwards;
-      opacity: 0.92;
-      color: #ff4d94;
-      z-index: 8;
-      will-change: transform, opacity;
-    }
-
-    @keyframes fadeHeart {
-      0%   { opacity: 0.92; transform: scale(0.7) translateY(0) rotate(0deg); }
-      30%  { opacity: 1;    transform: scale(1.15) translateY(-12px) rotate(15deg); }
-      100% { opacity: 0;    transform: scale(1.7) translateY(-120px) rotate(45deg); }
-    }
-
-    .spark {
-      position: absolute;
-      font-size: 1.8rem;
-      animation: explode 1.4s ease-out forwards;
-      pointer-events: none;
-      transform: rotate(var(--rot));
-    }
-
-    @keyframes explode {
-      from { transform: scale(1) rotate(var(--rot)); opacity: 1; }
-      to   { transform: translate(var(--x), var(--y)) scale(0.2) rotate(calc(var(--rot) + 360deg)); opacity: 0; }
-    }
-
-    @keyframes yesShakeBounce {
-      0%,100% { transform: scale(1.4) translateY(0) rotate(0deg); }
-      25% { transform: scale(1.45) translateY(-5px) rotate(-8deg); }
-      50% { transform: scale(1.5) translateY(-10px) rotate(8deg); }
-      75% { transform: scale(1.45) translateY(-5px) rotate(-4deg); }
-    }
-
-    #yesBtn.surrenderYes {
-      animation: yesShakeBounce 0.6s ease-in-out infinite, yesGlow 0.6s alternate infinite;
-    }
-
-    body.celebration .flower-decor,
+    body.celebration .flower-row,
     body.celebration #capybara-container {
       display: none !important;
     }
 
-    /* Bonus: Better spacing on very short screens */
+    /* Short screen adjustments */
     @media (max-height: 680px) {
+      .flower-row {
+        margin: 8px auto 4px auto;
+      }
       .flower-decor {
-        margin: 15px auto 10px auto;
-        max-height: 22vh;
+        max-height: 20vh;
       }
       h1 {
         font-size: clamp(1.9rem, 6.5vw, 3.2rem);
-        margin: 8px 0 20px;
+        margin-bottom: 18px;
       }
       .subtitle {
-        font-size: clamp(1.2rem, 4.5vw, 1.5rem);
         margin-bottom: 20px;
       }
       .buttons-container {
@@ -326,9 +260,15 @@
 <body>
 
 <div class="wrapper" id="app">
-  <img src="https://image.similarpng.com/file/similarpng/original-picture/2022/02/Romantic-pink-rose-bouquet-isolated-on-transparent-background-PNG.png" 
-       class="flower-decor" 
-       alt="Rose bouquet">
+  <div class="flower-row">
+    <img src="https://image.similarpng.com/file/similarpng/original-picture/2022/02/Romantic-pink-rose-bouquet-isolated-on-transparent-background-PNG.png" 
+         class="flower-decor" 
+         alt="Rose bouquet">
+
+    <img src="https://image.similarpng.com/file/similarpng/original-picture/2022/02/Romantic-pink-rose-bouquet-isolated-on-transparent-background-PNG.png" 
+         class="flower-decor right" 
+         alt="Mirrored rose bouquet">
+  </div>
 
   <h1>To My Melanie (蔡聿囷) 💕</h1>
   
@@ -369,7 +309,7 @@ document.addEventListener('touchstart', () => {
   sparkle.volume = 0.7;
 }, { once: true });
 
-// ─── CAPYBARA INTERACTION ───────────────────────────────────────
+// CAPYBARA INTERACTION
 capybara.addEventListener("click", () => {
   capybara.classList.remove("wiggle");
   void capybara.offsetWidth;
@@ -387,11 +327,10 @@ capybara.addEventListener("click", () => {
   }
 });
 
-// ─── NO BUTTON + CAPY JUDGEMENT ─────────────────────────────────
+// NO BUTTON LOGIC
 noBtn.addEventListener('click', () => {
   noClickCount++;
 
-  // Capybara wiggle + judgement speech bubble
   capybara.classList.remove("wiggle");
   void capybara.offsetWidth;
   capybara.classList.add("wiggle");
@@ -405,7 +344,6 @@ noBtn.addEventListener('click', () => {
   document.body.appendChild(judge);
   setTimeout(() => judge.remove(), 2200);
 
-  // Logic
   if (noClickCount >= 5 && !yesGrowing) {
     yesGrowing = true;
     yesBtn.classList.add('surrenderYes');
@@ -433,7 +371,7 @@ noBtn.addEventListener('click', () => {
   }
 });
 
-// ─── TRAIL HEARTS (drag/finger) ─────────────────────────────────
+// TRAIL HEARTS
 let isDrawingHearts = false;
 let lastX = 0, lastY = 0;
 let throttleTimer = null;
@@ -493,7 +431,7 @@ document.addEventListener("mousedown", e => onPointerDown(e));
 document.addEventListener("mousemove", e => onPointerMove(e));
 document.addEventListener("mouseup",   onPointerUp);
 
-// ─── FLOWER BOUQUET CLICK ───────────────────────────────────────
+// FLOWER CLICK (now works on both flowers)
 document.querySelectorAll('.flower-decor').forEach(flower => {
   flower.addEventListener('click', (e) => {
     flower.classList.add('glow');
@@ -520,7 +458,7 @@ document.querySelectorAll('.flower-decor').forEach(flower => {
   });
 });
 
-// ─── FINAL YES ──────────────────────────────────────────────────
+// FINAL YES (celebration)
 function finalYes() {
   if (sparkle) sparkle.play().catch(() => {});
 
