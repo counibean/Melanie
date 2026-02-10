@@ -314,19 +314,46 @@
 
     .love-msg {
       position: absolute;
-      background: rgba(255,255,255,0.92);
+      background: rgba(255,255,255,0.94);
       color: #ff4d94;
-      padding: 10px 24px;
-      border-radius: 20px;
+      padding: 12px 28px;
+      border-radius: 24px;
       font-weight: bold;
-      font-size: clamp(1.1rem, 4vw, 1.4rem);
-      box-shadow: 0 6px 20px rgba(0,0,0,0.25);
+      font-size: clamp(1.1rem, 4vw, 1.45rem);
+      box-shadow: 0 8px 24px rgba(255,77,148,0.3);
       z-index: 9999;
       pointer-events: none;
       white-space: nowrap;
-      opacity: 1;
-      transition: opacity 0.7s ease-out;
+      opacity: 0;
+      transform: translate(-50%, 20px) scale(0.8);
       text-align: center;
+      animation: popupLove 1.2s ease-out forwards;
+    }
+
+    .love-msg .mini-heart {
+      position: absolute;
+      font-size: 1.4rem;
+      color: #ff4d94;
+      opacity: 0;
+      pointer-events: none;
+      animation: miniHeartFloat 1.8s ease-out forwards;
+    }
+
+    .love-msg .mini-heart:nth-child(1) { left: -20%; animation-delay: 0.1s; }
+    .love-msg .mini-heart:nth-child(2) { left: 50%; animation-delay: 0.3s; }
+    .love-msg .mini-heart:nth-child(3) { left: 120%; animation-delay: 0.5s; }
+
+    @keyframes popupLove {
+      0% { opacity: 0; transform: translate(-50%, 40px) scale(0.7); }
+      60% { opacity: 1; transform: translate(-50%, -10px) scale(1.08); }
+      80% { transform: translate(-50%, 0px) scale(0.96); }
+      100% { opacity: 1; transform: translate(-50%, -30px) scale(1); }
+    }
+
+    @keyframes miniHeartFloat {
+      0%   { opacity: 0; transform: translateY(0) scale(0.5); }
+      40%  { opacity: 0.9; transform: translateY(-40px) scale(1.2); }
+      100% { opacity: 0; transform: translateY(-100px) scale(0.8); }
     }
 
     body.celebration .flower-row,
@@ -529,17 +556,28 @@ document.querySelectorAll('.flower-decor').forEach(flower => {
     msg.className = 'love-msg';
     msg.textContent = messageText;
 
-    // Center horizontally between the flowers
+    // Add mini hearts
+    const miniHearts = ['💗', '💖', '💕'];
+    miniHearts.forEach((heart, index) => {
+      const mini = document.createElement('span');
+      mini.className = 'mini-heart';
+      mini.textContent = heart;
+      mini.style.left = `${-20 + index * 70}%`;
+      msg.appendChild(mini);
+    });
+
+    // Center horizontally between flowers
     msg.style.left = '50%';
     msg.style.transform = 'translateX(-50%)';
-    msg.style.top  = (centerY - 60) + 'px';   // adjust vertical offset as needed
+    msg.style.top  = (centerY - 60) + 'px';  // adjust vertical offset
 
     document.body.appendChild(msg);
 
+    // Fade out and remove
     setTimeout(() => {
       msg.style.opacity = '0';
       setTimeout(() => msg.remove(), 700);
-    }, 1400);
+    }, 1800);
 
     setTimeout(() => flower.classList.remove('glow'), 1500);
   });
