@@ -325,9 +325,9 @@
       pointer-events: none;
       white-space: nowrap;
       opacity: 0;
-      transform: translate(-50%, 20px) scale(0.8);
+      transform: translate(-50%, 10px) scale(0.92);
       text-align: center;
-      animation: popupLove 1.2s ease-out forwards;
+      animation: popupLove 1.1s ease-out forwards;
     }
 
     .love-msg .mini-heart {
@@ -336,24 +336,24 @@
       color: #ff4d94;
       opacity: 0;
       pointer-events: none;
-      animation: miniHeartFloat 1.8s ease-out forwards;
+      animation: miniHeartFloat 1.6s ease-out forwards;
     }
 
     .love-msg .mini-heart:nth-child(1) { left: -20%; animation-delay: 0.1s; }
-    .love-msg .mini-heart:nth-child(2) { left: 50%; animation-delay: 0.3s; }
-    .love-msg .mini-heart:nth-child(3) { left: 120%; animation-delay: 0.5s; }
+    .love-msg .mini-heart:nth-child(2) { left: 50%; animation-delay: 0.25s; }
+    .love-msg .mini-heart:nth-child(3) { left: 120%; animation-delay: 0.4s; }
 
     @keyframes popupLove {
-      0%   { opacity: 0; transform: translate(-50%, 80px) scale(0.7); }   /* ← changed from 60px */
-      60%  { opacity: 1; transform: translate(-50%, -5px) scale(1.08); }  /* softer peak */
-      80%  { transform: translate(-50%, 5px) scale(0.96); }
-      100% { opacity: 1; transform: translate(-50%, -20px) scale(1); }    /* ← ends a bit higher */
+      0%   { opacity: 0;   transform: translate(-50%, 30px) scale(0.88); }
+      50%  { opacity: 1;   transform: translate(-50%, -3px)  scale(1.04); }
+      80%  { transform: translate(-50%, 2px) scale(0.98); }
+      100% { opacity: 1;   transform: translate(-50%, -8px) scale(1); }
     }
 
     @keyframes miniHeartFloat {
-      0%   { opacity: 0; transform: translateY(0) scale(0.5); }
-      40%  { opacity: 0.9; transform: translateY(-40px) scale(1.2); }
-      100% { opacity: 0; transform: translateY(-100px) scale(0.8); }
+      0%   { opacity: 0; transform: translateY(0) scale(0.6); }
+      40%  { opacity: 0.9; transform: translateY(-30px) scale(1.15); }
+      100% { opacity: 0; transform: translateY(-70px) scale(0.9); }
     }
 
     body.celebration .flower-row,
@@ -566,12 +566,12 @@ document.querySelectorAll('.flower-decor').forEach(flower => {
       msg.appendChild(mini);
     });
 
-    // Center horizontally + enforce safe top position
+    // Center horizontally + enforce safe/higher top position
     msg.style.left = '50%';
     msg.style.transform = 'translateX(-50%)';
 
-    const desiredTop = centerY - 60;
-    const safeTop = Math.max(100, desiredTop);   // ← prevents clipping at top on tall screens
+    const desiredTop = centerY - 45;
+    const safeTop = Math.max(120, desiredTop);
     msg.style.top = safeTop + 'px';
 
     document.body.appendChild(msg);
@@ -580,7 +580,7 @@ document.querySelectorAll('.flower-decor').forEach(flower => {
     setTimeout(() => {
       msg.style.opacity = '0';
       setTimeout(() => msg.remove(), 700);
-    }, 1800);
+    }, 1600);
 
     setTimeout(() => flower.classList.remove('glow'), 1500);
   });
