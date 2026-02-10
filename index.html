@@ -43,6 +43,21 @@
       100% { background-position: 0% 50%; }
     }
 
+    /* Falling rose petals */
+    .petal {
+      position: absolute;
+      font-size: clamp(1.2rem, 3vw, 2.2rem);
+      opacity: 0.4;
+      pointer-events: none;
+      animation: fall linear forwards;
+      z-index: 1;
+    }
+
+    @keyframes fall {
+      0%   { transform: translateY(-10vh) rotate(0deg); opacity: 0.6; }
+      100% { transform: translateY(110vh) rotate(720deg); opacity: 0; }
+    }
+
     .wrapper {
       text-align: center;
       width: 100%;
@@ -72,6 +87,7 @@
       cursor: pointer;
       user-select: none;
       transition: filter 0.3s, transform 0.3s;
+      transform-origin: center center;
     }
 
     .flower-decor.right {
@@ -128,7 +144,7 @@
       cursor: pointer;
       box-shadow: 0 8px 25px rgba(0,0,0,0.22);
       user-select: none;
-      transition: all 0.4s ease;
+      transition: transform 0.3s ease, box-shadow 0.4s ease, opacity 0.4s ease;
       position: relative;
     }
 
@@ -164,18 +180,13 @@
       z-index: 1;
     }
 
-    .merged-yes {
-      font-size: clamp(1.8rem, 7vw, 2.4rem) !important;
-      padding: 24px 80px !important;
-      background: linear-gradient(135deg, #ff4d94, #ff80ab) !important;
-      box-shadow: 0 12px 40px rgba(255,77,148,0.7) !important;
-      animation: mergedPulse 2s infinite ease-in-out, yesGlow 3s infinite !important;
-      transform: scale(1.15);
-    }
-
-    @keyframes mergedPulse {
-      0%,100% { transform: scale(1.15); }
-      50% { transform: scale(1.22); }
+    #noBtn.surrender {
+      font-size: clamp(1.6rem, 6vw, 2.2rem) !important;
+      background: linear-gradient(135deg, #ff4d94, #ff80ab);
+      box-shadow: 0 0 30px rgba(255,77,148,0.8);
+      padding: 20px 60px;
+      color: white;
+      font-weight: bold;
     }
 
     #capybara-container {
@@ -381,6 +392,17 @@
       to   { transform: translate(var(--x), var(--y)) scale(0.2) rotate(calc(var(--rot) + 360deg)); opacity: 0; }
     }
 
+    @keyframes yesShakeBounce {
+      0%,100% { transform: scale(1.4) translateY(0) rotate(0deg); }
+      25% { transform: scale(1.45) translateY(-5px) rotate(-8deg); }
+      50% { transform: scale(1.5) translateY(-10px) rotate(8deg); }
+      75% { transform: scale(1.45) translateY(-5px) rotate(-4deg); }
+    }
+
+    #yesBtn.surrenderYes {
+      animation: yesShakeBounce 0.6s ease-in-out infinite, yesGlow 0.6s alternate infinite;
+    }
+
     .love-msg {
       position: absolute;
       left: 50%;
@@ -507,15 +529,13 @@ let noClickCount = 0;
 let yesGrowing = false;
 let yesScale = 1;
 let noDebounce = false;
-let isMerged = false;
 
 const noOptions = [
   "No - Really?!? 😱",
   "No - 寶寶為什麼? 😭",
   "No no - Are you serious baby?!? 😩😵",
   "Nooo - 不好 😰",
-  "Nooo - 寶寶 PLEASE PLS PLS?! 🥺😿",
-  "okay okay, you win…."
+  "Nooo - 寶寶 PLEASE PLS PLS?! 🥺😿"
 ];
 
 const capyJudgements = [
@@ -544,7 +564,9 @@ document.addEventListener('touchstart', () => {
 }, { once: false });
 
 function getNonRepeatingJudgement() {
-  if (judgementQueue.length === 0) judgementQueue = [...capyJudgements];
+  if (judgementQueue.length === 0) {
+    judgementQueue = [...capyJudgements];
+  }
   const index = Math.floor(Math.random() * judgementQueue.length);
   const judgement = judgementQueue[index];
   judgementQueue.splice(index, 1);
@@ -581,7 +603,6 @@ capybara.addEventListener("click", () => {
     document.body.appendChild(kiss);
     setTimeout(() => kiss.remove(), 1600);
   }
-  // No judgment when clicking capybara
 });
 
 noBtn.addEventListener('click', () => {
@@ -591,33 +612,35 @@ noBtn.addEventListener('click', () => {
 
   noClickCount++;
   wiggleCapybara();
-  showCapyJudgement();  // judgment only on No button clicks
 
-  if (noClickCount >= 6 && !yesGrowing) {
-    // After the new "okay okay, you win…." is shown → clicking it triggers merge
+  if (noClickCount >= 5 && !yesGrowing) {
     yesGrowing = true;
-    isMerged = true;
-
-    yesBtn.style.display = "none";
-    noBtn.textContent = "YES YES YES! Of course 寶寶～ 💕🥰";
-    noBtn.classList.add('merged-yes');
-    noBtn.onclick = finalYes;
+    yesBtn.classList.add('surrenderYes');
+    yesBtn.disabled = false;
+    yesBtn.classList.remove('disabled');
+    yesBtn.onclick = finalYes;
 
     const growInterval = setInterval(() => {
-      yesScale = Math.min(1.8, yesScale + 0.04);
-      noBtn.style.transform = `scale(${yesScale})`;
-      if (yesScale >= 1.8) clearInterval(growInterval);
-    }, 80);
+      yesScale = Math.min(2.5, yesScale + 0.03);
+      yesBtn.style.transform = `scale(${yesScale})`;
+      if (yesScale >= 2.5) clearInterval(growInterval);
+    }, 100);
 
+    noBtn.textContent = "ugh okayyy... YES YES YES! Of course! Only for YOU 😏💕";
+    noBtn.classList.add('surrender');
+    noBtn.onclick = finalYes;
+
+    showCapyJudgement();
     if (pop) {
       pop.currentTime = 0;
       pop.play().catch(() => {});
     }
-    // No judgment when accepting
   } 
   else {
     const index = Math.min(noClickCount - 1, noOptions.length - 1);
     noBtn.textContent = noOptions[index];
+
+    showCapyJudgement();
 
     if (pop) {
       pop.currentTime = 0;
@@ -715,10 +738,26 @@ document.querySelectorAll('.flower-decor').forEach(flower => {
   });
 });
 
-// Final yes – no judgment bubble
+// Falling petals
+function createPetal() {
+  const petal = document.createElement("div");
+  petal.className = "petal";
+  petal.textContent = ["🌸","🌷","🌹"][Math.floor(Math.random()*3)];
+  petal.style.left = Math.random() * 100 + "vw";
+  petal.style.animationDuration = (8 + Math.random() * 12) + "s";
+  petal.style.animationDelay = Math.random() * 5 + "s";
+  document.body.appendChild(petal);
+  setTimeout(() => petal.remove(), 20000);
+}
+
+setInterval(createPetal, 1800);
+
+// Final yes
 function finalYes() {
+  // Blank the page
   app.innerHTML = '';
 
+  // Create growing capybara container
   const capyContainer = document.createElement('div');
   capyContainer.style.display = 'flex';
   capyContainer.style.flexDirection = 'column';
@@ -727,12 +766,14 @@ function finalYes() {
   capyContainer.style.height = '100vh';
   capyContainer.style.width = '100vw';
 
+  // Create capybara image
   const capyImg = document.createElement('img');
   capyImg.src = "https://i.postimg.cc/7h1FNTdx/A28577C0-A453-462E-86D3-117A705C9067.png";
   capyImg.alt = "Cute Capy with Flower";
   capyImg.style.width = 'clamp(70px, 18vw, 110px)';
   capyImg.style.transition = 'transform 2s ease-in-out';
 
+  // Create message
   const message = document.createElement('div');
   message.textContent = "我早就知道你會答應的～嘻嘻";
   message.className = "capy-judge";
@@ -746,10 +787,12 @@ function finalYes() {
   capyContainer.appendChild(message);
   app.appendChild(capyContainer);
 
+  // Trigger growth
   setTimeout(() => {
     capyImg.style.transform = 'scale(2)';
   }, 100);
 
+  // After 3.5 seconds → celebration
   setTimeout(() => {
     if (sparkle) sparkle.play().catch(() => {});
 
