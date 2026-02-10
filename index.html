@@ -489,7 +489,7 @@
   <p class="subtitle">親愛的, will you make me the happiest boy in the whole world and be my Valentine? 🌸💖</p>
 
   <div class="buttons-container">
-    <button id="yesBtn" class="disabled" disabled>YESSS!! Of course!💕🥰</button>
+    <button id="yesBtn">YESSS!! Of course!💕🥰</button>
     <button id="noBtn">No 🙄🥺</button>
 
     <div id="capybara-container">
@@ -588,6 +588,8 @@ capybara.addEventListener("click", () => {
   }
 });
 
+yesBtn.addEventListener('click', finalYes);
+
 noBtn.addEventListener('click', () => {
   if (noDebounce) return;
   noDebounce = true;
@@ -599,7 +601,7 @@ noBtn.addEventListener('click', () => {
   if (noClickCount >= 5) {
     noBtn.textContent = "ugh okayyy... YES YES YES! Of course! Only for YOU 😏💕";
     noBtn.classList.add('surrender');
-    noBtn.onclick = finalYes;
+    noBtn.onclick = mergeButtons;
 
     showCapyJudgement();
     if (pop) {
@@ -619,6 +621,78 @@ noBtn.addEventListener('click', () => {
     }
   }
 });
+
+function mergeButtons() {
+  if (pop) {
+    pop.currentTime = 0;
+    pop.play().catch(() => {});
+  }
+
+  const container = document.querySelector('.buttons-container');
+  const containerRect = container.getBoundingClientRect();
+  const yesRect = yesBtn.getBoundingClientRect();
+  const noRect = noBtn.getBoundingClientRect();
+
+  // Set positions to absolute
+  yesBtn.style.position = 'absolute';
+  yesBtn.style.left = `${yesRect.left - containerRect.left}px`;
+  yesBtn.style.top = `${yesRect.top - containerRect.top}px`;
+  yesBtn.style.width = `${yesRect.width}px`; // Fix width to prevent reflow
+  yesBtn.style.height = `${yesRect.height}px`;
+
+  noBtn.style.position = 'absolute';
+  noBtn.style.left = `${noRect.left - containerRect.left}px`;
+  noBtn.style.top = `${noRect.top - containerRect.top}px`;
+  noBtn.style.width = `${noRect.width}px`;
+  noBtn.style.height = `${noRect.height}px`;
+
+  // Calculate merge point (center between the two buttons)
+  const mergeX = (yesRect.left + noRect.left) / 2 - containerRect.left + (yesRect.width / 4); // Slight offset if needed
+  const mergeY = (yesRect.top + noRect.top) / 2 - containerRect.top;
+
+  // Animate movement to merge point
+  setTimeout(() => {
+    yesBtn.style.transition = 'transform 1s ease, opacity 1s ease';
+    yesBtn.style.transform = `translate(${mergeX - (yesRect.left - containerRect.left) + (yesRect.width / 2 - yesRect.width)}px, ${mergeY - (yesRect.top - containerRect.top) - yesRect.height / 2}px)`;
+
+    noBtn.style.transition = 'transform 1s ease, opacity 1s ease';
+    noBtn.style.transform = `translate(${mergeX - (noRect.left - containerRect.left) + (noRect.width / 2 - noRect.width)}px, ${mergeY - (noRect.top - containerRect.top) - noRect.height / 2}px)`;
+  }, 100);
+
+  // Fade out after movement starts
+  setTimeout(() => {
+    yesBtn.style.opacity = '0';
+    noBtn.style.opacity = '0';
+  }, 600);
+
+  // Remove old buttons and create new merged button
+  setTimeout(() => {
+    yesBtn.remove();
+    noBtn.remove();
+
+    const mergedBtn = document.createElement('button');
+    mergedBtn.id = 'mergedBtn';
+    mergedBtn.textContent = 'Yes, let\'s celebrate our love! 💖🥰';
+    mergedBtn.style.background = 'linear-gradient(135deg, #ff4d94, #ff80ab)';
+    mergedBtn.style.color = 'white';
+    mergedBtn.style.opacity = '0';
+    mergedBtn.style.transition = 'opacity 1s ease';
+    mergedBtn.style.position = 'absolute';
+    mergedBtn.style.left = `${mergeX}px`;
+    mergedBtn.style.top = `${mergeY}px`;
+    mergedBtn.style.fontSize = 'clamp(1.5rem, 5.5vw, 2rem)';
+    mergedBtn.style.padding = '18px 52px';
+    mergedBtn.style.zIndex = '3';
+    mergedBtn.addEventListener('click', finalYes);
+
+    container.appendChild(mergedBtn);
+
+    setTimeout(() => {
+      mergedBtn.style.opacity = '1';
+      mergedBtn.style.animation = 'gentleBounce 3s infinite ease-in-out, yesGlow 4s infinite ease-in-out';
+    }, 100);
+  }, 1200);
+}
 
 // Trail hearts
 let isDrawingHearts = false;
