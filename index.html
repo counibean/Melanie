@@ -45,8 +45,6 @@
       max-width: 620px;
       padding: 24px 20px;
       box-sizing: border-box;
-      z-index: 10;
-      pointer-events: auto;
       margin: 0 auto;
       flex: 1;
       display: flex;
@@ -121,18 +119,20 @@
 
     .buttons-container {
       display: flex;
-      flex-direction: column;
+      flex-direction: row;
+      justify-content: center;
       align-items: center;
-      gap: 28px;
-      margin: 0 0 80px 0;
+      gap: 40px;
+      margin: 40px 0 100px 0;
+      position: relative;
+      width: 100%;
+      max-width: 500px;
     }
 
     .buttons-container.centered-merge {
-      flex: 1;
-      justify-content: center;
+      flex-direction: column;
       gap: 0;
-      margin: 0;
-      min-height: 50vh;
+      margin: 60px 0;
     }
 
     button {
@@ -141,16 +141,20 @@
       border-radius: 999px;
       border: none;
       cursor: pointer;
-      box-shadow: 0 8px 25px rgba(0,0,0,0.22);
       user-select: none;
-      transition: all 0.3s ease;
+      transition: all 0.5s ease;
       min-width: 220px;
+      box-sizing: border-box;
+      position: relative;
+      z-index: 2;
     }
 
-    #yesBtn {
+    #yesBtn,
+    #mergedBtn {
       background: linear-gradient(135deg, #ff4d94, #ff80ab);
       color: white;
       animation: gentleBounce 3s infinite ease-in-out, yesGlow 4s infinite ease-in-out;
+      box-shadow: 0 8px 25px rgba(255, 77, 148, 0.4);
     }
 
     #yesBtn.disabled,
@@ -162,27 +166,27 @@
       pointer-events: none;
     }
 
+    #noBtn {
+      background: #6c757d;
+      color: white;
+      box-shadow: 0 8px 25px rgba(0,0,0,0.22);
+    }
+
+    #noBtn.surrender {
+      background: linear-gradient(135deg, #ff4d94, #ff80ab);
+      color: white;
+      box-shadow: 0 8px 25px rgba(255, 77, 148, 0.4);
+      animation: gentleBounce 3s infinite ease-in-out, yesGlow 4s infinite ease-in-out;
+    }
+
     @keyframes gentleBounce {
       0%,100% { transform: scale(1); }
-      50% { transform: scale(1.07); }
+      50%     { transform: scale(1.07); }
     }
 
     @keyframes yesGlow {
       0%,100% { box-shadow: 0 0 20px rgba(255,77,148,0.6); }
-      50% { box-shadow: 0 0 40px rgba(255,77,148,1); }
-    }
-
-    #noBtn {
-      background: #6c757d;
-      color: white;
-    }
-
-    #noBtn.surrender {
-      font-size: clamp(1.7rem, 6.2vw, 2.4rem) !important;
-      background: linear-gradient(135deg, #ff4d94, #ff80ab);
-      box-shadow: 0 0 30px rgba(255,77,148,0.8);
-      padding: 22px 68px;
-      font-weight: bold;
+      50%     { box-shadow: 0 0 40px rgba(255,77,148,1); }
     }
 
     #capybara-container {
@@ -380,61 +384,6 @@
       to   { transform: translate(var(--x), var(--y)) scale(0.2) rotate(calc(var(--rot) + 360deg)); opacity: 0; }
     }
 
-    @keyframes yesShakeBounce {
-      0%,100% { transform: scale(1.4) translateY(0) rotate(0deg); }
-      25% { transform: scale(1.45) translateY(-5px) rotate(-8deg); }
-      50% { transform: scale(1.5) translateY(-10px) rotate(8deg); }
-      75% { transform: scale(1.45) translateY(-5px) rotate(-4deg); }
-    }
-
-    #yesBtn.surrenderYes {
-      animation: yesShakeBounce 0.6s ease-in-out infinite, yesGlow 0.6s alternate infinite;
-    }
-
-    .love-msg {
-      position: absolute;
-      left: 50%;
-      transform: translateX(-50%);
-      top: 45px;
-      background: rgba(255,255,255,0.94);
-      color: #ff4d94;
-      padding: 10px 24px;
-      border-radius: 24px;
-      font-weight: bold;
-      font-size: clamp(1.0rem, 4vw, 1.35rem);
-      box-shadow: 0 6px 20px rgba(255,77,148,0.3);
-      z-index: 9999;
-      pointer-events: none;
-      white-space: nowrap;
-      opacity: 0;
-      animation: popupLove 1.0s ease-out forwards;
-    }
-
-    .love-msg .mini-heart {
-      position: absolute;
-      font-size: 1.3rem;
-      color: #ff4d94;
-      opacity: 0;
-      pointer-events: none;
-      animation: miniHeartFloat 1.4s ease-out forwards;
-    }
-
-    .love-msg .mini-heart:nth-child(1) { left: -18%; animation-delay: 0.1s; }
-    .love-msg .mini-heart:nth-child(2) { left: 50%; animation-delay: 0.2s; }
-    .love-msg .mini-heart:nth-child(3) { left: 118%; animation-delay: 0.35s; }
-
-    @keyframes popupLove {
-      0%   { opacity: 0;   transform: translateX(-50%) translateY(15px) scale(0.92); }
-      60%  { opacity: 1;   transform: translateX(-50%) translateY(-2px)  scale(1.03); }
-      100% { opacity: 1;   transform: translateX(-50%) translateY(0px)   scale(1);   }
-    }
-
-    @keyframes miniHeartFloat {
-      0%   { opacity: 0; transform: translateY(0) scale(0.7); }
-      50%  { opacity: 0.95; transform: translateY(-25px) scale(1.1); }
-      100% { opacity: 0; transform: translateY(-55px) scale(0.95); }
-    }
-
     body.celebration .flower-row {
       display: none !important;
     }
@@ -554,60 +503,80 @@ noBtn.addEventListener('click', () => {
     noBtn.textContent = "ugh okayyy... YES YES YES! Of course! Only for YOU 😏💕";
     noBtn.classList.add('surrender');
     noBtn.onclick = mergeButtons;
+
     showCapyJudgement();
-  } else {
+  } 
+  else {
     const index = Math.min(noClickCount - 1, noOptions.length - 1);
     noBtn.textContent = noOptions[index];
+
     showCapyJudgement();
   }
 });
 
 function mergeButtons() {
-  // Fade out original buttons
-  yesBtn.style.transition = 'opacity 0.6s';
-  noBtn.style.transition = 'opacity 0.6s';
-  yesBtn.style.opacity = '0';
-  noBtn.style.opacity = '0';
+  yesBtn.disabled = true;
+  noBtn.disabled = true;
+
+  const containerRect = buttonsContainer.getBoundingClientRect();
+  const yesRect = yesBtn.getBoundingClientRect();
+  const noRect = noBtn.getBoundingClientRect();
+
+  yesBtn.style.position = 'absolute';
+  yesBtn.style.left = `${yesRect.left - containerRect.left}px`;
+  yesBtn.style.top = `${yesRect.top - containerRect.top}px`;
+  yesBtn.style.width = `${yesRect.width}px`;
+
+  noBtn.style.position = 'absolute';
+  noBtn.style.left = `${noRect.left - containerRect.left}px`;
+  noBtn.style.top = `${noRect.top - containerRect.top}px`;
+  noBtn.style.width = `${noRect.width}px`;
+
+  const centerX = containerRect.width / 2;
+
+  yesBtn.style.transition = 'all 1.1s cubic-bezier(0.4, 0, 0.2, 1)';
+  noBtn.style.transition = 'all 1.1s cubic-bezier(0.4, 0, 0.2, 1)';
+
+  yesBtn.style.transform = `translateX(${centerX - (yesRect.left - containerRect.left + yesRect.width / 2)}px) scale(0.92)`;
+  noBtn.style.transform = `translateX(${centerX - (noRect.left - containerRect.left + noRect.width / 2)}px) scale(0.92)`;
 
   setTimeout(() => {
-    yesBtn.remove();
-    noBtn.remove();
-
-    // Make container center the merged button vertically
-    buttonsContainer.classList.add('centered-merge');
-    buttonsContainer.style.opacity = '0';
-
     const merged = document.createElement('button');
+    merged.id = 'mergedBtn';
     merged.textContent = "Yes, let's celebrate our love! 💖🥰";
+
     merged.style.background = 'linear-gradient(135deg, #ff4d94, #ff80ab)';
     merged.style.color = 'white';
     merged.style.fontSize = 'clamp(1.6rem, 6vw, 2.4rem)';
     merged.style.padding = '24px 72px';
     merged.style.borderRadius = '999px';
-    merged.style.boxShadow = '0 12px 40px rgba(255,77,148,0.5)';
-    merged.style.whiteSpace = 'nowrap';
+    merged.style.boxShadow = '0 8px 25px rgba(255,77,148,0.4)';
     merged.style.border = 'none';
     merged.style.cursor = 'pointer';
-    merged.style.transition = 'all 0.6s ease';
+    merged.style.whiteSpace = 'nowrap';
+    merged.style.animation = 'gentleBounce 3s infinite ease-in-out, yesGlow 4s infinite ease-in-out';
+    merged.style.transform = 'scale(0.85)';
+    merged.style.opacity = '0';
+    merged.style.transition = 'all 0.7s ease';
 
     buttonsContainer.appendChild(merged);
 
-    // Fade in the merged button
-    requestAnimationFrame(() => {
-      buttonsContainer.style.transition = 'opacity 0.8s';
-      buttonsContainer.style.opacity = '1';
-      merged.style.transform = 'scale(0.9)';
-      requestAnimationFrame(() => {
-        merged.style.transform = 'scale(1)';
-      });
-    });
+    yesBtn.style.opacity = '0';
+    noBtn.style.opacity = '0';
 
-    merged.addEventListener('click', finalYes);
+    setTimeout(() => {
+      yesBtn.remove();
+      noBtn.remove();
 
-  }, 600);
+      merged.style.transform = 'scale(1)';
+      merged.style.opacity = '1';
+
+      merged.addEventListener('click', finalYes);
+    }, 100);
+
+  }, 1200);
 }
 
-// Trail hearts (unchanged)
 let isDrawingHearts = false;
 let lastX = 0, lastY = 0;
 let throttleTimer = null;
@@ -663,7 +632,6 @@ document.addEventListener("mousedown", onPointerDown);
 document.addEventListener("mousemove", onPointerMove);
 document.addEventListener("mouseup", onPointerUp);
 
-// Flower click (unchanged)
 document.querySelectorAll('.flower-decor').forEach(flower => {
   flower.addEventListener('click', () => {
     flower.classList.add('glow');
@@ -696,7 +664,6 @@ document.querySelectorAll('.flower-decor').forEach(flower => {
   });
 });
 
-// Final yes - capybara hidden permanently (unchanged from previous version)
 function finalYes() {
   const fixedCapy = document.getElementById('capybara-container');
   fixedCapy.style.display = 'none';
@@ -735,6 +702,7 @@ function finalYes() {
   }, 100);
 
   setTimeout(() => {
+
     document.body.classList.add('celebration');
 
     app.innerHTML = `
