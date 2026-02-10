@@ -9,8 +9,6 @@
   <!-- Preload important assets -->
   <link rel="preload" href="https://i.postimg.cc/7h1FNTdx/A28577C0-A453-462E-86D3-117A705C9067.png" as="image">
   <link rel="preload" href="https://i.postimg.cc/yYR21mkP/8b0f9164-ce1a-4748-9f48-386ba1f45bef.jpg" as="image">
-  <link rel="preload" href="https://assets.mixkit.co/sfx/preview/mixkit-fast-small-sweep-transition-166.mp3" as="audio">
-  <link rel="preload" href="https://assets.mixkit.co/sfx/preview/mixkit-magic-sweep-game-trophy-257.mp3" as="audio">
 
   <style>
     html, body {
@@ -471,8 +469,6 @@
 </head>
 <body>
 
-<div id="sound-hint">Tap anywhere to enable sound ♡</div>
-
 <div class="wrapper" id="app">
   <div class="flower-row">
     <img src="https://image.similarpng.com/file/similarpng/original-picture/2022/02/Romantic-pink-rose-bouquet-isolated-on-transparent-background-PNG.png" 
@@ -489,7 +485,7 @@
   <p class="subtitle">親愛的, will you make me the happiest boy in the whole world and be my Valentine? 🌸💖</p>
 
   <div class="buttons-container">
-    <button id="yesBtn">YESSS!! Of course!💕🥰</button>
+    <button id="yesBtn" class="disabled" disabled>YESSS!! Of course!💕🥰</button>
     <button id="noBtn">No 🙄🥺</button>
 
     <div id="capybara-container">
@@ -498,17 +494,11 @@
   </div>
 </div>
 
-<audio id="pop" preload="auto" src="https://assets.mixkit.co/sfx/preview/mixkit-fast-small-sweep-transition-166.mp3"></audio>
-<audio id="sparkle" preload="auto" src="https://assets.mixkit.co/sfx/preview/mixkit-magic-sweep-game-trophy-257.mp3"></audio>
-
 <script>
 const noBtn = document.getElementById("noBtn");
 const yesBtn = document.getElementById("yesBtn");
 const capybara = document.getElementById("capybara");
 const app = document.getElementById("app");
-const pop = document.getElementById("pop");
-const sparkle = document.getElementById("sparkle");
-const soundHint = document.getElementById("sound-hint");
 
 let noClickCount = 0;
 let noDebounce = false;
@@ -533,18 +523,6 @@ const capyJudgements = [
 let judgementQueue = [...capyJudgements];
 
 const heartChars = ["💖","💕","💘","🩷","💗","💝","❤️","💞"];
-
-let hasInteracted = false;
-
-document.addEventListener('touchstart', () => {
-  if (!hasInteracted) {
-    pop.volume = 0.6;
-    sparkle.volume = 0.7;
-    soundHint.style.opacity = '0';
-    setTimeout(() => soundHint.remove(), 800);
-    hasInteracted = true;
-  }
-}, { once: false });
 
 function getNonRepeatingJudgement() {
   if (judgementQueue.length === 0) {
@@ -588,8 +566,6 @@ capybara.addEventListener("click", () => {
   }
 });
 
-yesBtn.addEventListener('click', finalYes);
-
 noBtn.addEventListener('click', () => {
   if (noDebounce) return;
   noDebounce = true;
@@ -604,30 +580,16 @@ noBtn.addEventListener('click', () => {
     noBtn.onclick = mergeButtons;
 
     showCapyJudgement();
-    if (pop) {
-      pop.currentTime = 0;
-      pop.play().catch(() => {});
-    }
   } 
   else {
     const index = Math.min(noClickCount - 1, noOptions.length - 1);
     noBtn.textContent = noOptions[index];
 
     showCapyJudgement();
-
-    if (pop) {
-      pop.currentTime = 0;
-      pop.play().catch(() => {});
-    }
   }
 });
 
 function mergeButtons() {
-  if (pop) {
-    pop.currentTime = 0;
-    pop.play().catch(() => {});
-  }
-
   const container = document.querySelector('.buttons-container');
   const containerRect = container.getBoundingClientRect();
   const yesRect = yesBtn.getBoundingClientRect();
@@ -637,7 +599,7 @@ function mergeButtons() {
   yesBtn.style.position = 'absolute';
   yesBtn.style.left = `${yesRect.left - containerRect.left}px`;
   yesBtn.style.top = `${yesRect.top - containerRect.top}px`;
-  yesBtn.style.width = `${yesRect.width}px`; // Fix width to prevent reflow
+  yesBtn.style.width = `${yesRect.width}px`;
   yesBtn.style.height = `${yesRect.height}px`;
 
   noBtn.style.position = 'absolute';
@@ -646,17 +608,17 @@ function mergeButtons() {
   noBtn.style.width = `${noRect.width}px`;
   noBtn.style.height = `${noRect.height}px`;
 
-  // Calculate merge point (center between the two buttons)
-  const mergeX = (yesRect.left + noRect.left) / 2 - containerRect.left + (yesRect.width / 4); // Slight offset if needed
-  const mergeY = (yesRect.top + noRect.top) / 2 - containerRect.top;
+  // Calculate midpoint
+  const mergeX = ((yesRect.left + yesRect.width / 2) + (noRect.left + noRect.width / 2)) / 2 - containerRect.left;
+  const mergeY = ((yesRect.top + yesRect.height / 2) + (noRect.top + noRect.height / 2)) / 2 - containerRect.top;
 
   // Animate movement to merge point
   setTimeout(() => {
     yesBtn.style.transition = 'transform 1s ease, opacity 1s ease';
-    yesBtn.style.transform = `translate(${mergeX - (yesRect.left - containerRect.left) + (yesRect.width / 2 - yesRect.width)}px, ${mergeY - (yesRect.top - containerRect.top) - yesRect.height / 2}px)`;
+    yesBtn.style.transform = `translate(${mergeX - (yesRect.left - containerRect.left + yesRect.width / 2)}px, ${mergeY - (yesRect.top - containerRect.top + yesRect.height / 2)}px)`;
 
     noBtn.style.transition = 'transform 1s ease, opacity 1s ease';
-    noBtn.style.transform = `translate(${mergeX - (noRect.left - containerRect.left) + (noRect.width / 2 - noRect.width)}px, ${mergeY - (noRect.top - containerRect.top) - noRect.height / 2}px)`;
+    noBtn.style.transform = `translate(${mergeX - (noRect.left - containerRect.left + noRect.width / 2)}px, ${mergeY - (noRect.top - containerRect.top + noRect.height / 2)}px)`;
   }, 100);
 
   // Fade out after movement starts
@@ -683,6 +645,7 @@ function mergeButtons() {
     mergedBtn.style.fontSize = 'clamp(1.5rem, 5.5vw, 2rem)';
     mergedBtn.style.padding = '18px 52px';
     mergedBtn.style.zIndex = '3';
+    mergedBtn.style.transform = 'translate(-50%, -50%)'; // Center it at the merge point
     mergedBtn.addEventListener('click', finalYes);
 
     container.appendChild(mergedBtn);
@@ -825,7 +788,6 @@ function finalYes() {
 
   // After 3.5 seconds → celebration
   setTimeout(() => {
-    if (sparkle) sparkle.play().catch(() => {});
 
     document.body.classList.add('celebration');
 
